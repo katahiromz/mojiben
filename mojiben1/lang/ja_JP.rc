@@ -14,7 +14,7 @@ STYLE DS_CENTER | DS_SETFOREGROUND | DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | W
 FONT 9, "ＭＳ Ｐゴシック"
 {
     ICON 1, ico1, 10, 10, 0, 0
-    LTEXT "もじのべんきょう (1) ver.2.1", IDC_STATIC, 36, 12, 105, 10
+    LTEXT "もじのべんきょう (1) ver.2.2", IDC_STATIC, 36, 12, 105, 10
     LTEXT "片山博文MZ", IDC_STATIC, 35, 30, 105, 10
     CONTROL "katayama.hirofumi.mz@gmail.com", IDC_STATIC, "EDIT", ES_READONLY, 35, 46, 105, 10
     DEFPUSHBUTTON "OK", IDOK, 52, 70, 45, 14

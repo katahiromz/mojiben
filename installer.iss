@@ -7,12 +7,12 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
 AppName=もじのべんきょう
-AppVerName=もじのべんきょう 2.1
+AppVerName=もじのべんきょう 2.2
 AppPublisher=片山博文MZ
 VersionInfoProductName=もじのべんきょう
 VersionInfoDescription=もじのべんきょう
 VersionInfoCompany=片山博文MZ
-VersionInfoVersion=2.1
+VersionInfoVersion=2.2
 VersionInfoCopyright=Copyright (C) 2009-2020 Katayama Hirofumi MZ. All rights reserved.
 AppPublisherURL=https://katahiromz.web.fc2.com/mojiben/
 AppSupportURL=https://katahiromz.web.fc2.com/mojiben/
@@ -21,7 +21,7 @@ DefaultDirName={pf}\Moji No Benkyou
 DefaultGroupName=もじのべんきょう
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=mojiben-2.1-setup
+OutputBaseFilename=mojiben-2.2-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
