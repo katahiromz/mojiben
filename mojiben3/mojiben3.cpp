@@ -654,9 +654,6 @@ void Kakijun_OnDestroy(HWND hwnd)
 LRESULT CALLBACK
 KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    HDC hdc;
-    PAINTSTRUCT ps;
-
     switch (uMsg)
     {
         HANDLE_MSG(hwnd, WM_CREATE, Kakijun_OnCreate);

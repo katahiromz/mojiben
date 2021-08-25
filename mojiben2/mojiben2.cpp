@@ -365,14 +365,14 @@ unsigned __stdcall ThreadProc( void * )
             sint = sin(v[i].angle0 * M_PI / 180);
             for(k = -200; k < 200; k += 30)
             {
-                apt[0].x = 150 + k * cost + 150 * sint;
-                apt[0].y = 150 + k * sint - 150 * cost;
-                apt[1].x = 150 + k * cost - 150 * sint;
-                apt[1].y = 150 + k * sint + 150 * cost;
-                apt[2].x = 150 + (k + 30) * cost - 150 * sint;
-                apt[2].y = 150 + (k + 30) * sint + 150 * cost;
-                apt[3].x = 150 + (k + 30) * cost + 150 * sint;
-                apt[3].y = 150 + (k + 30) * sint - 150 * cost;
+                apt[0].x = LONG(150 + k * cost + 150 * sint);
+                apt[0].y = LONG(150 + k * sint - 150 * cost);
+                apt[1].x = LONG(150 + k * cost - 150 * sint);
+                apt[1].y = LONG(150 + k * sint + 150 * cost);
+                apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
+                apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
+                apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
+                apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
                 BeginPath(hdcMem);
                 Polygon(hdcMem, apt, 4);
                 EndPath(hdcMem);
@@ -400,14 +400,14 @@ unsigned __stdcall ThreadProc( void * )
 
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                apt[0].x = 150 + k * cost + 150 * sint;
-                apt[0].y = 150 + k * sint - 150 * cost;
-                apt[1].x = 150 + k * cost - 150 * sint;
-                apt[1].y = 150 + k * sint + 150 * cost;
-                apt[2].x = 150 + (k + 30) * cost - 150 * sint;
-                apt[2].y = 150 + (k + 30) * sint + 150 * cost;
-                apt[3].x = 150 + (k + 30) * cost + 150 * sint;
-                apt[3].y = 150 + (k + 30) * sint - 150 * cost;
+                apt[0].x = LONG(150 + k * cost + 150 * sint);
+                apt[0].y = LONG(150 + k * sint - 150 * cost);
+                apt[1].x = LONG(150 + k * cost - 150 * sint);
+                apt[1].y = LONG(150 + k * sint + 150 * cost);
+                apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
+                apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
+                apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
+                apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
                 BeginPath(hdcMem);
                 Polygon(hdcMem, apt, 4);
                 EndPath(hdcMem);
@@ -474,10 +474,10 @@ unsigned __stdcall ThreadProc( void * )
 
                     FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                    apt[0].x = v[i].cx + 200 * cost;
-                    apt[0].y = v[i].cy + 200 * sint;
-                    apt[1].x = v[i].cx + 200 * cost2;
-                    apt[1].y = v[i].cy + 200 * sint2;
+                    apt[0].x = LONG(v[i].cx + 200 * cost);
+                    apt[0].y = LONG(v[i].cy + 200 * sint);
+                    apt[1].x = LONG(v[i].cx + 200 * cost2);
+                    apt[1].y = LONG(v[i].cy + 200 * sint2);
                     apt[2].x = v[i].cx;
                     apt[2].y = v[i].cy;
                     BeginPath(hdcMem);
@@ -520,10 +520,10 @@ unsigned __stdcall ThreadProc( void * )
 
                     FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                    apt[0].x = v[i].cx + 200 * cost;
-                    apt[0].y = v[i].cy + 200 * sint;
-                    apt[1].x = v[i].cx + 200 * cost2;
-                    apt[1].y = v[i].cy + 200 * sint2;
+                    apt[0].x = LONG(v[i].cx + 200 * cost);
+                    apt[0].y = LONG(v[i].cy + 200 * sint);
+                    apt[1].x = LONG(v[i].cx + 200 * cost2);
+                    apt[1].y = LONG(v[i].cy + 200 * sint2);
                     apt[2].x = v[i].cx;
                     apt[2].y = v[i].cy;
                     BeginPath(hdcMem);
@@ -752,9 +752,6 @@ void Kakijun_OnPaint(HWND hwnd)
 LRESULT CALLBACK
 KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    HDC hdc;
-    PAINTSTRUCT ps;
-
     switch(uMsg)
     {
         HANDLE_MSG(hwnd, WM_ERASEBKGND, Kakijun_OnEraseBkgnd);
