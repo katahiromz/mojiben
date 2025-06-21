@@ -18,6 +18,7 @@
 
 ☆動作環境☆
 
+	* Windows 2000
 	* Windows XP
 	* Windows Vista
 	* Windows Server 2003
