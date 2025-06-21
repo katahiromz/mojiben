@@ -23,6 +23,7 @@
 	* Windows Vista
 	* Windows Server 2003
 	* Windows 10
+	* Windows 11
 
 ☆アンインストール方法☆
 
