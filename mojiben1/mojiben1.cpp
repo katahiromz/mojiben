@@ -542,11 +542,11 @@ unsigned __stdcall ThreadProc( void * )
     case 8:
         switch (g_nMoji % 10)
         {
-        case 0: romaji = "ra"; break;
-        case 1: romaji = "ri"; break;
-        case 2: romaji = "ru"; break;
-        case 3: romaji = "re"; break;
-        case 4: romaji = "ro"; break;
+        case 0: romaji = "ra (la)"; break;
+        case 1: romaji = "ri (li)"; break;
+        case 2: romaji = "ru (lu)"; break;
+        case 3: romaji = "re (le)"; break;
+        case 4: romaji = "ro (lo)"; break;
         }
         break;
     case 9:
@@ -559,7 +559,7 @@ unsigned __stdcall ThreadProc( void * )
     case 10:
         switch (g_nMoji % 10)
         {
-        case 4: romaji = "nn"; break;
+        case 4: romaji = "nn (n)"; break;
         }
         break;
     }
