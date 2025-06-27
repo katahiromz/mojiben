@@ -4,7 +4,7 @@
 ##############################################################################
 
 # CMake minimum version
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 # project name and language
 project(mojiben CXX RC)
@@ -40,8 +40,11 @@ endif()
 
 ##############################################################################
 
-add_definitions(-D__STDC__=1 -D_USE_MATH_DEFINES)
+add_definitions(-D_USE_MATH_DEFINES)
 
-subdirs(mojiben1 mojiben2 mojiben3 mojiben4)
+add_subdirectory(mojiben1)
+add_subdirectory(mojiben2)
+add_subdirectory(mojiben3)
+add_subdirectory(mojiben4)
 
 ##############################################################################
