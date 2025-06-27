@@ -39,6 +39,7 @@ Source: "build\mojiben2.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\mojiben3.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
