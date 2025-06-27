@@ -13,7 +13,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "Popup #0"
     {
-        MENUITEM "goo じしょでしらべる", 1000
+        MENUITEM "「じてんオンライン」でしらべる", 1000
+        MENUITEM "「もじなび」でしらべる", 1001
     }
 }
 

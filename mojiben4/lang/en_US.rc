@@ -12,7 +12,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Investigate on goo dictionary", 1000
+        MENUITEM "Investigate on JITEN ONLINE", 1000
+        MENUITEM "Investigate on Moji Navi", 1001
     }
 }
 

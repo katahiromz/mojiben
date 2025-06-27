@@ -522,7 +522,7 @@ STRINGTABLE
     277, "力:Power, Force"
     278, "林:Woods"
     279, "六:Six, 6"
-    1000, "https://dictionary.goo.ne.jp/word/kanji/%s/"
+    1000, "https://jitenon.jp/search/data.php?getdata=%s&search=contain"
     1001, "https://mojinavi.com/d/u%04x"
 }
 
