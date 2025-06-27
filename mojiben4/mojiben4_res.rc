@@ -458,7 +458,7 @@ STRINGTABLE
     213, "休:Rest"
     214, "玉:Ball, Bullet"
     215, "金:Money, Gold, Metal, Fri"
-    216, "空:Sky, Empty"
+    216, "空:Sky, Empty, (Opened)"
     217, "月:Moon, Month, Mon"
     218, "犬:Dog"
     219, "見:Look, See"
