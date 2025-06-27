@@ -888,7 +888,7 @@ INT WINAPI WinMain(
     wcx.style           = CS_NOCLOSE | CS_HREDRAW | CS_VREDRAW;
     wcx.lpfnWndProc     = CaptionWndProc;
     wcx.hIcon           = NULL;
-    wcx.hbrBackground   = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+    wcx.hbrBackground   = CreateSolidBrush(RGB(255, 255, 64));
     wcx.lpszClassName   = g_szCaptionClassName;
     wcx.hIconSm         = NULL;
     if (!RegisterClassEx(&wcx))

@@ -826,7 +826,7 @@ unsigned __stdcall ThreadProc( void * )
     rc.right = siz.cx;
     rc.bottom = siz.cy;
     FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdcMem, hRgn, g_hbrRed);
+    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
     {
         hFontOld = SelectObject(hdcMem, hFont);
         SetTextColor(hdcMem, RGB(0, 0, 0));

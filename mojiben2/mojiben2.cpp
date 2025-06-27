@@ -572,7 +572,7 @@ unsigned __stdcall ThreadProc( void * )
     DrawGuideline(hdcMem, siz.cx);
     SelectObject(hdcMem, hPenOld);
 
-    FillRgn(hdcMem, hRgn, g_hbrRed);
+    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
     SelectObject(hdcMem, hbmOld);
     DeleteDC(hdcMem);
