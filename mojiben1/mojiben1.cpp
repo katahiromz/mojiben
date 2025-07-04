@@ -559,7 +559,7 @@ unsigned __stdcall ThreadProc( void * )
     case 10:
         switch (g_nMoji % 10)
         {
-        case 4: romaji = "nn (n)"; break;
+        case 4: romaji = "nn (n/m)"; break;
         }
         break;
     }
