@@ -553,7 +553,7 @@ unsigned __stdcall ThreadProc( void * )
         switch (g_nMoji % 10)
         {
         case 0: romaji = "wa"; break;
-        case 4: romaji = "wo"; break;
+        case 4: romaji = "wo (o)"; break;
         }
         break;
     case 10:
