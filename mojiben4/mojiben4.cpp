@@ -855,6 +855,7 @@ INT WINAPI WinMain(
     INT         nCmdShow)
 {
     WNDCLASSEX wcx;
+    DWORD style;
     MSG msg;
     BOOL f;
 
@@ -894,9 +895,10 @@ INT WINAPI WinMain(
     if (!RegisterClassEx(&wcx))
         return 1;
 
-    g_hMainWnd = CreateWindow(g_szClassName, LoadStringDx(1),
-        WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED, CW_USEDEFAULT, 0,
-        660, 550, NULL, NULL, hInstance, NULL);
+    style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
+    g_hMainWnd = CreateWindow(g_szClassName, LoadStringDx(1), style,
+        CW_USEDEFAULT, CW_USEDEFAULT, 660, 550,
+        NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {
         MessageBox(NULL, LoadStringDx(3), NULL, MB_ICONERROR);
