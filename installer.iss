@@ -6,22 +6,22 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
-AppName=もじのべんきょう
-AppVerName=もじのべんきょう 2.5
-AppPublisher=片山博文MZ
-VersionInfoProductName=もじのべんきょう
-VersionInfoDescription=もじのべんきょう
-VersionInfoCompany=片山博文MZ
-VersionInfoVersion=2.5
-VersionInfoCopyright=Copyright (C) 2009-2020 Katayama Hirofumi MZ. All rights reserved.
+AppName={cm:AppName}
+AppVerName={cm:AppName} 2.6
+AppPublisher={cm:Authors}
+VersionInfoProductName={cm:AppName}
+VersionInfoDescription={cm:AppName}
+VersionInfoCompany={cm:Authors}
+VersionInfoVersion=2.6
+VersionInfoCopyright=Copyright (C) 2009-2025 Katayama Hirofumi MZ. All rights reserved.
 AppPublisherURL=https://katahiromz.web.fc2.com/mojiben/
 AppSupportURL=https://katahiromz.web.fc2.com/mojiben/
 AppUpdatesURL=https://katahiromz.web.fc2.com/mojiben/
 DefaultDirName={pf}\Moji No Benkyou
-DefaultGroupName=もじのべんきょう
+DefaultGroupName={cm:AppName}
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=mojiben-2.5-setup
+OutputBaseFilename=mojiben-2.6-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
@@ -41,17 +41,40 @@ Source: "build\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ume-tgo4.ttf"; DestDir: "{fonts}"; FontInstall: "梅ゴシック"; Flags: onlyifdoesntexist uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\読んでね"; Filename: "{app}\README.txt"
-Name: "{group}\ライセンス"; Filename: "{app}\LICENSE.txt"
-Name: "{group}\(1) ひらがなとかたかな"; Filename: "{app}\mojiben1.exe"
-Name: "{group}\(2) アルファベット"; Filename: "{app}\mojiben2.exe"
-Name: "{group}\(3) すうじとかず"; Filename: "{app}\mojiben3.exe"
-Name: "{group}\(4) 小学校一年生でならうかん字"; Filename: "{app}\mojiben4.exe"
-Name: "{group}\アンインストール"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\もじべん (1) ひらがなとかたかな"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
-Name: "{commondesktop}\もじべん (2) アルファベット"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
-Name: "{commondesktop}\もじべん (3) すうじとかず"; Filename: "{app}\mojiben3.exe"; Tasks: desktopicon
-Name: "{commondesktop}\もじべん (4) 小学校一年生でならうかん字"; Filename: "{app}\mojiben4.exe"; Tasks: desktopicon
+Name: "{group}\{cm:ReadMe}"; Filename: "{app}\README.txt"
+Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
+Name: "{group}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"
+Name: "{group}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"
+Name: "{group}\(3) {cm:DigitsAndNumbers}"; Filename: "{app}\mojiben3.exe"
+Name: "{group}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"
+Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\{cm:MojiBen} (1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
+Name: "{commondesktop}\{cm:MojiBen} (2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
+Name: "{commondesktop}\{cm:MojiBen} (3) {cm:DigitsAndNumbers}"; Filename: "{app}\mojiben3.exe"; Tasks: desktopicon
+Name: "{commondesktop}\{cm:MojiBen} (4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"; Tasks: desktopicon
+
+[CustomMessages]
+ja.AppName=もじのべんきょう
+en.AppName=Moji No Benkyou
+ja.Authors=片山博文MZ
+en.Authors=katahiromz
+ja.ReadMe=読んでね
+en.ReadMe=ReadMe
+ja.License=ライセンス
+en.License=License
+ja.HiraganaAndKatakana=ひらがなとカタカナ
+en.HiraganaAndKatakana=Hiragana and Katakana
+ja.Alphabet=アルファベット
+en.Alphabet=Alphabet
+ja.DigitsAndNumbers=すうじとかず
+en.DigitsAndNumbers=Digits and numeric
+ja.Kanji1stGrader=小学校一年生でならうかん字
+en.Kanji1stGrader=1st Graders' Kanji
+ja.Uninstall=アンインストール
+en.Uninstall=Uninstall
+ja.MojiBen=もじべん
+en.MojiBen=MojiBen

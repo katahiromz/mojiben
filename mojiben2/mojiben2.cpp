@@ -868,7 +868,7 @@ INT WINAPI WinMain(
     WNDCLASSEX wcx;
     MSG msg;
     BOOL f;
-    
+
     g_hInstance = hInstance;
     wcx.cbSize          = sizeof(WNDCLASSEX);
     wcx.style           = 0;

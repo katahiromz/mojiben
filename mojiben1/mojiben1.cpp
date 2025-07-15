@@ -514,7 +514,7 @@ unsigned __stdcall ThreadProc( void * )
     case 5:
         switch (g_nMoji % 10)
         {
-        case 0: romaji = "ha"; break;
+        case 0: romaji = "ha (wa)"; break;
         case 1: romaji = "hi"; break;
         case 2: romaji = "fu"; break;
         case 3: romaji = "he"; break;
@@ -856,7 +856,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     GetWindowRect(hwnd, &rc);
     GetWindowRect(g_hKakijunWnd, &rc2);
-    MoveWindow(g_hKakijunWnd, 
+    MoveWindow(g_hKakijunWnd,
         rc.left + (rc.right - rc.left - (rc2.right - rc2.left)) / 2,
         rc.top + (rc.bottom - rc.top - (rc2.bottom - rc2.top)) / 2,
         rc2.right - rc2.left,
@@ -914,7 +914,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     GetExitCodeThread(g_hThread, &dw);
     if (dw == STILL_ACTIVE)
         return;
-    
+
     pt.x = x;
     pt.y = y;
     SetRect(&rc, 160, 10, 160 + 200, 10 + 76);
@@ -1185,7 +1185,7 @@ INT WINAPI WinMain(
     WNDCLASSEX wcx;
     MSG msg;
     BOOL f;
-    
+
     g_hInstance = hInstance;
     wcx.cbSize          = sizeof(WNDCLASSEX);
     wcx.style           = 0;
@@ -1199,11 +1199,11 @@ INT WINAPI WinMain(
     wcx.lpszMenuName    = NULL;
     wcx.lpszClassName   = g_szClassName;
     wcx.hIconSm         = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(1),
-        IMAGE_ICON, 
+        IMAGE_ICON,
         GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
     if (!RegisterClassEx(&wcx))
         return 1;
-    
+
     wcx.style           = CS_NOCLOSE;
     wcx.lpfnWndProc     = KakijunWndProc;
     wcx.hIcon           = NULL;

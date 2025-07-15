@@ -618,9 +618,11 @@ BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
+    lstrcpyn(lf.lfFaceName, TEXT("Ume Gothic"), _countof(lf.lfFaceName));
     lf.lfHeight = -35;
     lf.lfWeight = FW_BOLD;
-    lf.lfCharSet = SHIFTJIS_CHARSET;
+    lf.lfCharSet = DEFAULT_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
     g_hFont = CreateFontIndirect(&lf);
 
     lf.lfHeight = -15;
@@ -790,7 +792,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    WCHAR wch, sz[MAX_PATH];
+    WCHAR wch;
     TCHAR szText[MAX_PATH];
     tstring str;
 

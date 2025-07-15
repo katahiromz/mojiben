@@ -70,10 +70,11 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
+    lstrcpyn(lf.lfFaceName, TEXT("Ume Gothic"), _countof(lf.lfFaceName));
     lf.lfHeight = -25;
     lf.lfWeight = FW_BOLD;
-    lf.lfCharSet = SHIFTJIS_CHARSET;
-    lstrcpy(lf.lfFaceName, TEXT("MS UI Gothic"));
+    lf.lfCharSet = DEFAULT_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
     g_hFont = CreateFontIndirect(&lf);
 
     hSysMenu = GetSystemMenu(hwnd, FALSE);
