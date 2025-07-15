@@ -21,8 +21,6 @@ When you press a letter button, the sound of that letter will be played and the 
 	* Windows 10
 	* Windows 11
 
-(Japanese fonts required)
-
 ## How to uninstall
 
 If it comes with an installer, you can uninstall it from the "Add or Remove Programs" menu in the Control Panel.
