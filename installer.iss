@@ -32,6 +32,7 @@ Name: ja; MessagesFile: "compiler:Languages\Japanese.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "japanesefont"; Description: "{cm:InstallJapaneseFont}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
 Source: "build\Release\mojiben1.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -41,7 +42,7 @@ Source: "build\Release\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall; Tasks: japanesefont
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -83,3 +84,5 @@ ja.MojiBen=もじべん
 en.MojiBen=MojiBen
 ja.URL=https://katahiromz.fc2.page/mojiben/
 en.URL=https://katahiromz.fc2.page/moji-no-benkyou/
+ja.InstallJapaneseFont=日本語フォント (ピザPゴシック) をインストールする
+en.InstallJapaneseFont=Install Japanese font (Piza P Gothic)
