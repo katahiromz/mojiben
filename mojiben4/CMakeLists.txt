@@ -47,6 +47,9 @@ if (MSVC)
     add_definitions(-DMSVC)
 endif()
 
+# Unicode
+add_definitions(-DUNICODE -D_UNICODE)
+
 # mojiben4.exe
 add_executable(mojiben4 WIN32 mojiben4.cpp kanji1.cpp mojiben4_res.rc)
 target_link_libraries(mojiben4 comctl32 winmm)
