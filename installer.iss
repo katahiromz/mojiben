@@ -7,12 +7,12 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
 AppName={cm:AppName}
-AppVerName={cm:AppName} 2.6
+AppVerName={cm:AppName} 2.7
 AppPublisher={cm:Authors}
 VersionInfoProductName={cm:AppName}
 VersionInfoDescription={cm:AppName}
 VersionInfoCompany={cm:Authors}
-VersionInfoVersion=2.6
+VersionInfoVersion=2.7
 VersionInfoCopyright=Copyright (C) 2009-2025 Katayama Hirofumi MZ. All rights reserved.
 AppPublisherURL=https://katahiromz.web.fc2.com/mojiben/
 AppSupportURL=https://katahiromz.web.fc2.com/mojiben/
@@ -21,7 +21,7 @@ DefaultDirName={pf}\Moji No Benkyou
 DefaultGroupName={cm:AppName}
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=mojiben-2.6-setup
+OutputBaseFilename=mojiben-2.7-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
@@ -45,7 +45,8 @@ Source: "ume-tgo4.ttf"; DestDir: "{fonts}"; FontInstall: "梅ゴシック"; Flag
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{cm:ReadMe}"; Filename: "{app}\README.txt"
+Name: "{group}\{cm:ReadMeJPN}"; Filename: "{app}\README.txt"
+Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README-ENG.txt"
 Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"
 Name: "{group}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"
@@ -62,8 +63,10 @@ ja.AppName=もじのべんきょう
 en.AppName=Moji No Benkyou
 ja.Authors=片山博文MZ
 en.Authors=katahiromz
-ja.ReadMe=読んでね
-en.ReadMe=ReadMe
+ja.ReadMeJPN=読んでね (日本語)
+en.ReadMeJPN=ReadMe (Japanese)
+ja.ReadMeENG=ReadMe (English)
+en.ReadMeENG=ReadMe (English)
 ja.License=ライセンス
 en.License=License
 ja.HiraganaAndKatakana=ひらがなとカタカナ
