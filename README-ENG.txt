@@ -20,6 +20,7 @@ When you press a letter button, the sound of that letter will be played and the 
 	* Windows Server 2003
 	* Windows 10
 	* Windows 11
+	* ReactOS
 
 ## How to uninstall
 
@@ -37,7 +38,6 @@ We are not responsible for any damages caused by using this program.
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [ANT]
-// Homepage     http://katahiromz.web.fc2.com/
-// BBS          http://katahiromz.bbs.fc2.com/
+// Homepage     https://katahiromz.fc2.page/moji-no-benkyou/
 // E-Mail       katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////

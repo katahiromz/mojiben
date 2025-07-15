@@ -23,6 +23,7 @@
 	* Windows Server 2003
 	* Windows 10
 	* Windows 11
+	* ReactOS
 
 ☆アンインストール方法☆
 
@@ -42,7 +43,7 @@
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [蟻]
-// ホームページ http://katahiromz.web.fc2.com/
+// ホームページ https://katahiromz.fc2.page/mojiben/
 // 掲示板       http://katahiromz.bbs.fc2.com/
 // メール       katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////
