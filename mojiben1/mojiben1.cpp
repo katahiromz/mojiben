@@ -496,7 +496,7 @@ unsigned __stdcall ThreadProc( void * )
         {
         case 0: romaji = "ta"; break;
         case 1: romaji = "chi"; break;
-        case 2: romaji = "tsu"; break;
+        case 2: romaji = "tsu (tz)"; break;
         case 3: romaji = "te"; break;
         case 4: romaji = "to"; break;
         }
