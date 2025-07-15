@@ -34,10 +34,10 @@ Name: ja; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "build\mojiben1.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\mojiben2.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\mojiben3.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben1.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben2.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben3.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
