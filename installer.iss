@@ -41,7 +41,7 @@ Source: "build\Release\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "ume-tgo4.ttf"; DestDir: "{fonts}"; FontInstall: "梅ゴシック"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
