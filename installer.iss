@@ -7,12 +7,12 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
 AppName={cm:AppName}
-AppVerName={cm:AppName} 2.7
+AppVerName={cm:AppName} 2.8
 AppPublisher={cm:Authors}
 VersionInfoProductName={cm:AppName}
 VersionInfoDescription={cm:AppName}
 VersionInfoCompany={cm:Authors}
-VersionInfoVersion=2.7
+VersionInfoVersion=2.8
 VersionInfoCopyright=Copyright (C) 2009-2025 Katayama Hirofumi MZ. All rights reserved.
 AppPublisherURL={cm:URL}
 AppSupportURL={cm:URL}
@@ -21,7 +21,7 @@ DefaultDirName={pf}\Moji No Benkyou
 DefaultGroupName={cm:AppName}
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=mojiben-2.7-setup
+OutputBaseFilename=mojiben-2.8-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
