@@ -31,9 +31,9 @@
     typedef std::string tstring;
 #endif
 
-static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (3)");
-static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (3) Kakijun");
-static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (3) Caption");
+static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (4)");
+static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (4) Kakijun");
+static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (4) Caption");
 
 HINSTANCE g_hInstance;
 HWND g_hMainWnd;
