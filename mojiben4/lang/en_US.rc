@@ -67,7 +67,7 @@ FILESUBTYPE     0x0
 
 STRINGTABLE
 {
-    1, "Moji No Benkyou (4) 1st Graders' Kanji"
+    1, "Moji No Benkyou (4) 1st-Graders' Kanji"
     2, "About"
     3, "Out of memory!"
     100, "一:イチ、ひと-つ、イツ、(はじめ)"
