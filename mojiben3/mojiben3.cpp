@@ -216,14 +216,25 @@ void DrawBalls(HDC hdcMem, const RECT *prc, INT nMoji)
 
 void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
 {
-    TCHAR szText[32];
-    wsprintf(szText, TEXT("%s"), LoadStringDx(100 + nMoji));
+    static const LPCWSTR g_aszReadings[] =
+    {
+        L"いち、ひと-つ",
+        L"に、ふた-つ",
+        L"さん、み-っつ",
+        L"よん、よ-っつ、し",
+        L"ご、いつ-つ",
+        L"ろく、む-っつ",
+        L"なな、なな-つ、しち",
+        L"はち、や-っつ",
+        L"きゅう、く、ここの-つ",
+        L"じゅう、とう",
+    };
 
     RECT rc = *prc;
     rc.left += 5;
 
     HGDIOBJ hFontOld = SelectObject(hdcMem, g_hFont);
-    DrawText(hdcMem, szText, -1, &rc, DT_SINGLELINE | DT_LEFT | DT_TOP);
+    DrawText(hdcMem, g_aszReadings[nMoji], -1, &rc, DT_SINGLELINE | DT_LEFT | DT_TOP);
     SelectObject(hdcMem, hFontOld);
 }
 
