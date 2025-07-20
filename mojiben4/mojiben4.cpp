@@ -1,8 +1,9 @@
-// Moji No Benkyo (3)
-// Copyright (C) 2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Moji No Benkyo (4)
+// Copyright (C) 2020-2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 #include <windows.h>
 #include <windowsx.h>
+#include <commctrl.h>
 #include <mmsystem.h>
 #include <process.h>
 #include <tchar.h>
@@ -862,6 +863,8 @@ INT WINAPI WinMain(
     BOOL f;
 
     g_hInstance = hInstance;
+    InitCommonControls();
+
     wcx.cbSize          = sizeof(WNDCLASSEX);
     wcx.style           = 0;
     wcx.lpfnWndProc     = WindowProc;

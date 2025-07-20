@@ -3,6 +3,7 @@
 // This file is public domain software.
 #include <windows.h>
 #include <windowsx.h>
+#include <commctrl.h>
 #include <mmsystem.h>
 
 #include <cstdlib>
@@ -1185,6 +1186,8 @@ INT WINAPI WinMain(
     WNDCLASSEX wcx;
     MSG msg;
     BOOL f;
+
+    InitCommonControls();
 
     RECT rcWorkArea;
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);

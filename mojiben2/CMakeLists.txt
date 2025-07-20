@@ -53,5 +53,8 @@ add_definitions(-DUNICODE -D_UNICODE)
 # mojiben2.exe
 add_executable(mojiben2 WIN32 mojiben2.cpp PLL.cpp PUL.cpp mojiben2_res.rc)
 target_link_libraries(mojiben2 comctl32 winmm)
+if(MSVC)
+    target_link_options(mojiben2 PRIVATE /MANIFEST:NO)
+endif()
 
 ##############################################################################

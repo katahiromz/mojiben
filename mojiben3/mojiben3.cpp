@@ -3,6 +3,7 @@
 // This file is public domain software.
 #include <windows.h>
 #include <windowsx.h>
+#include <commctrl.h>
 #include <mmsystem.h>
 #include <process.h>
 #include <tchar.h>
@@ -788,6 +789,8 @@ INT WINAPI WinMain(
     BOOL f;
 
     g_hInstance = hInstance;
+    InitCommonControls();
+
     wcx.cbSize          = sizeof(WNDCLASSEX);
     wcx.style           = 0;
     wcx.lpfnWndProc     = WindowProc;
