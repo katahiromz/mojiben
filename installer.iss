@@ -6,17 +6,17 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
-AppName={cm:AppName}
+AppName=Moji No Benkyou
 AppVerName={cm:AppName} 2.8
-AppPublisher={cm:Authors}
-VersionInfoProductName={cm:AppName}
-VersionInfoDescription={cm:AppName}
-VersionInfoCompany={cm:Authors}
+AppPublisher=katahiromz
+VersionInfoProductName=Moji No Benkyou
+VersionInfoDescription=Moji No Benkyou
+VersionInfoCompany=katahiromz
 VersionInfoVersion=2.8
 VersionInfoCopyright=Copyright (C) 2009-2025 Katayama Hirofumi MZ. All rights reserved.
-AppPublisherURL={cm:URL}
-AppSupportURL={cm:URL}
-AppUpdatesURL={cm:URL}
+AppPublisherURL=https://katahiromz.fc2.page
+AppSupportURL=https://katahiromz.fc2.page/moji-no-benkyou/
+AppUpdatesURL=https://katahiromz.fc2.page/moji-no-benkyou/
 DefaultDirName={pf}\Moji No Benkyou
 DefaultGroupName={cm:AppName}
 DisableProgramGroupPage=yes
