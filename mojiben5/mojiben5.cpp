@@ -475,6 +475,11 @@ VOID GetMojiRect(INT j, LPRECT prc)
     *prc = rc;
 }
 
+INT GetNumPage(VOID)
+{
+    return (_countof(g_ahbmKanji2) + COLUMNS * ROWS - 1) / (COLUMNS * ROWS);
+}
+
 BOOL GetLeftArrowRect(HWND hwnd, LPRECT prc)
 {
     RECT rcClient;
@@ -488,7 +493,7 @@ BOOL GetRightArrowRect(HWND hwnd, LPRECT prc)
     RECT rcClient;
     GetClientRect(hwnd, &rcClient);
     SetRect(prc, rcClient.right - 32, rcClient.bottom - 48, rcClient.right, rcClient.bottom - 48 + 32);
-    return g_iPage + 1 < (_countof(g_ahbmKanji2) + COLUMNS * ROWS - 1) / (COLUMNS * ROWS);
+    return g_iPage + 1 < GetNumPage();
 }
 
 VOID OnDraw(HWND hwnd, HDC hdc)
@@ -542,6 +547,13 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
+
+        GetClientRect(hwnd, &rc);
+        rc.top = rc.bottom - 48;
+        TCHAR szText[64];
+        wsprintf(szText, TEXT("%u / %u"), (g_iPage + 1), GetNumPage());
+        SetBkMode(hdcMem2, TRANSPARENT);
+        DrawText(hdcMem2, szText, -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
         SelectObject(hdcMem2, hbmOld2);
     }
