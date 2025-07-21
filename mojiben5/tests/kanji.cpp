@@ -1,6 +1,5 @@
 #include <windows.h>
 
-
 typedef struct tagBITMAPINFOEX
 {
     BITMAPINFOHEADER bmiHeader;
