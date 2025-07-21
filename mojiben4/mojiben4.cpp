@@ -1,4 +1,4 @@
-// Moji No Benkyo (4)
+﻿// Moji No Benkyo (4)
 // Copyright (C) 2020-2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 #include <windows.h>
@@ -52,6 +52,174 @@ HANDLE g_hThread;
 HBRUSH g_hbrRed;
 
 std::set<INT> g_kanji1_history;
+
+static const LPCWSTR g_aszMojiReadings[] =
+{
+    L"一:イチ、ひと-つ、イツ、(はじめ)",
+    L"右:みぎ、ウ、ユウ",
+    L"雨:あめ、あま、ウ",
+    L"円:エン、まる-い",
+    L"王:オウ、(きみ)",
+    L"音:おと、オン、ね",
+    L"下:した、カ、ゲ、しも、さ-げる、さ-がる、くだ-る、くだ-す、お-ろす、お-りる",
+    L"火:ひ、カ",
+    L"花:はな、カ",
+    L"貝:かい",
+    L"学:まな-ぶ、ガク",
+    L"気:キ、ケ",
+    L"九:キュウ、ク、ここの-つ",
+    L"休:やす-む、キュウ、やす-まる、やす-み",
+    L"玉:たま、ギョク",
+    L"金:かね、キン、(かな)",
+    L"空:そら、クウ、から",
+    L"月:つき、ガツ、ゲツ",
+    L"犬:いぬ、ケン",
+    L"見:み-る、み-せる、ケン",
+    L"五:ゴ、いつ-つ",
+    L"口:くち、コウ",
+    L"校:コウ",
+    L"左:ひだり、サ",
+    L"三:サン、みっ-つ",
+    L"山:やま、サン、ザン",
+    L"子:こ、シ、ス",
+    L"四:よん、よっ-つ、シ",
+    L"糸:いと、シ",
+    L"字:ジ、(あざ)",
+    L"耳:みみ、ジ",
+    L"七:なな、なな-つ、なの、しち",
+    L"車:くるま、シャ",
+    L"手:て、シュ",
+    L"十:ジュウ、とお、ジッ",
+    L"出:で-る、だ-す、シュツ、(スイ)",
+    L"女:おんな、ジョ、(ニョ)",
+    L"小:ちい-さい、ショウ、こ、お",
+    L"上:うえ、ジョウ、あ-がる、あ-げる、うわ、(かみ)",
+    L"森:もり、シン",
+    L"人:ひと、ジン、ニン",
+    L"水:みず、スイ",
+    L"正:ただし-い、セイ、ショウ、ただ-す、(まさ)",
+    L"生:い-きる、セイ、う-まれる、い-かす、い-ける、なま、ショウ、(ソウ)",
+    L"青:あお、あお-い、セイ、(ショウ)",
+    L"夕:ゆう、(セキ)",
+    L"石:いし、セキ、シャク、(コク)、(ゴク)",
+    L"赤:あか、あか-い、セキ、(シャク)",
+    L"千:セン、(ち)",
+    L"川:かわ、セン",
+    L"先:さき、セン",
+    L"早:はや-い、はや、ソウ、(サッ)",
+    L"草:くさ、ソウ",
+    L"足:あし、ソク、た-す",
+    L"村:むら、ソン",
+    L"大:おお-きい、ダイ、タイ",
+    L"男:おとこ、ダン、ナン",
+    L"竹:たけ、チク",
+    L"中:なか、チュウ、ジュウ",
+    L"虫:むし、チュウ",
+    L"町:まち、チョウ",
+    L"天:テン、あま",
+    L"田:た、デン",
+    L"土:つち、ド、ト",
+    L"二:ふた-つ、ニ、ふた、(ジ)",
+    L"日:ニチ、ひ、び、か、ジツ",
+    L"入:はい-る、い-れる、ニュウ",
+    L"年:ネン、とし",
+    L"白:しろ、しろ-い、しら、ハク、(ビャク)",
+    L"八:ハチ、や-っつ、よう",
+    L"百:ヒャク、ビャク、(もも)",
+    L"文:ブン、モン、も、ふみ",
+    L"木:き、モク、ボク、こ",
+    L"本:ホン、もと",
+    L"名:な、メイ、ミョウ",
+    L"目:め、モク",
+    L"立:た-つ、た-てる、リツ、(リュウ)",
+    L"力:ちから、リキ、リョク",
+    L"林:はやし、リン",
+    L"六:ロク、む、むっ-つ、むい",
+};
+
+static const LPCWSTR g_aszMojiEnglish[] =
+{
+    L"一:One, 1",
+    L"右:Right",
+    L"雨:Rain",
+    L"円:Circle, Yen",
+    L"王:King",
+    L"音:Sound, Audio",
+    L"下:Below, Down, Lower",
+    L"火:Fire, Tue",
+    L"花:Flower",
+    L"貝:Shell",
+    L"学:Learning, Academy",
+    L"気:Qi, Mind, Mental",
+    L"九:Nine, 9",
+    L"休:Rest",
+    L"玉:Ball, Bullet",
+    L"金:Money, Gold, Metal, Fri",
+    L"空:Sky, Empty, (Opened)",
+    L"月:Moon, Month, Mon",
+    L"犬:Dog",
+    L"見:Look, See",
+    L"五:Five, 5",
+    L"口:Mouth",
+    L"校:(School)",
+    L"左:Left",
+    L"三:Three, 3",
+    L"山:Montain, Pile",
+    L"子:Child",
+    L"四:Four, 4",
+    L"糸:String, Thread",
+    L"字:Character",
+    L"耳:Ear",
+    L"七:Seven, 7",
+    L"車:Car, Wheel",
+    L"手:Hand, Arm",
+    L"十:Ten, 10",
+    L"出:Go Out",
+    L"女:Woman, Female",
+    L"小:Small",
+    L"上:Above, Up, Raise",
+    L"森:Forest",
+    L"人:Person, People",
+    L"水:Water, Wed",
+    L"正:Correct",
+    L"生:Living, Life",
+    L"青:Blue, (Green)",
+    L"夕:Evening",
+    L"石:Stone",
+    L"赤:Red",
+    L"千:Thousand, 1000",
+    L"川:River",
+    L"先:Destination, Forward, (Previous), (Future)",
+    L"早:Early",
+    L"草:Grass",
+    L"足:Leg, Foot",
+    L"村:Village",
+    L"大:Big, Large",
+    L"男:Man, Male",
+    L"竹:Bamboo",
+    L"中:In, Inside, Ing, (China)",
+    L"虫:Insect, Bug, Worm",
+    L"町:Town",
+    L"天:Heaven, Sky",
+    L"田:Rice Field",
+    L"土:Soil, Earth, Sat",
+    L"二:Two, 2",
+    L"日:Day, Sun, (Japan)",
+    L"入:Enter",
+    L"年:Year, Age",
+    L"白:White, (Innocent)",
+    L"八:Eight, 8",
+    L"百:Hundred, 100",
+    L"文:Sentence, Statement",
+    L"木:Wood, Thu",
+    L"本:Book, Origin",
+    L"名:Name",
+    L"目:Eye",
+    L"立:Stand",
+    L"力:Power, Force",
+    L"林:Woods",
+    L"六:Six, 6",
+};
 
 LPTSTR LoadStringDx(INT ids)
 {
@@ -483,11 +651,11 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         rc2.bottom - rc2.top,
         TRUE);
 
-    LPTSTR psz = LoadStringDx(100 + g_nMoji);
-    LPTSTR pch = _tcschr(psz, TEXT(':'));
+    LPCTSTR psz = g_aszMojiReadings[g_nMoji];
+    LPCTSTR pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption1, (pch + 1));
 
-    psz = LoadStringDx(200 + g_nMoji);
+    psz = g_aszMojiEnglish[g_nMoji];
     pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption2, (pch + 1));
 
@@ -801,7 +969,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
     case 1000:
         {
-            LPTSTR psz = LoadStringDx(100 + g_nMoji);
+            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
+            LPTSTR psz = szText;
             LPTSTR pch = _tcschr(psz, TEXT(':'));
             *pch = 0;
             str = psz;
@@ -812,7 +981,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
     case 1001:
         {
-            LPTSTR psz = LoadStringDx(100 + g_nMoji);
+            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
+            LPTSTR psz = szText;
             LPTSTR pch = _tcschr(psz, TEXT(':'));
             *pch = 0;
 #ifdef UNICODE
