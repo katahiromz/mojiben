@@ -1,4 +1,4 @@
-// Moji No Benkyo (3)
+ï»¿// Moji No Benkyo (3)
 // Copyright (C) 2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 #include <windows.h>
@@ -218,16 +218,16 @@ void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
 {
     static const LPCWSTR g_aszReadings[] =
     {
-        L"‚¢‚¿A‚Ð‚Æ-‚Â",
-        L"‚ÉA‚Ó‚½-‚Â",
-        L"‚³‚ñA‚Ý-‚Á‚Â",
-        L"‚æ‚ñA‚æ-‚Á‚ÂA‚µ",
-        L"‚²A‚¢‚Â-‚Â",
-        L"‚ë‚­A‚Þ-‚Á‚Â",
-        L"‚È‚ÈA‚È‚È-‚ÂA‚µ‚¿",
-        L"‚Í‚¿A‚â-‚Á‚Â",
-        L"‚«‚ã‚¤A‚­A‚±‚±‚Ì-‚Â",
-        L"‚¶‚ã‚¤A‚Æ‚¤",
+        L"ã„ã¡ã€ã²ã¨-ã¤",
+        L"ã«ã€ãµãŸ-ã¤",
+        L"ã•ã‚“ã€ã¿-ã£ã¤",
+        L"ã‚ˆã‚“ã€ã‚ˆ-ã£ã¤ã€ã—",
+        L"ã”ã€ã„ã¤-ã¤",
+        L"ã‚ãã€ã‚€-ã£ã¤",
+        L"ãªãªã€ãªãª-ã¤ã€ã—ã¡",
+        L"ã¯ã¡ã€ã‚„-ã£ã¤",
+        L"ãã‚…ã†ã€ãã€ã“ã“ã®-ã¤",
+        L"ã˜ã‚…ã†ã€ã¨ã†",
     };
 
     RECT rc = *prc;
