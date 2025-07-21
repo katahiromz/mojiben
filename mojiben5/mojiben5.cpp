@@ -31,6 +31,8 @@
     typedef std::string tstring;
 #endif
 
+#define SLIDE_TIMER 999
+
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (5)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (5) Kakijun");
 static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (5) Caption");
@@ -45,11 +47,16 @@ HFONT g_hFontSmall;
 
 HBITMAP g_ahbmKanji2[160];
 HBITMAP g_hbm;
+HBITMAP g_hbmLeft;
+HBITMAP g_hbmRight;
 
 HBITMAP g_hbm2;
 INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
+INT g_iPage = 0;
+float g_eGoalPage = 0;
+float g_eDisplayPage = 0;
 
 std::set<INT> g_kanji2_history;
 
@@ -399,6 +406,9 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbm2 = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
 
+    g_hbmLeft = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
+    g_hbmRight = LoadBitmap(g_hInstance, MAKEINTRESOURCE(101));
+
     hSysMenu = GetSystemMenu(hwnd, FALSE);
     ZeroMemory(&mii, sizeof(MENUITEMINFO));
     mii.cbSize = sizeof(MENUITEMINFO);
@@ -446,6 +456,41 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+#define COLUMNS 10
+#define ROWS 7
+
+VOID GetMojiRect(INT j, LPRECT prc)
+{
+    INT iPage = j / (ROWS * COLUMNS);
+    j %= (ROWS * COLUMNS);
+    INT ix = j % COLUMNS;
+    INT iy = j / COLUMNS;
+    RECT rc;
+    rc.left = ix * (50 + 10) + 5 + 25;
+    rc.top = iy * (50 + 10) + 5 + 10;
+    rc.right = rc.left + (50 + 10) - 10;
+    rc.bottom = rc.top + (50 + 10) - 10;
+    OffsetRect(&rc, iPage * (50 + 10) * COLUMNS, 0);
+    OffsetRect(&rc, (LONG)(-g_eDisplayPage * (50 + 10) * COLUMNS), 0);
+    *prc = rc;
+}
+
+BOOL GetLeftArrowRect(HWND hwnd, LPRECT prc)
+{
+    RECT rcClient;
+    GetClientRect(hwnd, &rcClient);
+    SetRect(prc, 0, rcClient.bottom - 48, 32, rcClient.bottom - 48 + 32);
+    return (g_iPage > 0);
+}
+
+BOOL GetRightArrowRect(HWND hwnd, LPRECT prc)
+{
+    RECT rcClient;
+    GetClientRect(hwnd, &rcClient);
+    SetRect(prc, rcClient.right - 32, rcClient.bottom - 48, rcClient.right, rcClient.bottom - 48 + 32);
+    return g_iPage + 1 < (_countof(g_ahbmKanji2) + COLUMNS * ROWS - 1) / (COLUMNS * ROWS);
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HDC hdcMem, hdcMem2;
@@ -469,17 +514,10 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < 80; ++j)
+        for (j = 0; j < _countof(g_ahbmKanji2); ++j)
         {
-            int ix = j % 10;
-            int iy = j / 10;
+            GetMojiRect(j, &rc);
             hbmOld = SelectObject(hdcMem, g_ahbmKanji2[g_map[j]]);
-            rc.left = ix * (50 + 10) + 5 + 25;
-            rc.top = iy * (50 + 10) + 5 + 10;
-            if (iy >= 4)
-                rc.top += 15;
-            rc.right = rc.left + (50 + 10) - 10;
-            rc.bottom = rc.top + (50 + 10) - 10;
             if (g_kanji2_history.find(j) != g_kanji2_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
@@ -488,6 +526,23 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             BitBlt(hdcMem2, rc.left, rc.top, 40, 40, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
+
+        // Left arrow
+        if (GetLeftArrowRect(hwnd, &rc))
+        {
+            hbmOld = SelectObject(hdcMem, g_hbmLeft);
+            BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
+            SelectObject(hdcMem, hbmOld);
+        }
+
+        // Right arrow
+        if (GetRightArrowRect(hwnd, &rc))
+        {
+            hbmOld = SelectObject(hdcMem, g_hbmRight);
+            BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
+            SelectObject(hdcMem, hbmOld);
+        }
+
         SelectObject(hdcMem2, hbmOld2);
     }
 
@@ -853,16 +908,32 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     pt.x = x;
     pt.y = y;
-    for (j = 0; j < 80; ++j)
+
+    if (GetLeftArrowRect(hwnd, &rc))
     {
-        int ix = j % 10;
-        int iy = j / 10;
-        rc.left = ix * (50 + 10) + 5 + 25;
-        rc.top = iy * (50 + 10) + 5 + 10;
-        if (iy >= 4)
-            rc.top += 15;
-        rc.right = rc.left + (50 + 10) - 10;
-        rc.bottom = rc.top + (50 + 10) - 10;
+        if (PtInRect(&rc, pt))
+        {
+            g_eDisplayPage = (float)g_iPage;
+            g_eGoalPage = (float)(g_iPage - 1);
+            SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
+            return;
+        }
+    }
+
+    if (GetRightArrowRect(hwnd, &rc))
+    {
+        if (PtInRect(&rc, pt))
+        {
+            g_eDisplayPage = (float)g_iPage;
+            g_eGoalPage = (float)(g_iPage + 1);
+            SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
+            return;
+        }
+    }
+
+    for (j = 0; j < _countof(g_ahbmKanji2); ++j)
+    {
+        GetMojiRect(j, &rc);
         if (PtInRect(&rc, pt))
         {
             MojiOnClick(hwnd, j, fRight);
@@ -1076,12 +1147,19 @@ AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void OnDestroy(HWND hwnd)
 {
-        if (g_hThread != NULL)
-        {
-            TerminateThread(g_hThread, 0);
-            CloseHandle(g_hThread);
-        }
-        PostQuitMessage(0);
+    if (g_hThread != NULL)
+    {
+        TerminateThread(g_hThread, 0);
+        CloseHandle(g_hThread);
+    }
+
+    DeleteObject(g_hbmLeft);
+    g_hbmLeft = NULL;
+
+    DeleteObject(g_hbmRight);
+    g_hbmRight = NULL;
+
+    PostQuitMessage(0);
 }
 
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
@@ -1156,6 +1234,38 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
 }
 
+void OnTimer(HWND hwnd, UINT id)
+{
+    if (id == SLIDE_TIMER)
+    {
+        if (g_eDisplayPage < g_eGoalPage)
+        {
+            g_eDisplayPage += 0.35f;
+
+            if (g_eDisplayPage > g_eGoalPage)
+                g_eDisplayPage = g_eGoalPage;
+        }
+        else if (g_eDisplayPage > g_eGoalPage)
+        {
+            g_eDisplayPage -= 0.35f;
+
+            if (g_eDisplayPage < g_eGoalPage)
+                g_eDisplayPage = g_eGoalPage;
+        }
+
+        DeleteObject(g_hbm);
+        g_hbm = NULL;
+
+        InvalidateRect(hwnd, NULL, TRUE);
+
+        if (g_eDisplayPage == g_eGoalPage)
+        {
+            g_iPage = (INT)g_eGoalPage;
+            KillTimer(hwnd, id);
+        }
+    }
+}
+
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1170,6 +1280,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
+        HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
 
     default:
@@ -1230,7 +1341,7 @@ INT WINAPI WinMain(
 
     style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
     g_hMainWnd = CreateWindow(g_szClassName, LoadStringDx(1), style,
-        CW_USEDEFAULT, CW_USEDEFAULT, 660, 550,
+        CW_USEDEFAULT, CW_USEDEFAULT, 660, 525,
         NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {
