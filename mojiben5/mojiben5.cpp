@@ -267,7 +267,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"原:Original, Primitive, Field",
     L"戸:Door",
     L"古:Old, Used, Ancient",
-    L"午:Afternoon",
+    L"午:Noon",
     L"後:Rear, Later, Remainder",
     L"語:Word, Language",
     L"工:Engineering",
