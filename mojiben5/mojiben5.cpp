@@ -272,7 +272,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"語:Word, Language",
     L"工:Engineering",
     L"公:Public, Open, Lord",
-    L"広:Wide",
+    L"広:Wide, Spread",
     L"交:Exchange",
     L"光:Light, Shine",
     L"考:Thoughts, Think",
