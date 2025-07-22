@@ -255,7 +255,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"弓:Bow",
     L"牛:Cattle, Cow",
     L"魚:Fish",
-    L"京:Capital",
+    L"京:Capital, 10,000,000,000,000,000",
     L"強:Strong, Intense",
     L"教:Teaching",
     L"近:Near",
