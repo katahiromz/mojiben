@@ -24,7 +24,11 @@ int main(void)
     char *pch;
     INT i, j = 0;
 
+#if 1
+    j = 7;
+#else
     for (pch = sz; *pch; pch += 2)
+#endif
     {
         for (i = 0; i < 16; i++)
         {
