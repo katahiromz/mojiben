@@ -25,12 +25,12 @@ int main(void)
     INT i, j = 0;
 
 #if 1
-    j = 8;
+    j = 9;
 #else
     for (pch = sz; *pch; pch += 2)
 #endif
     {
-        for (i = 0; i < 16; i++)
+        for (i = 0; i < 32; i++)
         {
             wsprintf(sz3, "kanji%03d-%02d.bmp", j, i);
             hbm = (HBITMAP)LoadImage(NULL, sz3, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
