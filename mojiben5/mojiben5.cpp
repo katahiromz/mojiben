@@ -263,7 +263,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"形:Shape, Form, Type",
     L"計:Total, Calculate",
     L"元:Former, Origin, Yuan",
-    L"言:Saying, Words",
+    L"言:Say, Words",
     L"原:Original, Primitive, Field",
     L"戸:Door",
     L"古:Old, Used, Ancient",
