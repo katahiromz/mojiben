@@ -281,7 +281,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"黄:Yellow",
     L"合:Match, Fit",
     L"谷:Valley",
-    L"国:Country, Land",
+    L"国:Country",
     L"黒:Black, Dark",
     L"今:Now, This, Immediately",
     L"才:Talent",
