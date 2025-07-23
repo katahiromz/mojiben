@@ -925,6 +925,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         if (PtInRect(&rc, pt))
         {
+            PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
             g_eDisplayPage = (float)g_iPage;
             g_eGoalPage = (float)(g_iPage - 1);
             SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
@@ -936,6 +937,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         if (PtInRect(&rc, pt))
         {
+            PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
             g_eDisplayPage = (float)g_iPage;
             g_eGoalPage = (float)(g_iPage + 1);
             SetTimer(hwnd, SLIDE_TIMER, 50, NULL);

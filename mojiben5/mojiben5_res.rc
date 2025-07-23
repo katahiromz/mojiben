@@ -360,6 +360,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 100 WAVE "res/Wave_100.wav"
 
+101 WAVE "res/Wave_101.wav"
+
 1000 WAVE "res/Wave_1000.wav"
 
 //////////////////////////////////////////////////////////////////////////////
