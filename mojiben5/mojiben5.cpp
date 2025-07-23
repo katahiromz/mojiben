@@ -285,7 +285,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"黒:Black, Dark",
     L"今:Now, This, Immediately",
     L"才:Talent, Years Old",
-    L"細:Thin",
+    L"細:Thin, Detail",
     L"作:Make, Work, Product",
     L"算:Calculate",
     L"止:Stop",
