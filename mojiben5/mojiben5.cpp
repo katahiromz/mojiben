@@ -311,7 +311,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"食:Food, Eat, Eclipse",
     L"心:Heart, Mind, Core",
     L"新:New",
-    L"親:Parent",
+    L"親:Parent, Familiar",
     L"図:Figure, Drawing",
     L"数:Number",
     L"西:West",
