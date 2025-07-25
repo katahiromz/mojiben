@@ -408,10 +408,25 @@ unsigned __stdcall ThreadProc( void * )
     PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
     for (UINT i = 0; i < v.size(); i++)
     {
+        if (!IsWindowVisible(g_hKakijunWnd))
+        {
+            DeleteObject(hRgn5);
+            DeleteObject(hbm);
+            DeleteObject(hbm2);
+            return 0;
+        }
+
         switch (v[i].type)
         {
         case WAIT:
             Sleep(500);
+            if (!IsWindowVisible(g_hKakijunWnd))
+            {
+                DeleteObject(hRgn5);
+                DeleteObject(hbm);
+                DeleteObject(hbm2);
+                return 0;
+            }
             PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
             break;
 
@@ -436,6 +451,14 @@ unsigned __stdcall ThreadProc( void * )
             sint = sin(v[i].angle0 * M_PI / 180);
             for (k = -200; k < 200; k += 20)
             {
+                if (!IsWindowVisible(g_hKakijunWnd))
+                {
+                    DeleteObject(hRgn5);
+                    DeleteObject(hRgn2);
+                    DeleteObject(hbm);
+                    DeleteObject(hbm2);
+                    return 0;
+                }
                 apt[0].x = LONG(150 + k * cost + 150 * sint);
                 apt[0].y = LONG(150 + k * sint - 150 * cost);
                 apt[1].x = LONG(150 + k * cost - 150 * sint);
@@ -459,6 +482,14 @@ unsigned __stdcall ThreadProc( void * )
             }
             for ( ; k < 200; k += 20)
             {
+                if (!IsWindowVisible(g_hKakijunWnd))
+                {
+                    DeleteObject(hRgn5);
+                    DeleteObject(hRgn2);
+                    DeleteObject(hbm);
+                    DeleteObject(hbm2);
+                    return 0;
+                }
                 hbmTemp = hbm;
                 hbm = hbm2;
                 hbm2 = hbmTemp;
@@ -514,6 +545,14 @@ unsigned __stdcall ThreadProc( void * )
             {
                 for (k = v[i].angle0; k < v[i].angle1; k += 20)
                 {
+                    if (!IsWindowVisible(g_hKakijunWnd))
+                    {
+                        DeleteObject(hRgn5);
+                        DeleteObject(hRgn2);
+                        DeleteObject(hbm);
+                        DeleteObject(hbm2);
+                        return 0;
+                    }
                     double theta = k * M_PI / 180.0;
                     double theta2 = (k + 20) * M_PI / 180.0;
                     cost = cos(theta);
@@ -552,6 +591,14 @@ unsigned __stdcall ThreadProc( void * )
             {
                 for (k = v[i].angle0; k > v[i].angle1; k -= 20)
                 {
+                    if (!IsWindowVisible(g_hKakijunWnd))
+                    {
+                        DeleteObject(hRgn5);
+                        DeleteObject(hRgn2);
+                        DeleteObject(hbm);
+                        DeleteObject(hbm2);
+                        return 0;
+                    }
                     double theta = (k - 20) * M_PI / 180.0;
                     double theta2 = k * M_PI / 180.0;
                     cost = cos(theta);
@@ -998,6 +1045,17 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
 }
 
+void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
+{
+    if (!fDown)
+        return;
+
+    if (vk == VK_ESCAPE)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+    }
+}
+
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1013,7 +1071,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
-
+        HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
