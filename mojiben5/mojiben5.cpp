@@ -341,7 +341,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"通:Go, Street, Expert, Understand",
     L"弟:Younger Brother",
     L"店:Shop, Store",
-    L"点:Point, Dot, Spot",
+    L"点:Point, Dot, Spot, Lighting",
     L"電:Electric",
     L"刀:Katana, Knife, Blade, Japanese Sword",
     L"冬:Winter",
