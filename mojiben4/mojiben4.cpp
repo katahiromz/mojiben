@@ -150,7 +150,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"花:Flower",
     L"貝:Shell",
     L"学:Learning, Academy",
-    L"気:Qi, Mind, Mental",
+    L"気:Mind, Mental, Mental Power",
     L"九:Nine, 9",
     L"休:Rest",
     L"玉:Ball, Bullet",
