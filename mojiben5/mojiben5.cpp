@@ -332,7 +332,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"地:Earth, Ground",
     L"池:Pond",
     L"知:Know, Knowledge",
-    L"茶:Tea",
+    L"茶:Tea, Brown",
     L"昼:Noon, Daytime",
     L"長:Long, Chief, Boss",
     L"鳥:Bird, Poultry, Fowl",
