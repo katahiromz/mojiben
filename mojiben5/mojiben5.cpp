@@ -364,7 +364,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"父:Father",
     L"風:Wind, Breeze, Blast, Style",
     L"分:Minutes, Divide, Branch, Rate",
-    L"聞:Listen",
+    L"聞:Listen, Hear",
     L"米:Rice, (Meter)",
     L"歩:Walk, Step, Stride, Pawn",
     L"母:Mother",
