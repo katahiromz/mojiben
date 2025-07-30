@@ -245,7 +245,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"角:Corner, Angle, Horn",
     L"楽:Easy, Comfort, Funny",
     L"活:Living, Life, Active",
-    L"間:Time, Interval, Space, Pause, Room",
+    L"間:Interval, Space, Pause, Room",
     L"丸:Circle, Pill, Ship",
     L"岩:Rock",
     L"顔:Face",
