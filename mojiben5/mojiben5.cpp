@@ -383,7 +383,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"用:Use, Business, For ...",
     L"曜:Day Of The Week",
     L"来:Next, Come, Since",
-    L"里:Village",
+    L"里:Village, Home Country, (Mile)",
     L"理:Reason",
     L"話:Story, Talk, Speech, Chat",
 };
