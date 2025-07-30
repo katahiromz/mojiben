@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shlwapi.h>
+
 #ifdef NDEBUG
     #define ASSERT(exp)
     #define DPRINTF(fmt, ...)

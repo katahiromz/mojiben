@@ -21,6 +21,7 @@
 
 #include "kakijun.h"
 #include "../CRgn.h"
+#include "../CDebug.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -579,11 +580,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     InvalidateRect(hwnd, NULL, FALSE);
 
     PlaySound(MAKEINTRESOURCE(3000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-    if (g_hThread != NULL)
-    {
-        TerminateThread(g_hThread, 0);
+    if (g_hThread)
         CloseHandle(g_hThread);
-    }
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
@@ -722,12 +720,23 @@ AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void OnDestroy(HWND hwnd)
 {
-        if (g_hThread != NULL)
-        {
-            TerminateThread(g_hThread, 0);
-            CloseHandle(g_hThread);
-        }
-        PostQuitMessage(0);
+    UINT i;
+
+    if (g_hThread != NULL)
+    {
+        TerminateThread(g_hThread, 0);
+        CloseHandle(g_hThread);
+    }
+
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hFont);
+    DeleteObject(g_hbm);
+    DeleteObject(g_hbmKazoekata);
+
+    for (i = 0; i < _countof(g_ahbmDigits); ++i)
+        DeleteObject(g_ahbmDigits[i]);
+
+    PostQuitMessage(0);
 }
 
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
