@@ -234,7 +234,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"何:What",
     L"科:Department, Section, (Science)",
     L"夏:Summer",
-    L"家:House, Home, Family, Residence",
+    L"家:House, Home, Residence",
     L"歌:Song, Sing",
     L"画:Picture, Stroke",
     L"回:Rotate, Times",
