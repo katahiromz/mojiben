@@ -41,8 +41,8 @@ HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
 HBITMAP g_ahbmDigits[10];
-HBITMAP g_hbm;
-HBITMAP g_hbm2;
+HBITMAP g_hbmClient;
+HBITMAP g_hbmKakijun;
 HBITMAP g_hbmKazoekata;
 
 INT g_nMoji;
@@ -67,7 +67,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     MENUITEMINFO mii;
 
     g_hThread = NULL;
-    g_hbm2 = NULL;
+    g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
     g_hbmKazoekata = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000));
 
@@ -107,7 +107,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
             return FALSE;
     }
 
-    g_hbm = NULL;
+    g_hbmClient = NULL;
 
     try
     {
@@ -144,10 +144,10 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     GetClientRect(hwnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-    if (g_hbm == NULL)
+    if (g_hbmClient == NULL)
     {
-        g_hbm = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-        hbmOld2 = SelectObject(hdcMem2, g_hbm);
+        g_hbmClient = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
         hbr = CreateSolidBrush(RGB(255, 255, 192));
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
@@ -184,7 +184,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         SelectObject(hdcMem2, hbmOld2);
     }
 
-    hbmOld2 = SelectObject(hdcMem2, g_hbm);
+    hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
     BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem2, 0, 0, SRCCOPY);
     SelectObject(hdcMem2, hbmOld2);
 
@@ -288,7 +288,7 @@ unsigned __stdcall ThreadProc( void * )
     DeleteDC(hdcMem);
     ReleaseDC(g_hKakijunWnd, hdc);
 
-    g_hbm2 = hbm;
+    g_hbmKakijun = hbm;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     Sleep(300);
@@ -312,7 +312,7 @@ unsigned __stdcall ThreadProc( void * )
                 hbmTemp = hbm;
                 hbm = hbm2;
                 hbm2 = hbmTemp;
-                g_hbm2 = hbm;
+                g_hbmKakijun = hbm;
                 hbmOld = SelectObject(hdcMem, hbm);
                 rc.left = 0;
                 rc.top = 0;
@@ -365,7 +365,7 @@ unsigned __stdcall ThreadProc( void * )
                     hbmTemp = hbm;
                     hbm = hbm2;
                     hbm2 = hbmTemp;
-                    g_hbm2 = hbm;
+                    g_hbmKakijun = hbm;
                     hbmOld = SelectObject(hdcMem, hbm);
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
                     apt[0].y = LONG(150 + k * sint - 150 * cost);
@@ -402,7 +402,7 @@ unsigned __stdcall ThreadProc( void * )
                 hbmTemp = hbm;
                 hbm = hbm2;
                 hbm2 = hbmTemp;
-                g_hbm2 = hbm;
+                g_hbmKakijun = hbm;
                 hbmOld = SelectObject(hdcMem, hbm);
                 rc.left = 0;
                 rc.top = 0;
@@ -436,7 +436,7 @@ unsigned __stdcall ThreadProc( void * )
                         hbmTemp = hbm;
                         hbm = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbm2 = hbm;
+                        g_hbmKakijun = hbm;
                         hbmOld = SelectObject(hdcMem, hbm);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
                         apt[0].y = LONG(v[i].cy + 200 * sint);
@@ -479,7 +479,7 @@ unsigned __stdcall ThreadProc( void * )
                         hbmTemp = hbm;
                         hbm = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbm2 = hbm;
+                        g_hbmKakijun = hbm;
                         hbmOld = SelectObject(hdcMem, hbm);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
                         apt[0].y = LONG(v[i].cy + 200 * sint);
@@ -517,7 +517,7 @@ unsigned __stdcall ThreadProc( void * )
     hbmTemp = hbm;
     hbm = hbm2;
     hbm2 = hbmTemp;
-    g_hbm2 = hbm;
+    g_hbmKakijun = hbm;
     hbmOld = SelectObject(hdcMem, hbm);
     rc.left = 0;
     rc.top = 0;
@@ -538,7 +538,7 @@ unsigned __stdcall ThreadProc( void * )
     Sleep(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
-    g_hbm2 = NULL;
+    g_hbmKakijun = NULL;
     DeleteObject(hbm);
     DeleteObject(hbm2);
     return 0;
@@ -573,10 +573,10 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     g_digits_history.insert(nMoji);
 
-    if (g_hbm != NULL)
-        DeleteObject(g_hbm);
+    if (g_hbmClient != NULL)
+        DeleteObject(g_hbmClient);
 
-    g_hbm = NULL;
+    g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
 
     PlaySound(MAKEINTRESOURCE(3000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -642,10 +642,10 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     GetClientRect(hwnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-    if (g_hbm2 != NULL)
+    if (g_hbmKakijun != NULL)
     {
         hdcMem = CreateCompatibleDC(hdc);
-        hbmOld = SelectObject(hdcMem, g_hbm2);
+        hbmOld = SelectObject(hdcMem, g_hbmKakijun);
         BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
     }
@@ -730,7 +730,7 @@ void OnDestroy(HWND hwnd)
 
     DeleteObject(g_hbrRed);
     DeleteObject(g_hFont);
-    DeleteObject(g_hbm);
+    DeleteObject(g_hbmClient);
     DeleteObject(g_hbmKazoekata);
 
     for (i = 0; i < _countof(g_ahbmDigits); ++i)
