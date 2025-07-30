@@ -5020,6 +5020,30 @@ static const BYTE Z2[144] = {
 0x4C,0x00,0x00,0x00,0xCC,0x00,0x00,0x00,0xDE,0x00,0x00,0x00,0xCD,0x00,0x00,0x00,
 };
 
+#define ADD_LINEAR(angle, data) do { \
+    ga.type     = LINEAR; \
+    ga.angle0   = angle; \
+    ga.cb       = sizeof(data); \
+    ga.pb       = data; \
+    vga.push_back(ga); \
+} while (0)
+
+#define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
+    ga.type     = POLAR; \
+    ga.angle0   = a0; \
+    ga.angle1   = a1; \
+    ga.cx       = center_x; \
+    ga.cy       = center_y; \
+    ga.cb       = sizeof(data); \
+    ga.pb       = data; \
+    vga.push_back(ga); \
+} while (0)
+
+#define ADD_WAIT() do { \
+    ga.type     = WAIT; \
+    vga.push_back(ga); \
+} while (0)
+
 VOID InitPrintUpperCase(VOID)
 {
     GA ga;
