@@ -2602,271 +2602,108 @@ static const BYTE digit_09_02[1616] = {
 0xBB,0x00,0x00,0x00,0x0C,0x01,0x00,0x00,0xC6,0x00,0x00,0x00,0x0D,0x01,0x00,0x00,
 };
 
+#define ADD_LINEAR(angle, data) do { \
+    ga.type     = LINEAR; \
+    ga.angle0   = angle; \
+    ga.cb       = sizeof(data); \
+    ga.pb       = data; \
+    vga.push_back(ga); \
+} while (0)
+
+#define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
+    ga.type     = POLAR; \
+    ga.angle0   = a0; \
+    ga.angle1   = a1; \
+    ga.cx       = center_x; \
+    ga.cy       = center_y; \
+    ga.cb       = sizeof(data); \
+    ga.pb       = data; \
+    vga.push_back(ga); \
+} while (0)
+
+#define ADD_WAIT() do { \
+    ga.type     = WAIT; \
+    vga.push_back(ga); \
+} while (0)
+
 VOID InitDigits(VOID)
 {
     GA ga;
     std::vector<GA> vga;
     size_t index = 0;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_00_00);
-        ga.pb       = digit_00_00;
-        vga.push_back(ga);
+
+    ADD_LINEAR(90, digit_00_00);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = POLAR;
-        ga.angle0   = -180;
-        ga.angle1   = 0;
-        ga.cx       = 140;
-        ga.cy       = 109;
-        ga.cb       = sizeof(digit_01_00);
-        ga.pb       = digit_01_00;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 135;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_01_01);
-        ga.pb       = digit_01_01;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 0;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_01_02);
-        ga.pb       = digit_01_02;
-        vga.push_back(ga);
+
+    ADD_POLAR(-180, 0, 140, 109, digit_01_00);
+    ADD_LINEAR(135, digit_01_01);
+    ADD_LINEAR(0, digit_01_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = POLAR;
-        ga.angle0   = 180;
-        ga.angle1   = 135 + 360;
-        ga.cx       = 145;
-        ga.cy       = 90;
-        ga.cb       = sizeof(digit_02_00);
-        ga.pb       = digit_02_00;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 180 + 45;
-        ga.angle1   = 180 + 360;
-        ga.cx       = 145;
-        ga.cy       = 197;
-        ga.cb       = sizeof(digit_02_01);
-        ga.pb       = digit_02_01;
-        vga.push_back(ga);
+
+    ADD_POLAR(180, 135 + 360, 145, 90, digit_02_00);
+    ADD_POLAR(180 + 45, 180 + 360, 145, 197, digit_02_01);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_03_00);
-        ga.pb       = digit_03_00;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 0;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_03_01);
-        ga.pb       = digit_03_01;
-        vga.push_back(ga);
-        ga.type     = WAIT;
-        ga.cb       = 0;
-        ga.pb       = NULL;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_03_02);
-        ga.pb       = digit_03_02;
-        vga.push_back(ga);
+
+    ADD_LINEAR(90, digit_03_00);
+    ADD_LINEAR(0, digit_03_01);
+    ADD_WAIT();
+    ADD_LINEAR(90, digit_03_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_04_00);
-        ga.pb       = digit_04_00;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 180 + 15;
-        ga.angle1   = 360 + 180;
-        ga.cx       = 145;
-        ga.cy       = 190;
-        ga.cb       = sizeof(digit_04_01);
-        ga.pb       = digit_04_01;
-        vga.push_back(ga);
-        ga.type     = WAIT;
-        ga.cb       = 0;
-        ga.pb       = NULL;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 0;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_04_02);
-        ga.pb       = digit_04_02;
-        vga.push_back(ga);
+
+    ADD_LINEAR(90, digit_04_00);
+    ADD_POLAR(180 + 15, 360 + 180, 145, 190, digit_04_01);
+    ADD_WAIT();
+    ADD_LINEAR(0, digit_04_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 135;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_05_00);
-        ga.pb       = digit_05_00;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 180;
-        ga.angle1   = 0;
-        ga.cx       = 145;
-        ga.cy       = 170;
-        ga.cb       = sizeof(digit_05_01);
-        ga.pb       = digit_05_01;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 360;
-        ga.angle1   = 180;
-        ga.cx       = 145;
-        ga.cy       = 200;
-        ga.cb       = sizeof(digit_05_02);
-        ga.pb       = digit_05_02;
-        vga.push_back(ga);
+
+    ADD_LINEAR(135, digit_05_00);
+    ADD_POLAR(180, 0, 145, 170, digit_05_01);
+    ADD_POLAR(360, 180, 145, 200, digit_05_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_06_00);
-        ga.pb       = digit_06_00;
-        vga.push_back(ga);
-        ga.type     = WAIT;
-        ga.cb       = 0;
-        ga.pb       = NULL;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 0;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_06_01);
-        ga.pb       = digit_06_01;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_06_02);
-        ga.pb       = digit_06_02;
-        vga.push_back(ga);
+
+    ADD_LINEAR(90, digit_06_00);
+    ADD_WAIT();
+    ADD_LINEAR(0, digit_06_01);
+    ADD_LINEAR(90, digit_06_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = POLAR;
-        ga.angle0   = 0;
-        ga.angle1   = -180;
-        ga.cx       = 150;
-        ga.cy       = 115;
-        ga.cb       = sizeof(digit_07_00);
-        ga.pb       = digit_07_00;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 45;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_07_01);
-        ga.pb       = digit_07_01;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = -45;
-        ga.angle1   = 180 + 45;
-        ga.cx       = 150;
-        ga.cy       = 200;
-        ga.cb       = sizeof(digit_07_02);
-        ga.pb       = digit_07_02;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 0 - 45;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_07_03);
-        ga.pb       = digit_07_03;
-        vga.push_back(ga);
+
+    ADD_POLAR(0, -180, 150, 115, digit_07_00);
+    ADD_LINEAR(45, digit_07_01);
+    ADD_POLAR(-45, 180 + 45, 150, 200, digit_07_02);
+    ADD_LINEAR(0 - 45, digit_07_03);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = POLAR;
-        ga.angle0   = -45;
-        ga.angle1   = -180;
-        ga.cx       = 160;
-        ga.cy       = 135;
-        ga.cb       = sizeof(digit_08_00);
-        ga.pb       = digit_08_00;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 180;
-        ga.angle1   = -45;
-        ga.cx       = 140;
-        ga.cy       = 95;
-        ga.cb       = sizeof(digit_08_01);
-        ga.pb       = digit_08_01;
-        vga.push_back(ga);
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_08_02);
-        ga.pb       = digit_08_02;
-        vga.push_back(ga);
+
+    ADD_POLAR(-45, -180, 160, 135, digit_08_00);
+    ADD_POLAR(180, -45, 140, 95, digit_08_01);
+    ADD_LINEAR(90, digit_08_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
-        ga.type     = LINEAR;
-        ga.angle0   = 90;
-        ga.angle1   = 0;
-        ga.cx       = 0;
-        ga.cy       = 0;
-        ga.cb       = sizeof(digit_09_00);
-        ga.pb       = digit_09_00;
-        vga.push_back(ga);
-        ga.type     = WAIT;
-        ga.cb       = 0;
-        ga.pb       = NULL;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 270;
-        ga.angle1   = 90;
-        ga.cx       = 190;
-        ga.cy       = 145;
-        ga.cb       = sizeof(digit_09_01);
-        ga.pb       = digit_09_01;
-        vga.push_back(ga);
-        ga.type     = POLAR;
-        ga.angle0   = 270 + 180;
-        ga.angle1   = 270;
-        ga.cx       = 190;
-        ga.cy       = 145;
-        ga.cb       = sizeof(digit_09_02);
-        ga.pb       = digit_09_02;
-        vga.push_back(ga);
+
+    ADD_LINEAR(90, digit_09_00);
+    ADD_WAIT();
+    ADD_POLAR(270, 90, 190, 145, digit_09_01);
+    ADD_POLAR(270 + 180, 270, 190, 145, digit_09_02);
+
     g_digits_kakijun[index++] = vga;
     vga.clear();
+
     assert(index == 10);
 }
