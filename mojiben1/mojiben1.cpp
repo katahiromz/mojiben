@@ -1179,6 +1179,15 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmClient);
     DeleteObject(g_hbmKakijun);
 
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hbmHiragana);
+    DeleteObject(g_hbmHiragana2);
+    DeleteObject(g_hbmKatakana);
+    DeleteObject(g_hbmKatakana2);
+
+    g_katakana_history.clear();
+    g_hiragana_history.clear();
+
     PostQuitMessage(0);
 }
 
