@@ -1227,6 +1227,7 @@ INT WINAPI WinMain(
     MSG msg;
     BOOL f;
 
+    g_hInstance = hInstance;
     InitCommonControls();
 
     RECT rcWorkArea;
@@ -1239,7 +1240,6 @@ INT WINAPI WinMain(
         return 0;
     }
 
-    g_hInstance = hInstance;
     wcx.cbSize          = sizeof(WNDCLASSEX);
     wcx.style           = 0;
     wcx.lpfnWndProc     = WindowProc;

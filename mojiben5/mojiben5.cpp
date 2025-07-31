@@ -1370,6 +1370,16 @@ INT WINAPI WinMain(
     g_hInstance = hInstance;
     InitCommonControls();
 
+    RECT rcWorkArea;
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+    INT cxWork = (rcWorkArea.right - rcWorkArea.left);
+    INT cyWork = (rcWorkArea.bottom - rcWorkArea.top);
+    if (cxWork <= 780 || cyWork <= 430)
+    {
+        MessageBox(NULL, LoadStringDx(4), NULL, MB_ICONERROR);
+        return 1;
+    }
+
     WNDCLASSEX wcx = { sizeof(wcx) };
     wcx.style           = 0;
     wcx.lpfnWndProc     = WindowProc;
