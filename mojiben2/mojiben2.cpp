@@ -242,8 +242,7 @@ unsigned __stdcall ThreadProc( void * )
 {
     RECT rc;
     SIZE siz;
-    HDC hdc, hdcMem;
-    HBITMAP hbm, hbm2, hbmTemp;
+    HBITMAP hbm1, hbm2, hbmTemp;
     HGDIOBJ hbmOld, hPenOld;
     vector<GA> v;
     INT k;
@@ -269,27 +268,27 @@ unsigned __stdcall ThreadProc( void * )
         }
     }
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbm = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-    hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-    hbmOld = SelectObject(hdcMem, hbm);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+    {
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
+        hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
-    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-    DrawGuideline(hdcMem, siz.cx);
-    SelectObject(hdcMem, hPenOld);
+        hPenOld = SelectObject(hdcMem, g_hPenBlue);
+        DrawGuideline(hdcMem, siz.cx);
+        SelectObject(hdcMem, hPenOld);
 
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        SelectObject(hdcMem, hbmOld);
+    }
 
-    g_hbm2 = hbm;
+    g_hbm2 = hbm1;
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
@@ -305,7 +304,7 @@ unsigned __stdcall ThreadProc( void * )
             Sleep(500);
             if (!IsWindowVisible(g_hKakijunWnd))
             {
-                DeleteObject(hbm);
+                DeleteObject(hbm1);
                 DeleteObject(hbm2);
                 return 0;
             }
@@ -314,13 +313,13 @@ unsigned __stdcall ThreadProc( void * )
 
         case DOT:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
-                hbmTemp = hbm;
-                hbm = hbm2;
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
+                hbmTemp = hbm1;
+                hbm1 = hbm2;
                 hbm2 = hbmTemp;
-                g_hbm2 = hbm;
-                hbmOld = SelectObject(hdcMem, hbm);
+                g_hbm2 = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
                 rc.right = siz.cx;
@@ -338,8 +337,6 @@ unsigned __stdcall ThreadProc( void * )
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
                 SelectObject(hdcMem, hbmOld);
 
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                 Sleep(50);
                 break;
@@ -347,13 +344,13 @@ unsigned __stdcall ThreadProc( void * )
 
         case LINEAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
-                hbmTemp = hbm;
-                hbm = hbm2;
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
+                hbmTemp = hbm1;
+                hbm1 = hbm2;
                 hbm2 = hbmTemp;
-                g_hbm2 = hbm;
-                hbmOld = SelectObject(hdcMem, hbm);
+                g_hbm2 = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
 
                 rc.left = 0;
                 rc.top = 0;
@@ -375,7 +372,7 @@ unsigned __stdcall ThreadProc( void * )
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                     {
-                        DeleteObject(hbm);
+                        DeleteObject(hbm1);
                         DeleteObject(hbm2);
                         return 0;
                     }
@@ -400,15 +397,15 @@ unsigned __stdcall ThreadProc( void * )
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                     {
-                        DeleteObject(hbm);
+                        DeleteObject(hbm1);
                         DeleteObject(hbm2);
                         break;
                     }
-                    hbmTemp = hbm;
-                    hbm = hbm2;
+                    hbmTemp = hbm1;
+                    hbm1 = hbm2;
                     hbm2 = hbmTemp;
-                    g_hbm2 = hbm;
-                    hbmOld = SelectObject(hdcMem, hbm);
+                    g_hbm2 = hbm1;
+                    hbmOld = SelectObject(hdcMem, hbm1);
                     
                     hPenOld = SelectObject(hdcMem, g_hPenBlue);
                     DrawGuideline(hdcMem, siz.cx);
@@ -440,20 +437,18 @@ unsigned __stdcall ThreadProc( void * )
                         break;
                     Sleep(30);
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
                 break;
             }
 
         case POLAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
-                hbmTemp = hbm;
-                hbm = hbm2;
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
+                hbmTemp = hbm1;
+                hbm1 = hbm2;
                 hbm2 = hbmTemp;
-                g_hbm2 = hbm;
-                hbmOld = SelectObject(hdcMem, hbm);
+                g_hbm2 = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
                 rc.right = siz.cx;
@@ -474,7 +469,7 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                         {
-                            DeleteObject(hbm);
+                            DeleteObject(hbm1);
                             DeleteObject(hbm2);
                             return 0;
                         }
@@ -484,11 +479,11 @@ unsigned __stdcall ThreadProc( void * )
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm;
-                        hbm = hbm2;
+                        hbmTemp = hbm1;
+                        hbm1 = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbm2 = hbm;
-                        hbmOld = SelectObject(hdcMem, hbm);
+                        g_hbm2 = hbm1;
+                        hbmOld = SelectObject(hdcMem, hbm1);
 
                         hPenOld = SelectObject(hdcMem, g_hPenBlue);
                         DrawGuideline(hdcMem, siz.cx);
@@ -525,7 +520,7 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                         {
-                            DeleteObject(hbm);
+                            DeleteObject(hbm1);
                             DeleteObject(hbm2);
                             return 0;
                         }
@@ -535,11 +530,11 @@ unsigned __stdcall ThreadProc( void * )
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm;
-                        hbm = hbm2;
+                        hbmTemp = hbm1;
+                        hbm1 = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbm2 = hbm;
-                        hbmOld = SelectObject(hdcMem, hbm);
+                        g_hbm2 = hbm1;
+                        hbmOld = SelectObject(hdcMem, hbm1);
 
                         hPenOld = SelectObject(hdcMem, g_hPenBlue);
                         DrawGuideline(hdcMem, siz.cx);
@@ -570,8 +565,6 @@ unsigned __stdcall ThreadProc( void * )
                         Sleep(30);
                     }
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
                 break;
             }
         }
@@ -580,35 +573,38 @@ unsigned __stdcall ThreadProc( void * )
     Sleep(500);
     PlaySound(MAKEINTRESOURCE(5000 + g_nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbmTemp = hbm;
-    hbm = hbm2;
-    hbm2 = hbmTemp;
-    g_hbm2 = hbm;
-    hbmOld = SelectObject(hdcMem, hbm);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+    {
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
 
-    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-    DrawGuideline(hdcMem, siz.cx);
-    SelectObject(hdcMem, hPenOld);
+        hbmTemp = hbm1;
+        hbm1 = hbm2;
+        hbm2 = hbmTemp;
+        g_hbm2 = hbm1;
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        hPenOld = SelectObject(hdcMem, g_hPenBlue);
+        DrawGuideline(hdcMem, siz.cx);
+        SelectObject(hdcMem, hPenOld);
 
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+        SelectObject(hdcMem, hbmOld);
+        DeleteDC(hdcMem);
+        ReleaseDC(g_hKakijunWnd, hdc);
+    }
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     Sleep(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbm2 = NULL;
-    DeleteObject(hbm);
+    DeleteObject(hbm1);
     DeleteObject(hbm2);
     return 0;
 }
