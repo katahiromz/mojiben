@@ -46,6 +46,16 @@ LPTSTR LoadStringDx(INT ids)
     return sz;
 }
 
+BOOL g_bHighSpeed = FALSE;
+
+void DoSleep(DWORD dwMilliseconds)
+{
+    if (g_bHighSpeed)
+        Sleep(dwMilliseconds / 10);
+    else
+        Sleep(dwMilliseconds);
+}
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     INT i;
@@ -288,7 +298,7 @@ unsigned __stdcall ThreadProc( void * )
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    Sleep(700);
+    DoSleep(700);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -297,7 +307,7 @@ unsigned __stdcall ThreadProc( void * )
         switch(v[i].type)
         {
         case WAIT:
-            Sleep(500);
+            DoSleep(500);
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
             PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -328,7 +338,7 @@ unsigned __stdcall ThreadProc( void * )
                 SelectObject(hdcMem, hbmOld);
 
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-                Sleep(50);
+                DoSleep(50);
                 break;
             }
 
@@ -413,7 +423,7 @@ unsigned __stdcall ThreadProc( void * )
                     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                     if (n == NULLREGION)
                         break;
-                    Sleep(30);
+                    DoSleep(30);
                 }
                 break;
             }
@@ -481,7 +491,7 @@ unsigned __stdcall ThreadProc( void * )
                         InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                         if (n == NULLREGION)
                             break;
-                        Sleep(30);
+                        DoSleep(30);
                     }
                 }
                 else
@@ -526,7 +536,7 @@ unsigned __stdcall ThreadProc( void * )
                         InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                         if (n == NULLREGION)
                             break;
-                        Sleep(30);
+                        DoSleep(30);
                     }
                 }
                 break;
@@ -534,7 +544,7 @@ unsigned __stdcall ThreadProc( void * )
         }
     }
 
-    Sleep(500);
+    DoSleep(500);
     PlaySound(MAKEINTRESOURCE(5000 + g_nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
 
     {
@@ -560,7 +570,7 @@ unsigned __stdcall ThreadProc( void * )
     }
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-    Sleep(500);
+    DoSleep(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
