@@ -558,8 +558,6 @@ unsigned __stdcall ThreadProc( void * )
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
         SelectObject(hdcMem, hbmOld);
-        DeleteDC(hdcMem);
-        ReleaseDC(g_hKakijunWnd, hdc);
     }
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
