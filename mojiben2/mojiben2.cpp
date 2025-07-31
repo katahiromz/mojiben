@@ -15,6 +15,7 @@ using namespace std;
 
 #include "kakijun.h"
 #include "../CGdiObj.h"
+#include "../CDebug.h"
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (2)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (2) Kakijun");

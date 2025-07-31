@@ -21,6 +21,7 @@
 
 #include "kakijun.h"
 #include "../CGdiObj.h"
+#include "../CDebug.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589

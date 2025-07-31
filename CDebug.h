@@ -14,7 +14,9 @@
     DebugVPrintf(const char *file, int line, const char *fmt, va_list va)
     {
         CHAR buf[512];
-        wvnsprintfA(buf, _countof(buf), fmt, va);
+        INT cch = wnsprintfA(buf, _countof(buf), "%s (%d): ", file, line);
+        if (_countof(buf) > cch)
+            wvnsprintfA(&buf[cch], _countof(buf) - cch, fmt, va);
         buf[_countof(buf) - 1] = ANSI_NULL;
         OutputDebugStringA(buf);
     }
