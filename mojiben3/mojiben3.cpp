@@ -683,19 +683,23 @@ void OnDestroy(HWND hwnd)
 {
     UINT i;
 
-    if (g_hThread != NULL)
+    if (g_hThread)
     {
-        TerminateThread(g_hThread, 0);
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
         CloseHandle(g_hThread);
     }
 
-    DeleteObject(g_hbrRed);
-    DeleteObject(g_hFont);
-    DeleteObject(g_hbmClient);
-    DeleteObject(g_hbmKazoekata);
-
     for (i = 0; i < _countof(g_ahbmDigits); ++i)
         DeleteObject(g_ahbmDigits[i]);
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbmKazoekata);
+
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hFont);
+
+    g_digits_history.clear();
 
     PostQuitMessage(0);
 }

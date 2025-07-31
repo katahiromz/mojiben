@@ -119,7 +119,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 void OnDraw(HWND hwnd, HDC hdc)
 {
-    HDC hdcMem, hdcMem2;
     HGDIOBJ hbmOld, hbmOld2;
     INT i, j;
     RECT rc;
@@ -802,11 +801,39 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
 void OnDestroy(HWND hwnd)
 {
-    if (g_hThread != NULL)
+    if (g_hThread)
     {
-        TerminateThread(g_hThread, 0);
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
         CloseHandle(g_hThread);
     }
+
+    DeleteObject(g_hbmUpperCase);
+    DeleteObject(g_hbmLowerCase);
+    DeleteObject(g_hbmUpperCase2);
+    DeleteObject(g_hbmLowerCase2);
+
+    UINT i;
+
+    for (i = 0; i < _countof(g_ahbmPrintUpperCase); ++i)
+    {
+        if (g_ahbmPrintUpperCase[i])
+            DeleteObject(g_ahbmPrintUpperCase[i]);
+    }
+    for (i = 0; i < _countof(g_ahbmPrintLowerCase); ++i)
+    {
+        if (g_ahbmPrintLowerCase[i])
+            DeleteObject(g_ahbmPrintLowerCase[i]);
+    }
+
+    DeleteObject(g_hbmClient);
+
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hPenBlue);
+
+    g_print_uppercase_history.clear();
+    g_print_lowercase_history.clear();
+
     PostQuitMessage(0);
 }
 

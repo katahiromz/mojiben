@@ -897,12 +897,29 @@ AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void OnDestroy(HWND hwnd)
 {
-        if (g_hThread != NULL)
-        {
-            TerminateThread(g_hThread, 0);
-            CloseHandle(g_hThread);
-        }
-        PostQuitMessage(0);
+    if (g_hThread)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        CloseHandle(g_hThread);
+    }
+
+    DeleteObject(g_hFont);
+    DeleteObject(g_hFontSmall);
+
+    UINT i;
+    for (i = 0; i < _countof(g_ahbmKanji1); ++i)
+    {
+        if (g_ahbmKanji1[i])
+            DeleteObject(g_ahbmKanji1[i]);
+    }
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbrRed);
+
+    g_kanji1_history.clear();
+
+    PostQuitMessage(0);
 }
 
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)

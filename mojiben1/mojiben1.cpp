@@ -1116,7 +1116,6 @@ void OnDestroy(HWND hwnd)
     if (g_hThread)
     {
         ShowWindow(g_hKakijunWnd, SW_HIDE);
-        WaitForSingleObject(g_hThread, 1500);
         CloseHandle(g_hThread);
     }
 
