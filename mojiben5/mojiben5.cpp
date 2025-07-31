@@ -1354,20 +1354,20 @@ void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
     else if (eDelta > +1)
         eDelta = +1;
 
-    if (eDelta == +1 && g_iPage + 1 < GetNumPage())
-    {
-        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-        g_eDisplayPage = (float)g_iPage;
-        g_eGoalPage = (float)(g_iPage + 1);
-        SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
-        return;
-    }
-
     if (eDelta == -1 && g_iPage - 1 >= 0)
     {
         PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
         g_eDisplayPage = (float)g_iPage;
         g_eGoalPage = (float)(g_iPage - 1);
+        SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
+        return;
+    }
+
+    if (eDelta == +1 && g_iPage + 1 < GetNumPage())
+    {
+        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        g_eDisplayPage = (float)g_iPage;
+        g_eGoalPage = (float)(g_iPage + 1);
         SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
         return;
     }
