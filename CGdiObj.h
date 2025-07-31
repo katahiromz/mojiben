@@ -19,6 +19,7 @@ public:
         if (m_hFont)
             ::DeleteObject(m_hFont);
         m_hFont = hFont;
+        return *this;
     }
 
     ~CFont()
@@ -29,6 +30,45 @@ public:
 
 private:
     CFont(const CFont& font);
+};
+
+class CBitmap
+{
+public:
+    HBITMAP m_hBitmap;
+
+    operator HBITMAP()
+    {
+        return m_hBitmap;
+    }
+
+    CBitmap(HBITMAP hBitmap = NULL) : m_hBitmap(hBitmap)
+    {
+    }
+
+    CBitmap& operator=(HBITMAP hBitmap)
+    {
+        if (m_hBitmap)
+            ::DeleteObject(m_hBitmap);
+        m_hBitmap = hBitmap;
+        return *this;
+    }
+
+    ~CBitmap()
+    {
+        if (m_hBitmap)
+            ::DeleteObject(m_hBitmap);
+    }
+
+    void Swap(CBitmap& other)
+    {
+        HBITMAP hbmTmp = m_hBitmap;
+        m_hBitmap = other.m_hBitmap;
+        other.m_hBitmap = hbmTmp;
+    }
+
+private:
+    CBitmap(const CBitmap& bitmap);
 };
 
 class CRgn
@@ -57,6 +97,7 @@ public:
     CRgn& operator=(HRGN hRgn)
     {
         ::CombineRgn(m_hRgn, hRgn, NULL, RGN_COPY);
+        return *this;
     }
 
     ~CRgn()
@@ -96,4 +137,7 @@ public:
         else
             ::DeleteDC(m_hDC);
     }
+
+private:
+    CRgn& operator=(HRGN hRgn);
 };
