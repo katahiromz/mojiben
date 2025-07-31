@@ -410,9 +410,6 @@ LPTSTR LoadStringDx(INT ids)
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    INT j;
-    HMENU hSysMenu;
-    MENUITEMINFO mii;
 
     g_hThread = NULL;
     g_hbmKakijun = NULL;
@@ -421,42 +418,14 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmLeft = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
     g_hbmRight = LoadBitmap(g_hInstance, MAKEINTRESOURCE(101));
 
-    hSysMenu = GetSystemMenu(hwnd, FALSE);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_SEPARATOR;
-    mii.fState = MFS_ENABLED;
-    mii.wID = (UINT)-1;
-    mii.dwTypeData = 0;
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_STRING;
-    mii.fState = MFS_ENABLED;
-    mii.wID = 0x3340;
-    mii.dwTypeData = LoadStringDx(5);
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_SEPARATOR;
-    mii.fState = MFS_ENABLED;
-    mii.wID = (UINT)-1;
-    mii.dwTypeData = 0;
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_STRING;
-    mii.fState = MFS_ENABLED;
-    mii.wID = 0x3330;
-    mii.dwTypeData = LoadStringDx(2);
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
+    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3340, LoadStringDx(5));
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3330, LoadStringDx(2));
 
     ZeroMemory(g_ahbmKanji2, sizeof(g_ahbmKanji2));
-    for (j = 0; j < 160; ++j)
+    for (INT j = 0; j < 160; ++j)
     {
         g_ahbmKanji2[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
         if (g_ahbmKanji2[j] == NULL)

@@ -64,10 +64,6 @@ void DoSleep(DWORD dwMilliseconds)
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    INT i, j;
-    HMENU hSysMenu;
-    MENUITEMINFO mii;
-
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
@@ -77,40 +73,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKatakana2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(250));
     g_fKatakana = FALSE;
 
-    hSysMenu = GetSystemMenu(hwnd, FALSE);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_SEPARATOR;
-    mii.fState = MFS_ENABLED;
-    mii.wID = (UINT)-1;
-    mii.dwTypeData = 0;
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_STRING;
-    mii.fState = MFS_ENABLED;
-    mii.wID = 0x3340;
-    mii.dwTypeData = LoadStringDx(5);
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_SEPARATOR;
-    mii.fState = MFS_ENABLED;
-    mii.wID = (UINT)-1;
-    mii.dwTypeData = 0;
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
-    ZeroMemory(&mii, sizeof(MENUITEMINFO));
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
-    mii.fType = MFT_STRING;
-    mii.fState = MFS_ENABLED;
-    mii.wID = 0x3330;
-    mii.dwTypeData = LoadStringDx(2);
-    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
+    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3340, LoadStringDx(5));
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3330, LoadStringDx(2));
 
+    INT i, j;
     ZeroMemory(g_aahbmHiragana, sizeof(g_aahbmHiragana));
     for (j = 0; j <= 100; j += 10)
     {
