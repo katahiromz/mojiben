@@ -27,10 +27,10 @@ HBITMAP g_hbmUpperCase, g_hbmLowerCase;
 HBITMAP g_hbmUpperCase2, g_hbmLowerCase2;
 HBITMAP g_ahbmPrintUpperCase[26];
 HBITMAP g_ahbmPrintLowerCase[26];
-HBITMAP g_hbm;
+HBITMAP g_hbmClient;
 BOOL g_fLowerCase;
 
-HBITMAP g_hbm2;
+HBITMAP g_hbmKakijun;
 INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
@@ -53,7 +53,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     MENUITEMINFO mii;
 
     g_hThread = NULL;
-    g_hbm2 = NULL;
+    g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
     g_hPenBlue = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 
@@ -94,7 +94,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
             return FALSE;
     }
 
-    g_hbm = NULL;
+    g_hbmClient = NULL;
 
     try
     {
@@ -133,10 +133,10 @@ void OnDraw(HWND hwnd, HDC hdc)
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
-    if (g_hbm == NULL)
+    if (g_hbmClient == NULL)
     {
-        g_hbm = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-        hbmOld2 = SelectObject(hdcMem2, g_hbm);
+        g_hbmClient = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
         hbr = CreateSolidBrush(RGB(255, 255, 192));
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
@@ -216,7 +216,7 @@ void OnDraw(HWND hwnd, HDC hdc)
         SelectObject(hdcMem2, hbmOld2);
     }
 
-    hbmOld2 = SelectObject(hdcMem2, g_hbm);
+    hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
     BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem2, 0, 0, SRCCOPY);
     SelectObject(hdcMem2, hbmOld2);
 
@@ -242,7 +242,7 @@ unsigned __stdcall ThreadProc( void * )
 {
     RECT rc;
     SIZE siz;
-    HBITMAP hbm1, hbm2, hbmTemp;
+    CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld, hPenOld;
     vector<GA> v;
     INT k;
@@ -288,7 +288,7 @@ unsigned __stdcall ThreadProc( void * )
         SelectObject(hdcMem, hbmOld);
     }
 
-    g_hbm2 = hbm1;
+    g_hbmKakijun = hbm1;
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
@@ -303,11 +303,7 @@ unsigned __stdcall ThreadProc( void * )
         case WAIT:
             Sleep(500);
             if (!IsWindowVisible(g_hKakijunWnd))
-            {
-                DeleteObject(hbm1);
-                DeleteObject(hbm2);
                 return 0;
-            }
             PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
             break;
 
@@ -315,10 +311,8 @@ unsigned __stdcall ThreadProc( void * )
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
-                hbmTemp = hbm1;
-                hbm1 = hbm2;
-                hbm2 = hbmTemp;
-                g_hbm2 = hbm1;
+                hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
@@ -346,10 +340,8 @@ unsigned __stdcall ThreadProc( void * )
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
-                hbmTemp = hbm1;
-                hbm1 = hbm2;
-                hbm2 = hbmTemp;
-                g_hbm2 = hbm1;
+                hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
 
                 rc.left = 0;
@@ -371,11 +363,7 @@ unsigned __stdcall ThreadProc( void * )
                 for(k = -200; k < 200; k += 30)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
-                    {
-                        DeleteObject(hbm1);
-                        DeleteObject(hbm2);
                         return 0;
-                    }
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
                     apt[0].y = LONG(150 + k * sint - 150 * cost);
                     apt[1].x = LONG(150 + k * cost - 150 * sint);
@@ -396,15 +384,9 @@ unsigned __stdcall ThreadProc( void * )
                 for( ; k < 200; k += 30)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
-                    {
-                        DeleteObject(hbm1);
-                        DeleteObject(hbm2);
                         break;
-                    }
-                    hbmTemp = hbm1;
-                    hbm1 = hbm2;
-                    hbm2 = hbmTemp;
-                    g_hbm2 = hbm1;
+                    hbm1.Swap(hbm2);
+                    g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
                     
                     hPenOld = SelectObject(hdcMem, g_hPenBlue);
@@ -444,10 +426,8 @@ unsigned __stdcall ThreadProc( void * )
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
-                hbmTemp = hbm1;
-                hbm1 = hbm2;
-                hbm2 = hbmTemp;
-                g_hbm2 = hbm1;
+                hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
@@ -468,21 +448,15 @@ unsigned __stdcall ThreadProc( void * )
                     for(k = v[i].angle0; k < v[i].angle1; k += 20)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
-                        {
-                            DeleteObject(hbm1);
-                            DeleteObject(hbm2);
                             return 0;
-                        }
                         double theta = k * M_PI / 180.0;
                         double theta2 = (k + 20) * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm1;
-                        hbm1 = hbm2;
-                        hbm2 = hbmTemp;
-                        g_hbm2 = hbm1;
+                        hbm1.Swap(hbm2);
+                        g_hbmKakijun = hbm1;
                         hbmOld = SelectObject(hdcMem, hbm1);
 
                         hPenOld = SelectObject(hdcMem, g_hPenBlue);
@@ -519,21 +493,15 @@ unsigned __stdcall ThreadProc( void * )
                     for(k = v[i].angle0; k > v[i].angle1; k -= 20)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
-                        {
-                            DeleteObject(hbm1);
-                            DeleteObject(hbm2);
                             return 0;
-                        }
                         double theta = (k - 20) * M_PI / 180.0;
                         double theta2 = k * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm1;
-                        hbm1 = hbm2;
-                        hbm2 = hbmTemp;
-                        g_hbm2 = hbm1;
+                        hbm1.Swap(hbm2);
+                        g_hbmKakijun = hbm1;
                         hbmOld = SelectObject(hdcMem, hbm1);
 
                         hPenOld = SelectObject(hdcMem, g_hPenBlue);
@@ -577,10 +545,8 @@ unsigned __stdcall ThreadProc( void * )
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
 
-        hbmTemp = hbm1;
-        hbm1 = hbm2;
-        hbm2 = hbmTemp;
-        g_hbm2 = hbm1;
+        hbm1.Swap(hbm2);
+        g_hbmKakijun = hbm1;
         hbmOld = SelectObject(hdcMem, hbm1);
         rc.left = 0;
         rc.top = 0;
@@ -603,9 +569,7 @@ unsigned __stdcall ThreadProc( void * )
     Sleep(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
-    g_hbm2 = NULL;
-    DeleteObject(hbm1);
-    DeleteObject(hbm2);
+    g_hbmKakijun = NULL;
     return 0;
 }
 
@@ -639,9 +603,9 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         return;
     }
 
-    if (g_hbm != NULL)
-        DeleteObject(g_hbm);
-    g_hbm = NULL;
+    if (g_hbmClient != NULL)
+        DeleteObject(g_hbmClient);
+    g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, TRUE);
 
     if (g_fLowerCase)
@@ -686,9 +650,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         g_fLowerCase = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-        if (g_hbm != NULL)
-            DeleteObject(g_hbm);
-        g_hbm = NULL;
+        if (g_hbmClient != NULL)
+            DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
         InvalidateRect(hwnd, NULL, TRUE);
         return;
     }
@@ -701,9 +665,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         g_fLowerCase = TRUE;
         PlaySound(MAKEINTRESOURCE(301), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-        if (g_hbm != NULL)
-            DeleteObject(g_hbm);
-        g_hbm = NULL;
+        if (g_hbmClient != NULL)
+            DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
         InvalidateRect(hwnd, NULL, TRUE);
         return;
     }
@@ -746,10 +710,10 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     GetClientRect(hwnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-    if (g_hbm2 != NULL)
+    if (g_hbmKakijun)
     {
         hdcMem = CreateCompatibleDC(hdc);
-        hbmOld = SelectObject(hdcMem, g_hbm2);
+        hbmOld = SelectObject(hdcMem, g_hbmKakijun);
         BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
     }
