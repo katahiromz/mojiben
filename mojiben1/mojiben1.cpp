@@ -440,7 +440,6 @@ unsigned __stdcall ThreadProc( void * )
     POINT apt[4];
     double cost, sint, cost2, sint2;
     const char *romaji = NULL;
-    HFONT hFont;
     HGDIOBJ hFontOld;
     LOGFONT lf;
 
@@ -449,7 +448,7 @@ unsigned __stdcall ThreadProc( void * )
     lf.lfCharSet = ANSI_CHARSET;
     lf.lfQuality = ANTIALIASED_QUALITY;
     lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
-    hFont = CreateFontIndirect(&lf);
+    CFont hFont(::CreateFontIndirect(&lf));
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -612,7 +611,6 @@ unsigned __stdcall ThreadProc( void * )
         {
             DeleteObject(hbm1);
             DeleteObject(hbm2);
-            DeleteObject(hFont);
             return 0;
         }
 
@@ -624,7 +622,6 @@ unsigned __stdcall ThreadProc( void * )
             {
                 DeleteObject(hbm1);
                 DeleteObject(hbm2);
-                DeleteObject(hFont);
                 return 0;
             }
             PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -664,7 +661,6 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         DeleteObject(hbm1);
                         DeleteObject(hbm2);
-                        DeleteObject(hFont);
                         return 0;
                     }
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
@@ -690,7 +686,6 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         DeleteObject(hbm1);
                         DeleteObject(hbm2);
-                        DeleteObject(hFont);
                         break;
                     }
                     hbmTemp = hbm1;
@@ -760,7 +755,6 @@ unsigned __stdcall ThreadProc( void * )
                         {
                             DeleteObject(hbm1);
                             DeleteObject(hbm2);
-                            DeleteObject(hFont);
                             return 0;
                         }
                         double theta = k * M_PI / 180.0;
@@ -804,7 +798,6 @@ unsigned __stdcall ThreadProc( void * )
                         {
                             DeleteObject(hbm1);
                             DeleteObject(hbm2);
-                            DeleteObject(hFont);
                             return 0;
                         }
                         double theta = (k - 20) * M_PI / 180.0;
@@ -883,7 +876,6 @@ unsigned __stdcall ThreadProc( void * )
     g_hbm2 = NULL;
     DeleteObject(hbm1);
     DeleteObject(hbm2);
-    DeleteObject(hFont);
     return 0;
 }
 

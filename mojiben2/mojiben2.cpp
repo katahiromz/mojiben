@@ -249,7 +249,7 @@ unsigned __stdcall ThreadProc( void * )
     INT k;
     POINT apt[4];
     double cost, sint, cost2, sint2;
-    
+
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;

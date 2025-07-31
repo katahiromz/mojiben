@@ -1,5 +1,36 @@
 #pragma once
 
+class CFont
+{
+public:
+    HFONT m_hFont;
+
+    operator HFONT()
+    {
+        return m_hFont;
+    }
+
+    CFont(HFONT hFont = NULL) : m_hFont(hFont)
+    {
+    }
+
+    CFont& operator=(HFONT hFont)
+    {
+        if (m_hFont)
+            ::DeleteObject(m_hFont);
+        m_hFont = hFont;
+    }
+
+    ~CFont()
+    {
+        if (m_hFont)
+            ::DeleteObject(m_hFont);
+    }
+
+private:
+    CFont(const CFont& font);
+};
+
 class CRgn
 {
 public:
