@@ -387,7 +387,7 @@ static unsigned ThreadProcWorker(void)
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
-                    
+
                     hPenOld = SelectObject(hdcMem, g_hPenBlue);
                     DrawGuideline(hdcMem, siz.cx);
                     SelectObject(hdcMem, hPenOld);
@@ -437,7 +437,7 @@ static unsigned ThreadProcWorker(void)
                 hPenOld = SelectObject(hdcMem, g_hPenBlue);
                 DrawGuideline(hdcMem, siz.cx);
                 SelectObject(hdcMem, hPenOld);
-                
+
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -588,7 +588,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     GetWindowRect(hwnd, &rc);
     GetWindowRect(g_hKakijunWnd, &rc2);
-    MoveWindow(g_hKakijunWnd, 
+    MoveWindow(g_hKakijunWnd,
         rc.left + (rc.right - rc.left - (rc2.right - rc2.left)) / 2,
         rc.top + (rc.bottom - rc.top - (rc2.bottom - rc2.top)) / 2,
         rc2.right - rc2.left,
@@ -621,7 +621,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         g_print_lowercase_history.insert(nMoji);
     else
         g_print_uppercase_history.insert(nMoji);
-    
+
     PlaySound(MAKEINTRESOURCE(5000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
 
     if (g_hThread)
@@ -645,7 +645,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     GetExitCodeThread(g_hThread, &dw);
     if (dw == STILL_ACTIVE)
         return;
-    
+
     pt.x = x;
     pt.y = y;
 
@@ -877,6 +877,7 @@ void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     }
 }
 
+// ウィンドウプロシージャ。
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -903,13 +904,12 @@ INT WINAPI WinMain(
     LPSTR       pszCmdLine,
     INT         nCmdShow)
 {
-    WNDCLASSEX wcx;
-    MSG msg;
-    BOOL f;
-
     g_hInstance = hInstance;
+
+    // コモンコントロール初期化。
     InitCommonControls();
 
+    // 画面が小さすぎる場合はエラーメッセージを表示して終了。
     RECT rcWorkArea;
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
     INT cxWork = (rcWorkArea.right - rcWorkArea.left);
@@ -920,23 +920,20 @@ INT WINAPI WinMain(
         return 1;
     }
 
-    wcx.cbSize          = sizeof(WNDCLASSEX);
-    wcx.style           = 0;
+    // ウィンドウクラスを登録する。
+    WNDCLASSEX wcx = { sizeof(wcx) };
+    wcx.style           = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
     wcx.lpfnWndProc     = WindowProc;
-    wcx.cbClsExtra      = 0;
-    wcx.cbWndExtra      = 0;
     wcx.hInstance       = hInstance;
     wcx.hIcon           = LoadIcon(hInstance, MAKEINTRESOURCE(1));
     wcx.hCursor         = LoadCursor(NULL, IDC_ARROW);
     wcx.hbrBackground   = (HBRUSH)CreateSolidBrush(RGB(255, 255, 192));
-    wcx.lpszMenuName    = NULL;
     wcx.lpszClassName   = g_szClassName;
     wcx.hIconSm         = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(1),
-        IMAGE_ICON, 
+        IMAGE_ICON,
         GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
     if (!RegisterClassEx(&wcx))
         return 1;
-    
     wcx.style           = CS_NOCLOSE;
     wcx.lpfnWndProc     = KakijunWndProc;
     wcx.hIcon           = NULL;
@@ -946,10 +943,13 @@ INT WINAPI WinMain(
     if (!RegisterClassEx(&wcx))
         return 1;
 
+    // クライアント領域のサイズとスタイルを元にウィンドウサイズを決める。
     DWORD style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
     DWORD exstyle = 0;
     RECT rc = { 0, 0, 774, 401 };
     AdjustWindowRectEx(&rc, style, FALSE, exstyle);
+
+    // ウィンドウサイズに基づいてメインウィンドウを作成する。
     g_hMainWnd = CreateWindowEx(exstyle, g_szClassName, LoadStringDx(1), style,
         CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top,
         NULL, NULL, hInstance, NULL);
@@ -959,9 +959,13 @@ INT WINAPI WinMain(
         return 2;
     }
 
+    // ウィンドウを表示する。
     ShowWindow(g_hMainWnd, nCmdShow);
     UpdateWindow(g_hMainWnd);
 
+    // メッセージループ。
+    MSG msg;
+    BOOL f;
     while((f = GetMessage(&msg, NULL, 0, 0)) != FALSE)
     {
         if (f == -1)
