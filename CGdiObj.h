@@ -85,6 +85,10 @@ public:
     {
     }
 
+    CDC(const CDC& dcRef) : m_hDC(::CreateCompatibleDC(dcRef.m_hDC)), m_hWnd(NULL)
+    {
+    }
+
     ~CDC()
     {
         if (m_hWnd)

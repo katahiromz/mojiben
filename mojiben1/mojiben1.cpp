@@ -432,7 +432,6 @@ unsigned __stdcall ThreadProc( void * )
 {
     RECT rc;
     SIZE siz;
-    HDC hdc, hdcMem;
     HBITMAP hbm1, hbm2, hbmTemp;
     HGDIOBJ hbmOld;
     std::vector<GA> v;
@@ -574,29 +573,29 @@ unsigned __stdcall ThreadProc( void * )
         }
     }
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-    hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-
-    hbmOld = SelectObject(hdcMem, hbm1);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
     {
-        hFontOld = SelectObject(hdcMem, hFont);
-        SetTextColor(hdcMem, RGB(0, 0, 0));
-        SetBkColor(hdcMem, RGB(255, 255, 255));
-        SetBkMode(hdcMem, OPAQUE);
-        DrawTextA(hdcMem, romaji, lstrlenA(romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-        SelectObject(hdcMem, hFontOld);
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
+        hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        {
+            hFontOld = SelectObject(hdcMem, hFont);
+            SetTextColor(hdcMem, RGB(0, 0, 0));
+            SetBkColor(hdcMem, RGB(255, 255, 255));
+            SetBkMode(hdcMem, OPAQUE);
+            DrawTextA(hdcMem, romaji, lstrlenA(romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
+            SelectObject(hdcMem, hFontOld);
+        }
+        SelectObject(hdcMem, hbmOld);
     }
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
 
     g_hbm2 = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
@@ -622,8 +621,8 @@ unsigned __stdcall ThreadProc( void * )
 
         case LINEAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
                 hbmTemp = hbm1;
                 hbm1 = hbm2;
                 hbm2 = hbmTemp;
@@ -709,15 +708,13 @@ unsigned __stdcall ThreadProc( void * )
                         break;
                     Sleep(35);
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
                 break;
             }
 
         case POLAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
                 hbmTemp = hbm1;
                 hbm1 = hbm2;
                 hbm2 = hbmTemp;
@@ -826,41 +823,38 @@ unsigned __stdcall ThreadProc( void * )
                         Sleep(35);
                     }
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
                 break;
             }
         }
-
     }
 
     Sleep(500);
     PlaySound(MAKEINTRESOURCE(3000 + g_nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbmTemp = hbm1;
-    hbm1 = hbm2;
-    hbm2 = hbmTemp;
-    g_hbm2 = hbm1;
-    hbmOld = SelectObject(hdcMem, hbm1);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
     {
-        hFontOld = SelectObject(hdcMem, hFont);
-        SetTextColor(hdcMem, RGB(0, 0, 0));
-        SetBkColor(hdcMem, RGB(255, 255, 255));
-        SetBkMode(hdcMem, OPAQUE);
-        DrawTextA(hdcMem, romaji, lstrlenA(romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-        SelectObject(hdcMem, hFontOld);
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
+        hbmTemp = hbm1;
+        hbm1 = hbm2;
+        hbm2 = hbmTemp;
+        g_hbm2 = hbm1;
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        {
+            hFontOld = SelectObject(hdcMem, hFont);
+            SetTextColor(hdcMem, RGB(0, 0, 0));
+            SetBkColor(hdcMem, RGB(255, 255, 255));
+            SetBkMode(hdcMem, OPAQUE);
+            DrawTextA(hdcMem, romaji, lstrlenA(romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
+            SelectObject(hdcMem, hFontOld);
+        }
+        SelectObject(hdcMem, hbmOld);
     }
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
 
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     Sleep(500);
