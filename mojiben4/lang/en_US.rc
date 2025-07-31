@@ -70,6 +70,7 @@ STRINGTABLE
     1, "Moji No Benkyou (4) 1st-Graders' Kanji"
     2, "About"
     3, "Out of memory!"
+    5, "High speed mode"
     1000, "https://jitenon.jp/search/data.php?getdata=%s&search=contain"
     1001, "https://mojinavi.com/d/u%04x"
 }

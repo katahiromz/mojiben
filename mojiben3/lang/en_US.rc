@@ -58,6 +58,7 @@ STRINGTABLE
     1, "Moji No Benkyou (3) Digits and numbers"
     2, "About"
     3, "Out of memory!"
+    5, "High speed mode"
     1000, "https://www.youtube.com/watch?v=33VpZ678bac"
 }
 

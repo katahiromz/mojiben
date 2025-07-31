@@ -58,6 +58,7 @@ STRINGTABLE
     2, "バージョン情報"
     3, "メモリ不足のため、起動できません。"
     4, "画面が小さすぎます。"
+    5, "高速モード"
     100, "Words starting with 'A'"
     101, "Words starting with 'B'"
     102, "Words starting with 'C'"

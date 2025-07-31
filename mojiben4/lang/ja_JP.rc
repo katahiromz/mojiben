@@ -70,6 +70,7 @@ STRINGTABLE
     1, "もじのべんきょう (4)　小学一年生でならうかんじ"
     2, "バージョン情報"
     3, "メモリ不足のため、起動できません。"
+    5, "高速モード"
     1000, "https://jitenon.jp/search/data.php?getdata=%s&search=contain"
     1001, "https://mojinavi.com/d/u%04x"
 }

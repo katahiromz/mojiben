@@ -99,6 +99,23 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     mii.wID = (UINT)-1;
     mii.dwTypeData = 0;
     InsertMenuItem(hSysMenu, -1, TRUE, &mii);
+    ZeroMemory(&mii, sizeof(MENUITEMINFO));
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
+    mii.fType = MFT_STRING;
+    mii.fState = MFS_ENABLED;
+    mii.wID = 0x3340;
+    mii.dwTypeData = LoadStringDx(5);
+    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
+    ZeroMemory(&mii, sizeof(MENUITEMINFO));
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
+    mii.fType = MFT_SEPARATOR;
+    mii.fState = MFS_ENABLED;
+    mii.wID = (UINT)-1;
+    mii.dwTypeData = 0;
+    InsertMenuItem(hSysMenu, -1, TRUE, &mii);
+    ZeroMemory(&mii, sizeof(MENUITEMINFO));
     mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_ID | MIIM_STATE | MIIM_TYPE;
     mii.fType = MFT_STRING;
@@ -741,6 +758,13 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     if ((cmd & 0xFFF0) == 0x3330)
     {
         DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
+        return;
+    }
+    if ((cmd & 0xFFF0) == 0x3340)
+    {
+        g_bHighSpeed = !g_bHighSpeed;
+        HMENU hSysMenu = ::GetSystemMenu(hwnd, FALSE);
+        ::CheckMenuItem(hSysMenu, 0x3340, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
         return;
     }
 
