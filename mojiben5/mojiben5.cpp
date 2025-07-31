@@ -581,7 +581,7 @@ unsigned __stdcall ThreadProc( void * )
 {
     RECT rc;
     SIZE siz;
-    HBITMAP hbm1, hbm2, hbmTemp;
+    CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld;
     std::vector<GA> v;
     INT k;
@@ -639,11 +639,7 @@ unsigned __stdcall ThreadProc( void * )
         case WAIT:
             Sleep(500);
             if (!IsWindowVisible(g_hKakijunWnd))
-            {
-                DeleteObject(hbm1);
-                DeleteObject(hbm2);
                 return 0;
-            }
             PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
             break;
 
@@ -651,9 +647,7 @@ unsigned __stdcall ThreadProc( void * )
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
-                hbmTemp = hbm1;
-                hbm1 = hbm2;
-                hbm2 = hbmTemp;
+                hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
@@ -670,11 +664,7 @@ unsigned __stdcall ThreadProc( void * )
                 for (k = -200; k < 200; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
-                    {
-                        DeleteObject(hbm1);
-                        DeleteObject(hbm2);
                         return 0;
-                    }
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
                     apt[0].y = LONG(150 + k * sint - 150 * cost);
                     apt[1].x = LONG(150 + k * cost - 150 * sint);
@@ -695,14 +685,8 @@ unsigned __stdcall ThreadProc( void * )
                 for ( ; k < 200; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
-                    {
-                        DeleteObject(hbm1);
-                        DeleteObject(hbm2);
                         return 0;
-                    }
-                    hbmTemp = hbm1;
-                    hbm1 = hbm2;
-                    hbm2 = hbmTemp;
+                    hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
@@ -735,9 +719,7 @@ unsigned __stdcall ThreadProc( void * )
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
-                hbmTemp = hbm1;
-                hbm1 = hbm2;
-                hbm2 = hbmTemp;
+                hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
@@ -754,20 +736,14 @@ unsigned __stdcall ThreadProc( void * )
                     for (k = v[i].angle0; k < v[i].angle1; k += 20)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
-                        {
-                            DeleteObject(hbm1);
-                            DeleteObject(hbm2);
                             return 0;
-                        }
                         double theta = k * M_PI / 180.0;
                         double theta2 = (k + 20) * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm1;
-                        hbm1 = hbm2;
-                        hbm2 = hbmTemp;
+                        hbm1.Swap(hbm2);
                         g_hbmKakijun = hbm1;
                         hbmOld = SelectObject(hdcMem, hbm1);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
@@ -797,20 +773,14 @@ unsigned __stdcall ThreadProc( void * )
                     for (k = v[i].angle0; k > v[i].angle1; k -= 20)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
-                        {
-                            DeleteObject(hbm1);
-                            DeleteObject(hbm2);
                             return 0;
-                        }
                         double theta = (k - 20) * M_PI / 180.0;
                         double theta2 = k * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm1;
-                        hbm1 = hbm2;
-                        hbm2 = hbmTemp;
+                        hbm1.Swap(hbm2);
                         g_hbmKakijun = hbm1;
                         hbmOld = SelectObject(hdcMem, hbm1);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
@@ -845,9 +815,7 @@ unsigned __stdcall ThreadProc( void * )
     {
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
-        hbmTemp = hbm1;
-        hbm1 = hbm2;
-        hbm2 = hbmTemp;
+        hbm1.Swap(hbm2);
         g_hbmKakijun = hbm1;
         hbmOld = SelectObject(hdcMem, hbm1);
         rc.left = 0;
@@ -865,8 +833,6 @@ unsigned __stdcall ThreadProc( void * )
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
-    DeleteObject(hbm1);
-    DeleteObject(hbm2);
     return 0;
 }
 
