@@ -261,7 +261,7 @@ unsigned __stdcall ThreadProc( void * )
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for(UINT i = 0; i < v.size(); i++)
     {
-        if (v[i].pb != NULL)
+        if (v[i].type != WAIT && v[i].pb)
         {
             CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
