@@ -907,10 +907,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     PlaySound(MAKEINTRESOURCE(3000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
     if (g_hThread != NULL)
-    {
-        TerminateThread(g_hThread, 0);
         CloseHandle(g_hThread);
-    }
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
@@ -1060,7 +1057,7 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     GetClientRect(hwnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-    if (g_hbmKakijun != NULL)
+    if (g_hbmKakijun)
     {
         hdcMem = CreateCompatibleDC(hdc);
         hbmOld = SelectObject(hdcMem, g_hbmKakijun);
@@ -1154,11 +1151,34 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
 void OnDestroy(HWND hwnd)
 {
-    if (g_hThread != NULL)
+    if (g_hThread)
     {
-        TerminateThread(g_hThread, 0);
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        WaitForSingleObject(g_hThread, 1500);
         CloseHandle(g_hThread);
     }
+
+    UINT i, j;
+    for (i = 0; i < _countof(g_aahbmHiragana); ++i)
+    {
+        for (j = 0; j < _countof(g_aahbmHiragana[0]); ++j)
+        {
+            if (g_aahbmHiragana[i][j])
+                DeleteObject(g_aahbmHiragana[i][j]);
+        }
+    }
+    for (i = 0; i < _countof(g_aahbmKatakana); ++i)
+    {
+        for (j = 0; j < _countof(g_aahbmKatakana[0]); ++j)
+        {
+            if (g_aahbmKatakana[i][j])
+                DeleteObject(g_aahbmKatakana[i][j]);
+        }
+    }
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+
     PostQuitMessage(0);
 }
 
