@@ -20,7 +20,7 @@
 #include <set>
 
 #include "kakijun.h"
-#include "../CRgn.h"
+#include "../CGdiObj.h"
 #include "../CDebug.h"
 
 #ifndef M_PI

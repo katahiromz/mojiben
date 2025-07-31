@@ -14,6 +14,7 @@
 using namespace std;
 
 #include "kakijun.h"
+#include "../CGdiObj.h"
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (2)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (2) Kakijun");
@@ -244,7 +245,6 @@ unsigned __stdcall ThreadProc( void * )
     HDC hdc, hdcMem;
     HBITMAP hbm, hbm2, hbmTemp;
     HGDIOBJ hbmOld, hPenOld;
-    HRGN hRgn, hRgn2, hRgn3, hRgn4, hRgn5;
     vector<GA> v;
     INT k;
     POINT apt[4];
@@ -259,14 +259,13 @@ unsigned __stdcall ThreadProc( void * )
     else
         v = g_print_uppercase_kakijun[g_nMoji];
 
-    hRgn = CreateRectRgn(0, 0, 0, 0);
+    CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for(UINT i = 0; i < v.size(); i++)
     {
         if (v[i].pb != NULL)
         {
-            hRgn2 = ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb);
+            CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
-            DeleteObject(hRgn2);
         }
     }
 
@@ -296,24 +295,16 @@ unsigned __stdcall ThreadProc( void * )
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     Sleep(700);
 
-    hRgn5 = CreateRectRgn(0, 0, 0, 0);
+    CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-    for(UINT i = 0; i < v.size(); i++)
+    for (UINT i = 0; i < v.size(); i++)
     {
-        if (!IsWindowVisible(g_hKakijunWnd))
-        {
-            DeleteObject(hRgn5);
-            DeleteObject(hbm);
-            DeleteObject(hbm2);
-            return 0;
-        }
         switch(v[i].type)
         {
         case WAIT:
             Sleep(500);
             if (!IsWindowVisible(g_hKakijunWnd))
             {
-                DeleteObject(hRgn5);
                 DeleteObject(hbm);
                 DeleteObject(hbm2);
                 return 0;
@@ -322,282 +313,269 @@ unsigned __stdcall ThreadProc( void * )
             break;
 
         case DOT:
-            hdc = GetDC(g_hKakijunWnd);
-            hdcMem = CreateCompatibleDC(hdc);
-            hbmTemp = hbm;
-            hbm = hbm2;
-            hbm2 = hbmTemp;
-            g_hbm2 = hbm;
-            hbmOld = SelectObject(hdcMem, hbm);
-            rc.left = 0;
-            rc.top = 0;
-            rc.right = siz.cx;
-            rc.bottom = siz.cy;
-            FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-            hPenOld = SelectObject(hdcMem, g_hPenBlue);
-            DrawGuideline(hdcMem, siz.cx);
-            SelectObject(hdcMem, hPenOld);
-
-            FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-            hRgn2 = ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb);
-            CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
-            FillRgn(hdcMem, hRgn5, g_hbrRed);
-            SelectObject(hdcMem, hbmOld);
-
-            DeleteObject(hRgn2);
-            DeleteDC(hdcMem);
-            ReleaseDC(g_hKakijunWnd, hdc);
-            InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-            Sleep(50);
-            break;
-
-        case LINEAR:
-            hdc = GetDC(g_hKakijunWnd);
-            hdcMem = CreateCompatibleDC(hdc);
-            hbmTemp = hbm;
-            hbm = hbm2;
-            hbm2 = hbmTemp;
-            g_hbm2 = hbm;
-            hbmOld = SelectObject(hdcMem, hbm);
-
-            rc.left = 0;
-            rc.top = 0;
-            rc.right = siz.cx;
-            rc.bottom = siz.cy;
-            FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-            hPenOld = SelectObject(hdcMem, g_hPenBlue);
-            DrawGuideline(hdcMem, siz.cx);
-            SelectObject(hdcMem, hPenOld);
-
-            FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            SelectObject(hdcMem, hbmOld);
-
-            hRgn2 = ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb);
-            cost = cos(v[i].angle0 * M_PI / 180);
-            sint = sin(v[i].angle0 * M_PI / 180);
-            for(k = -200; k < 200; k += 30)
             {
-                if (!IsWindowVisible(g_hKakijunWnd))
-                {
-                    DeleteObject(hRgn5);
-                    DeleteObject(hRgn2);
-                    DeleteObject(hbm);
-                    DeleteObject(hbm2);
-                    return 0;
-                }
-                apt[0].x = LONG(150 + k * cost + 150 * sint);
-                apt[0].y = LONG(150 + k * sint - 150 * cost);
-                apt[1].x = LONG(150 + k * cost - 150 * sint);
-                apt[1].y = LONG(150 + k * sint + 150 * cost);
-                apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
-                apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
-                apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
-                apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
-                BeginPath(hdcMem);
-                Polygon(hdcMem, apt, 4);
-                EndPath(hdcMem);
-                hRgn3 = PathToRegion(hdcMem);
-                hRgn4 = CreateRectRgn(0, 0, 0, 0);
-                INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                if (n != NULLREGION)
-                {
-                    DeleteObject(hRgn4);
-                    break;
-                }
-                DeleteObject(hRgn4);
-            }
-            for( ; k < 200; k += 30)
-            {
-                if (!IsWindowVisible(g_hKakijunWnd))
-                {
-                    DeleteObject(hRgn5);
-                    DeleteObject(hRgn2);
-                    DeleteObject(hbm);
-                    DeleteObject(hbm2);
-                    break;
-                }
+                hdc = GetDC(g_hKakijunWnd);
+                hdcMem = CreateCompatibleDC(hdc);
                 hbmTemp = hbm;
                 hbm = hbm2;
                 hbm2 = hbmTemp;
                 g_hbm2 = hbm;
                 hbmOld = SelectObject(hdcMem, hbm);
-                
+                rc.left = 0;
+                rc.top = 0;
+                rc.right = siz.cx;
+                rc.bottom = siz.cy;
+                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
                 hPenOld = SelectObject(hdcMem, g_hPenBlue);
                 DrawGuideline(hdcMem, siz.cx);
                 SelectObject(hdcMem, hPenOld);
 
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                apt[0].x = LONG(150 + k * cost + 150 * sint);
-                apt[0].y = LONG(150 + k * sint - 150 * cost);
-                apt[1].x = LONG(150 + k * cost - 150 * sint);
-                apt[1].y = LONG(150 + k * sint + 150 * cost);
-                apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
-                apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
-                apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
-                apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
-                BeginPath(hdcMem);
-                Polygon(hdcMem, apt, 4);
-                EndPath(hdcMem);
-                hRgn3 = PathToRegion(hdcMem);
-                hRgn4 = CreateRectRgn(0, 0, 0, 0);
-                INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
+                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
-
-                DeleteObject(hRgn4);
                 SelectObject(hdcMem, hbmOld);
 
+                DeleteDC(hdcMem);
+                ReleaseDC(g_hKakijunWnd, hdc);
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-                if (n == NULLREGION)
-                    break;
-                Sleep(30);
+                Sleep(50);
+                break;
             }
-            DeleteObject(hRgn2);
-            DeleteDC(hdcMem);
-            ReleaseDC(g_hKakijunWnd, hdc);
-            break;
+
+        case LINEAR:
+            {
+                hdc = GetDC(g_hKakijunWnd);
+                hdcMem = CreateCompatibleDC(hdc);
+                hbmTemp = hbm;
+                hbm = hbm2;
+                hbm2 = hbmTemp;
+                g_hbm2 = hbm;
+                hbmOld = SelectObject(hdcMem, hbm);
+
+                rc.left = 0;
+                rc.top = 0;
+                rc.right = siz.cx;
+                rc.bottom = siz.cy;
+                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
+                hPenOld = SelectObject(hdcMem, g_hPenBlue);
+                DrawGuideline(hdcMem, siz.cx);
+                SelectObject(hdcMem, hPenOld);
+
+                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+                SelectObject(hdcMem, hbmOld);
+
+                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                cost = cos(v[i].angle0 * M_PI / 180);
+                sint = sin(v[i].angle0 * M_PI / 180);
+                for(k = -200; k < 200; k += 30)
+                {
+                    if (!IsWindowVisible(g_hKakijunWnd))
+                    {
+                        DeleteObject(hbm);
+                        DeleteObject(hbm2);
+                        return 0;
+                    }
+                    apt[0].x = LONG(150 + k * cost + 150 * sint);
+                    apt[0].y = LONG(150 + k * sint - 150 * cost);
+                    apt[1].x = LONG(150 + k * cost - 150 * sint);
+                    apt[1].y = LONG(150 + k * sint + 150 * cost);
+                    apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
+                    apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
+                    apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
+                    apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
+                    BeginPath(hdcMem);
+                    Polygon(hdcMem, apt, 4);
+                    EndPath(hdcMem);
+                    CRgn hRgn3(::PathToRegion(hdcMem));
+                    CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
+                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
+                    if (n != NULLREGION)
+                        break;
+                }
+                for( ; k < 200; k += 30)
+                {
+                    if (!IsWindowVisible(g_hKakijunWnd))
+                    {
+                        DeleteObject(hbm);
+                        DeleteObject(hbm2);
+                        break;
+                    }
+                    hbmTemp = hbm;
+                    hbm = hbm2;
+                    hbm2 = hbmTemp;
+                    g_hbm2 = hbm;
+                    hbmOld = SelectObject(hdcMem, hbm);
+                    
+                    hPenOld = SelectObject(hdcMem, g_hPenBlue);
+                    DrawGuideline(hdcMem, siz.cx);
+                    SelectObject(hdcMem, hPenOld);
+
+                    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+                    apt[0].x = LONG(150 + k * cost + 150 * sint);
+                    apt[0].y = LONG(150 + k * sint - 150 * cost);
+                    apt[1].x = LONG(150 + k * cost - 150 * sint);
+                    apt[1].y = LONG(150 + k * sint + 150 * cost);
+                    apt[2].x = LONG(150 + (k + 30) * cost - 150 * sint);
+                    apt[2].y = LONG(150 + (k + 30) * sint + 150 * cost);
+                    apt[3].x = LONG(150 + (k + 30) * cost + 150 * sint);
+                    apt[3].y = LONG(150 + (k + 30) * sint - 150 * cost);
+                    BeginPath(hdcMem);
+                    Polygon(hdcMem, apt, 4);
+                    EndPath(hdcMem);
+                    CRgn hRgn3(::PathToRegion(hdcMem));
+                    CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
+                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
+                    CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
+                    FillRgn(hdcMem, hRgn5, g_hbrRed);
+
+                    SelectObject(hdcMem, hbmOld);
+
+                    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                    if (n == NULLREGION)
+                        break;
+                    Sleep(30);
+                }
+                DeleteDC(hdcMem);
+                ReleaseDC(g_hKakijunWnd, hdc);
+                break;
+            }
 
         case POLAR:
-            hdc = GetDC(g_hKakijunWnd);
-            hdcMem = CreateCompatibleDC(hdc);
-            hbmTemp = hbm;
-            hbm = hbm2;
-            hbm2 = hbmTemp;
-            g_hbm2 = hbm;
-            hbmOld = SelectObject(hdcMem, hbm);
-            rc.left = 0;
-            rc.top = 0;
-            rc.right = siz.cx;
-            rc.bottom = siz.cy;
-            FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-            hPenOld = SelectObject(hdcMem, g_hPenBlue);
-            DrawGuideline(hdcMem, siz.cx);
-            SelectObject(hdcMem, hPenOld);
-            
-            FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            SelectObject(hdcMem, hbmOld);
-
-            hRgn2 = ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb);
-            if (v[i].angle0 <= v[i].angle1)
             {
-                for(k = v[i].angle0; k < v[i].angle1; k += 20)
+                hdc = GetDC(g_hKakijunWnd);
+                hdcMem = CreateCompatibleDC(hdc);
+                hbmTemp = hbm;
+                hbm = hbm2;
+                hbm2 = hbmTemp;
+                g_hbm2 = hbm;
+                hbmOld = SelectObject(hdcMem, hbm);
+                rc.left = 0;
+                rc.top = 0;
+                rc.right = siz.cx;
+                rc.bottom = siz.cy;
+                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
+                hPenOld = SelectObject(hdcMem, g_hPenBlue);
+                DrawGuideline(hdcMem, siz.cx);
+                SelectObject(hdcMem, hPenOld);
+                
+                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+                SelectObject(hdcMem, hbmOld);
+
+                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                if (v[i].angle0 <= v[i].angle1)
                 {
-                    if (!IsWindowVisible(g_hKakijunWnd))
+                    for(k = v[i].angle0; k < v[i].angle1; k += 20)
                     {
-                        DeleteObject(hRgn5);
-                        DeleteObject(hRgn2);
-                        DeleteObject(hbm);
-                        DeleteObject(hbm2);
-                        return 0;
+                        if (!IsWindowVisible(g_hKakijunWnd))
+                        {
+                            DeleteObject(hbm);
+                            DeleteObject(hbm2);
+                            return 0;
+                        }
+                        double theta = k * M_PI / 180.0;
+                        double theta2 = (k + 20) * M_PI / 180.0;
+                        cost = cos(theta);
+                        sint = sin(theta);
+                        cost2 = cos(theta2);
+                        sint2 = sin(theta2);
+                        hbmTemp = hbm;
+                        hbm = hbm2;
+                        hbm2 = hbmTemp;
+                        g_hbm2 = hbm;
+                        hbmOld = SelectObject(hdcMem, hbm);
+
+                        hPenOld = SelectObject(hdcMem, g_hPenBlue);
+                        DrawGuideline(hdcMem, siz.cx);
+                        SelectObject(hdcMem, hPenOld);
+
+                        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+                        apt[0].x = LONG(v[i].cx + 200 * cost);
+                        apt[0].y = LONG(v[i].cy + 200 * sint);
+                        apt[1].x = LONG(v[i].cx + 200 * cost2);
+                        apt[1].y = LONG(v[i].cy + 200 * sint2);
+                        apt[2].x = v[i].cx;
+                        apt[2].y = v[i].cy;
+                        BeginPath(hdcMem);
+                        Polygon(hdcMem, apt, 3);
+                        EndPath(hdcMem);
+                        CRgn hRgn3(::PathToRegion(hdcMem));
+                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
+                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
+                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
+                        FillRgn(hdcMem, hRgn5, g_hbrRed);
+
+                        SelectObject(hdcMem, hbmOld);
+
+                        InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                        if (n == NULLREGION)
+                            break;
+                        Sleep(30);
                     }
-                    double theta = k * M_PI / 180.0;
-                    double theta2 = (k + 20) * M_PI / 180.0;
-                    cost = cos(theta);
-                    sint = sin(theta);
-                    cost2 = cos(theta2);
-                    sint2 = sin(theta2);
-                    hbmTemp = hbm;
-                    hbm = hbm2;
-                    hbm2 = hbmTemp;
-                    g_hbm2 = hbm;
-                    hbmOld = SelectObject(hdcMem, hbm);
-
-                    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                    DrawGuideline(hdcMem, siz.cx);
-                    SelectObject(hdcMem, hPenOld);
-
-                    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-                    apt[0].x = LONG(v[i].cx + 200 * cost);
-                    apt[0].y = LONG(v[i].cy + 200 * sint);
-                    apt[1].x = LONG(v[i].cx + 200 * cost2);
-                    apt[1].y = LONG(v[i].cy + 200 * sint2);
-                    apt[2].x = v[i].cx;
-                    apt[2].y = v[i].cy;
-                    BeginPath(hdcMem);
-                    Polygon(hdcMem, apt, 3);
-                    EndPath(hdcMem);
-                    hRgn3 = PathToRegion(hdcMem);
-                    hRgn4 = CreateRectRgn(0, 0, 0, 0);
-                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                    CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                    FillRgn(hdcMem, hRgn5, g_hbrRed);
-
-                    DeleteObject(hRgn4);
-                    SelectObject(hdcMem, hbmOld);
-
-                    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-                    if (n == NULLREGION)
-                        break;
-                    Sleep(30);
                 }
-            }
-            else
-            {
-                for(k = v[i].angle0; k > v[i].angle1; k -= 20)
+                else
                 {
-                    if (!IsWindowVisible(g_hKakijunWnd))
+                    for(k = v[i].angle0; k > v[i].angle1; k -= 20)
                     {
-                        DeleteObject(hRgn5);
-                        DeleteObject(hRgn2);
-                        DeleteObject(hbm);
-                        DeleteObject(hbm2);
-                        return 0;
+                        if (!IsWindowVisible(g_hKakijunWnd))
+                        {
+                            DeleteObject(hbm);
+                            DeleteObject(hbm2);
+                            return 0;
+                        }
+                        double theta = (k - 20) * M_PI / 180.0;
+                        double theta2 = k * M_PI / 180.0;
+                        cost = cos(theta);
+                        sint = sin(theta);
+                        cost2 = cos(theta2);
+                        sint2 = sin(theta2);
+                        hbmTemp = hbm;
+                        hbm = hbm2;
+                        hbm2 = hbmTemp;
+                        g_hbm2 = hbm;
+                        hbmOld = SelectObject(hdcMem, hbm);
+
+                        hPenOld = SelectObject(hdcMem, g_hPenBlue);
+                        DrawGuideline(hdcMem, siz.cx);
+                        SelectObject(hdcMem, hPenOld);
+
+                        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+                        apt[0].x = LONG(v[i].cx + 200 * cost);
+                        apt[0].y = LONG(v[i].cy + 200 * sint);
+                        apt[1].x = LONG(v[i].cx + 200 * cost2);
+                        apt[1].y = LONG(v[i].cy + 200 * sint2);
+                        apt[2].x = v[i].cx;
+                        apt[2].y = v[i].cy;
+                        BeginPath(hdcMem);
+                        Polygon(hdcMem, apt, 3);
+                        EndPath(hdcMem);
+                        CRgn hRgn3(::PathToRegion(hdcMem));
+                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
+                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
+                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
+                        FillRgn(hdcMem, hRgn5, g_hbrRed);
+
+                        SelectObject(hdcMem, hbmOld);
+
+                        InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                        if (n == NULLREGION)
+                            break;
+                        Sleep(30);
                     }
-                    double theta = (k - 20) * M_PI / 180.0;
-                    double theta2 = k * M_PI / 180.0;
-                    cost = cos(theta);
-                    sint = sin(theta);
-                    cost2 = cos(theta2);
-                    sint2 = sin(theta2);
-                    hbmTemp = hbm;
-                    hbm = hbm2;
-                    hbm2 = hbmTemp;
-                    g_hbm2 = hbm;
-                    hbmOld = SelectObject(hdcMem, hbm);
-
-                    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                    DrawGuideline(hdcMem, siz.cx);
-                    SelectObject(hdcMem, hPenOld);
-
-                    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-                    apt[0].x = LONG(v[i].cx + 200 * cost);
-                    apt[0].y = LONG(v[i].cy + 200 * sint);
-                    apt[1].x = LONG(v[i].cx + 200 * cost2);
-                    apt[1].y = LONG(v[i].cy + 200 * sint2);
-                    apt[2].x = v[i].cx;
-                    apt[2].y = v[i].cy;
-                    BeginPath(hdcMem);
-                    Polygon(hdcMem, apt, 3);
-                    EndPath(hdcMem);
-                    hRgn3 = PathToRegion(hdcMem);
-                    hRgn4 = CreateRectRgn(0, 0, 0, 0);
-                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                    CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                    FillRgn(hdcMem, hRgn5, g_hbrRed);
-
-                    DeleteObject(hRgn4);
-                    SelectObject(hdcMem, hbmOld);
-
-                    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-                    if (n == NULLREGION)
-                        break;
-                    Sleep(30);
                 }
+                DeleteDC(hdcMem);
+                ReleaseDC(g_hKakijunWnd, hdc);
+                break;
             }
-            DeleteObject(hRgn2);
-            DeleteDC(hdcMem);
-            ReleaseDC(g_hKakijunWnd, hdc);
-            break;
         }
     }
-    DeleteObject(hRgn5);
 
     Sleep(500);
     PlaySound(MAKEINTRESOURCE(5000 + g_nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);

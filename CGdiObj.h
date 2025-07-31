@@ -34,3 +34,31 @@ public:
             ::DeleteObject(m_hRgn);
     }
 };
+
+class CDC
+{
+public:
+    HDC m_hDC;
+    HWND m_hWnd;
+
+    operator HDC()
+    {
+        return m_hDC;
+    }
+
+    CDC(HDC hdcRef = NULL) : m_hDC(::CreateCompatibleDC(hdcRef)), m_hWnd(NULL)
+    {
+    }
+
+    CDC(HWND hwnd) : m_hDC(::GetDC(hwnd)), m_hWnd(hwnd)
+    {
+    }
+
+    ~CDC()
+    {
+        if (m_hWnd)
+            ::ReleaseDC(m_hWnd, m_hDC);
+        else
+            ::DeleteDC(m_hDC);
+    }
+};
