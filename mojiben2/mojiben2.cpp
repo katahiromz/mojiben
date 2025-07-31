@@ -713,7 +713,6 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
 {
     RECT rc;
     SIZE siz;
-    HDC hdcMem;
     HGDIOBJ hbmOld;
 
     GetClientRect(hwnd, &rc);
@@ -721,7 +720,7 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     siz.cy = rc.bottom - rc.top;
     if (g_hbmKakijun)
     {
-        hdcMem = CreateCompatibleDC(hdc);
+        CDC hdcMem(hdc);
         hbmOld = SelectObject(hdcMem, g_hbmKakijun);
         BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
