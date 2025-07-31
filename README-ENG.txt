@@ -6,7 +6,7 @@
 
 "Moji No Benkyou" is a groundbreaking software that helps you learn the pronunciation and stroke order of characters.
 
-You can learn "Hiragana," "Katakana," "Alphabet," and "Kanji that first graders need to know."
+You can learn "Hiragana," "Katakana," "Alphabet," and "Kanji."
 
 ## Usage
 
