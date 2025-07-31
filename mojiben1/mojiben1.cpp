@@ -202,15 +202,14 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
-    HDC hdcMem, hdcMem2;
     HGDIOBJ hbmOld, hbmOld2;
     INT i, j;
     RECT rc;
     SIZE siz;
     HBRUSH hbr;
 
-    hdcMem = CreateCompatibleDC(hdc);
-    hdcMem2 = CreateCompatibleDC(hdc);
+    CDC hdcMem(hdc);
+    CDC hdcMem2(hdc);
 
     GetClientRect(hwnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -423,9 +422,6 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
     BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem2, 0, 0, SRCCOPY);
     SelectObject(hdcMem2, hbmOld2);
-
-    DeleteDC(hdcMem);
-    DeleteDC(hdcMem2);
 }
 
 unsigned __stdcall ThreadProc( void * )
