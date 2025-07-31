@@ -376,7 +376,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"買:Buy",
     L"麦:Wheat, Barley",
     L"半:Half",
-    L"番:No.",
+    L"番:#, Watching",
     L"父:Father",
     L"風:Wind, Breeze, Blast, Style",
     L"分:Minutes, Divide, Branch, Rate",
