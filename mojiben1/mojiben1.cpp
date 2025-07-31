@@ -607,13 +607,6 @@ unsigned __stdcall ThreadProc( void * )
     PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
     for (UINT i = 0; i < v.size(); i++)
     {
-        if (!IsWindowVisible(g_hKakijunWnd))
-        {
-            DeleteObject(hbm1);
-            DeleteObject(hbm2);
-            return 0;
-        }
-
         switch (v[i].type)
         {
         case WAIT:
