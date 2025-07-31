@@ -5,6 +5,7 @@
 #ifdef NDEBUG
     #define ASSERT(exp)
     #define DPRINTF(fmt, ...)
+    #define OBJECTS_CHECK_POINT()
 #else // ndef NDEBUG
     #include <assert.h>
     #define ASSERT(exp) assert(exp)
@@ -29,4 +30,14 @@
         DebugVPrintf(file, line, fmt, va);
         va_end(va);
     }
+
+    #if (_WIN32_WINNT >= 0x0500)
+        #define OBJECTS_CHECK_POINT() do { \
+            DPRINTF("GDI Objects: %ld, User Objects: %ld\n", \
+            GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS), \
+            GetGuiResources(GetCurrentProcess(), GR_USEROBJECTS)); \
+        } while (0)
+    #else
+        #define OBJECTS_CHECK_POINT()
+    #endif
 #endif // ndef NDEBUG

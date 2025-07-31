@@ -1,6 +1,9 @@
-﻿// Moji No Benkyo (3)
-// Copyright (C) 2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// This file is public domain software.
+﻿// Detect memory leaks (Visual C++ only)
+#if defined(_MSC_VER) && !defined(NDEBUG) && !defined(_CRTDBG_MAP_ALLOC)
+    #define _CRTDBG_MAP_ALLOC
+    #include <crtdbg.h>
+#endif
+
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
@@ -231,7 +234,7 @@ void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
     SelectObject(hdcMem, hFontOld);
 }
 
-unsigned __stdcall ThreadProc( void * )
+static unsigned ThreadProcWorker(void)
 {
     RECT rc;
     SIZE siz;
@@ -497,6 +500,19 @@ unsigned __stdcall ThreadProc( void * )
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
+    return 0;
+}
+
+unsigned __stdcall ThreadProc(void *)
+{
+    // Detect handle leaks
+    OBJECTS_CHECK_POINT();
+
+    ThreadProcWorker();
+
+    // Detect handle leaks
+    OBJECTS_CHECK_POINT();
+
     return 0;
 }
 
@@ -856,6 +872,14 @@ INT WINAPI WinMain(
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+
+    // Detect handle leaks
+    OBJECTS_CHECK_POINT();
+
+    // Detect memory leaks
+#if defined(_MSC_VER) && !defined(NDEBUG) // Visual C++ only
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
     return (INT)msg.wParam;
 }
