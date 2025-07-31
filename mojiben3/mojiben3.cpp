@@ -245,7 +245,7 @@ unsigned __stdcall ThreadProc( void * )
     RECT rc;
     SIZE siz;
     HDC hdc, hdcMem;
-    HBITMAP hbm, hbm2, hbmTemp;
+    HBITMAP hbm1, hbm2, hbmTemp;
     HGDIOBJ hbmOld;
     std::vector<GA> v;
     INT k;
@@ -270,10 +270,10 @@ unsigned __stdcall ThreadProc( void * )
 
     hdc = GetDC(g_hKakijunWnd);
     hdcMem = CreateCompatibleDC(hdc);
-    hbm = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+    hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
     hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
-    hbmOld = SelectObject(hdcMem, hbm);
+    hbmOld = SelectObject(hdcMem, hbm1);
     rc.left = 0;
     rc.top = 0;
     rc.right = siz.cx;
@@ -288,7 +288,7 @@ unsigned __stdcall ThreadProc( void * )
     DeleteDC(hdcMem);
     ReleaseDC(g_hKakijunWnd, hdc);
 
-    g_hbmKakijun = hbm;
+    g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     Sleep(300);
@@ -309,11 +309,11 @@ unsigned __stdcall ThreadProc( void * )
             {
                 hdc = GetDC(g_hKakijunWnd);
                 hdcMem = CreateCompatibleDC(hdc);
-                hbmTemp = hbm;
-                hbm = hbm2;
+                hbmTemp = hbm1;
+                hbm1 = hbm2;
                 hbm2 = hbmTemp;
-                g_hbmKakijun = hbm;
-                hbmOld = SelectObject(hdcMem, hbm);
+                g_hbmKakijun = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
                 rc.right = siz.cx;
@@ -333,7 +333,7 @@ unsigned __stdcall ThreadProc( void * )
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                     {
-                        DeleteObject(hbm);
+                        DeleteObject(hbm1);
                         DeleteObject(hbm2);
                         return 0;
                     }
@@ -358,15 +358,15 @@ unsigned __stdcall ThreadProc( void * )
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                     {
-                        DeleteObject(hbm);
+                        DeleteObject(hbm1);
                         DeleteObject(hbm2);
                         return 0;
                     }
-                    hbmTemp = hbm;
-                    hbm = hbm2;
+                    hbmTemp = hbm1;
+                    hbm1 = hbm2;
                     hbm2 = hbmTemp;
-                    g_hbmKakijun = hbm;
-                    hbmOld = SelectObject(hdcMem, hbm);
+                    g_hbmKakijun = hbm1;
+                    hbmOld = SelectObject(hdcMem, hbm1);
                     apt[0].x = LONG(150 + k * cost + 150 * sint);
                     apt[0].y = LONG(150 + k * sint - 150 * cost);
                     apt[1].x = LONG(150 + k * cost - 150 * sint);
@@ -399,11 +399,11 @@ unsigned __stdcall ThreadProc( void * )
             {
                 hdc = GetDC(g_hKakijunWnd);
                 hdcMem = CreateCompatibleDC(hdc);
-                hbmTemp = hbm;
-                hbm = hbm2;
+                hbmTemp = hbm1;
+                hbm1 = hbm2;
                 hbm2 = hbmTemp;
-                g_hbmKakijun = hbm;
-                hbmOld = SelectObject(hdcMem, hbm);
+                g_hbmKakijun = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
                 rc.left = 0;
                 rc.top = 0;
                 rc.right = siz.cx;
@@ -423,7 +423,7 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                         {
-                            DeleteObject(hbm);
+                            DeleteObject(hbm1);
                             DeleteObject(hbm2);
                             break;
                         }
@@ -433,11 +433,11 @@ unsigned __stdcall ThreadProc( void * )
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm;
-                        hbm = hbm2;
+                        hbmTemp = hbm1;
+                        hbm1 = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbmKakijun = hbm;
-                        hbmOld = SelectObject(hdcMem, hbm);
+                        g_hbmKakijun = hbm1;
+                        hbmOld = SelectObject(hdcMem, hbm1);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
                         apt[0].y = LONG(v[i].cy + 200 * sint);
                         apt[1].x = LONG(v[i].cx + 200 * cost2);
@@ -466,7 +466,7 @@ unsigned __stdcall ThreadProc( void * )
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                         {
-                            DeleteObject(hbm);
+                            DeleteObject(hbm1);
                             DeleteObject(hbm2);
                             break;
                         }
@@ -476,11 +476,11 @@ unsigned __stdcall ThreadProc( void * )
                         sint = sin(theta);
                         cost2 = cos(theta2);
                         sint2 = sin(theta2);
-                        hbmTemp = hbm;
-                        hbm = hbm2;
+                        hbmTemp = hbm1;
+                        hbm1 = hbm2;
                         hbm2 = hbmTemp;
-                        g_hbmKakijun = hbm;
-                        hbmOld = SelectObject(hdcMem, hbm);
+                        g_hbmKakijun = hbm1;
+                        hbmOld = SelectObject(hdcMem, hbm1);
                         apt[0].x = LONG(v[i].cx + 200 * cost);
                         apt[0].y = LONG(v[i].cy + 200 * sint);
                         apt[1].x = LONG(v[i].cx + 200 * cost2);
@@ -514,11 +514,11 @@ unsigned __stdcall ThreadProc( void * )
 
     hdc = GetDC(g_hKakijunWnd);
     hdcMem = CreateCompatibleDC(hdc);
-    hbmTemp = hbm;
-    hbm = hbm2;
+    hbmTemp = hbm1;
+    hbm1 = hbm2;
     hbm2 = hbmTemp;
-    g_hbmKakijun = hbm;
-    hbmOld = SelectObject(hdcMem, hbm);
+    g_hbmKakijun = hbm1;
+    hbmOld = SelectObject(hdcMem, hbm1);
     rc.left = 0;
     rc.top = 0;
     rc.right = siz.cx;
@@ -539,7 +539,7 @@ unsigned __stdcall ThreadProc( void * )
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
-    DeleteObject(hbm);
+    DeleteObject(hbm1);
     DeleteObject(hbm2);
     return 0;
 }
