@@ -496,7 +496,7 @@ BOOL GetLeftArrowRect(HWND hwnd, LPRECT prc)
 {
     RECT rcClient;
     GetClientRect(hwnd, &rcClient);
-    SetRect(prc, 0, rcClient.bottom - 48, 32, rcClient.bottom - 48 + 32);
+    SetRect(prc, 0, rcClient.bottom - 48, 40, rcClient.bottom - 48 + 40);
     return (g_iPage > 0);
 }
 
@@ -504,7 +504,7 @@ BOOL GetRightArrowRect(HWND hwnd, LPRECT prc)
 {
     RECT rcClient;
     GetClientRect(hwnd, &rcClient);
-    SetRect(prc, rcClient.right - 32, rcClient.bottom - 48, rcClient.right, rcClient.bottom - 48 + 32);
+    SetRect(prc, rcClient.right - 40, rcClient.bottom - 48, rcClient.right, rcClient.bottom - 48 + 40);
     return g_iPage + 1 < GetNumPage();
 }
 
