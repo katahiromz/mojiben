@@ -1353,15 +1353,13 @@ INT WINAPI WinMain(
     LPSTR       pszCmdLine,
     INT         nCmdShow)
 {
-    WNDCLASSEX wcx;
-    DWORD style;
     MSG msg;
     BOOL f;
 
     g_hInstance = hInstance;
     InitCommonControls();
 
-    wcx.cbSize          = sizeof(WNDCLASSEX);
+    WNDCLASSEX wcx = { sizeof(wcx) };
     wcx.style           = 0;
     wcx.lpfnWndProc     = WindowProc;
     wcx.cbClsExtra      = 0;
@@ -1396,9 +1394,12 @@ INT WINAPI WinMain(
     if (!RegisterClassEx(&wcx))
         return 1;
 
-    style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
-    g_hMainWnd = CreateWindow(g_szClassName, LoadStringDx(1), style,
-        CW_USEDEFAULT, CW_USEDEFAULT, 660, 525,
+    DWORD style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
+    DWORD exstyle = 0;
+    RECT rc = { 0, 0, 654, 496 };
+    AdjustWindowRectEx(&rc, style, FALSE, exstyle);
+    g_hMainWnd = CreateWindowEx(exstyle, g_szClassName, LoadStringDx(1), style,
+        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top,
         NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {

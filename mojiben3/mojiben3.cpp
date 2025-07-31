@@ -866,8 +866,12 @@ INT WINAPI WinMain(
         return 1;
 
     DWORD style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
-    g_hMainWnd = CreateWindow(g_szClassName, LoadStringDx(1), style,
-        CW_USEDEFAULT, CW_USEDEFAULT, 700, 380, NULL, NULL, hInstance, NULL);
+    DWORD exstyle = 0;
+    RECT rc = { 0, 0, 694, 351 };
+    AdjustWindowRectEx(&rc, style, FALSE, exstyle);
+    g_hMainWnd = CreateWindowEx(exstyle, g_szClassName, LoadStringDx(1), style,
+        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top,
+        NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {
         MessageBox(NULL, LoadStringDx(3), NULL, MB_ICONERROR);
