@@ -49,6 +49,7 @@ HWND g_hwndCaption1 = NULL;
 HWND g_hwndCaption2 = NULL;
 HFONT g_hFont;
 HFONT g_hFontSmall;
+POINT g_ptDragging;
 
 HBITMAP g_ahbmKanji2[160];
 HBITMAP g_hbmClient = NULL;
@@ -987,6 +988,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
             return;
         }
     }
+
+    GetCursorPos(&g_ptDragging);
+    SetCapture(hwnd);
 }
 
 VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
@@ -1333,6 +1337,57 @@ void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     }
 }
 
+void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
+{
+    if (hwnd != GetCapture())
+        return;
+
+    RECT rcClient;
+    GetClientRect(hwnd, &rcClient);
+
+    POINT pt;
+    GetCursorPos(&pt);
+
+    float eDelta = float(g_ptDragging.x - pt.x) / (rcClient.right / 4);
+    if (eDelta < -1)
+        eDelta = -1;
+    else if (eDelta > +1)
+        eDelta = +1;
+
+    if (eDelta == +1 && g_iPage + 1 < GetNumPage())
+    {
+        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        g_eDisplayPage = (float)g_iPage;
+        g_eGoalPage = (float)(g_iPage + 1);
+        SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
+        return;
+    }
+
+    if (eDelta == -1 && g_iPage - 1 >= 0)
+    {
+        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        g_eDisplayPage = (float)g_iPage;
+        g_eGoalPage = (float)(g_iPage - 1);
+        SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
+        return;
+    }
+}
+
+void OnCancelMode(HWND hwnd)
+{
+    ReleaseCapture();
+}
+
+void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
+{
+    ReleaseCapture();
+}
+
+void OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
+{
+    ReleaseCapture();
+}
+
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1345,6 +1400,10 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
         HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
+        HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
+        HANDLE_MSG(hwnd, WM_RBUTTONUP, OnRButtonUp);
+        HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
+        HANDLE_MSG(hwnd, WM_CANCELMODE, OnCancelMode);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
