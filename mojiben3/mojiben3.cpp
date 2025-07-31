@@ -535,9 +535,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     g_digits_history.insert(nMoji);
 
-    if (g_hbmClient != NULL)
+    if (g_hbmClient)
         DeleteObject(g_hbmClient);
-
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
 

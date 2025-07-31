@@ -862,7 +862,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         g_katakana_history.insert(nMoji);
     else
         g_hiragana_history.insert(nMoji);
-    if (g_hbmClient != NULL)
+
+    if (g_hbmClient)
         DeleteObject(g_hbmClient);
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
@@ -897,7 +898,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         g_fKatakana = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-        if (g_hbmClient != NULL)
+        if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;
         InvalidateRect(hwnd, NULL, FALSE);
