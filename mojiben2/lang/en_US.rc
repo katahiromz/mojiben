@@ -58,7 +58,7 @@ STRINGTABLE
     2, "Version Information"
     3, "Out of memory."
     4, "Your screen is too small."
-    5, "High speed mode"
+    5, "High-speed mode"
     100, "Words starting with 'A'"
     101, "Words starting with 'B'"
     102, "Words starting with 'C'"

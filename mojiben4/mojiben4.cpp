@@ -285,6 +285,18 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (g_hKakijunWnd == NULL)
         return FALSE;
 
+    LOGFONT lf;
+    ZeroMemory(&lf, sizeof(lf));
+    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
+    lf.lfHeight = -35;
+    lf.lfWeight = FW_BOLD;
+    lf.lfCharSet = SHIFTJIS_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
+    g_hFont = CreateFontIndirect(&lf);
+
+    lf.lfHeight = -15;
+    g_hFontSmall = CreateFontIndirect(&lf);
+
     return TRUE;
 }
 
@@ -709,7 +721,6 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
 {
     RECT rc;
     SIZE siz;
-    HDC hdcMem;
     HGDIOBJ hbmOld;
 
     GetClientRect(hwnd, &rc);
@@ -717,7 +728,7 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     siz.cy = rc.bottom - rc.top;
     if (g_hbmKakijun)
     {
-        hdcMem = CreateCompatibleDC(hdc);
+        CDC hdcMem(hdc);
         hbmOld = SelectObject(hdcMem, g_hbmKakijun);
         BitBlt(hdc, 0, 0, siz.cx, siz.cy, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
@@ -777,19 +788,7 @@ BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         WS_POPUP | WS_BORDER, 0, 0, 0, 0,
         GetParent(hwnd), NULL, g_hInstance, NULL);
 
-    LOGFONT lf;
-    ZeroMemory(&lf, sizeof(lf));
-    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
-    lf.lfHeight = -35;
-    lf.lfWeight = FW_BOLD;
-    lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
-    g_hFont = CreateFontIndirect(&lf);
-
-    lf.lfHeight = -15;
-    g_hFontSmall = CreateFontIndirect(&lf);
-
-    return g_hFont != NULL;
+    return TRUE;
 }
 
 void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
