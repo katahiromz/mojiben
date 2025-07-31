@@ -581,7 +581,6 @@ unsigned __stdcall ThreadProc( void * )
 {
     RECT rc;
     SIZE siz;
-    HDC hdc, hdcMem;
     HBITMAP hbm1, hbm2, hbmTemp;
     HGDIOBJ hbmOld;
     std::vector<GA> v;
@@ -605,22 +604,22 @@ unsigned __stdcall ThreadProc( void * )
         }
     }
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
-    hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+    {
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
+        hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
-    hbmOld = SelectObject(hdcMem, hbm1);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
+        SelectObject(hdcMem, hbmOld);
+    }
 
     if (g_hbmKakijun)
         ::DeleteObject(g_hbmKakijun);
@@ -650,8 +649,8 @@ unsigned __stdcall ThreadProc( void * )
 
         case LINEAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
                 hbmTemp = hbm1;
                 hbm1 = hbm2;
                 hbm2 = hbmTemp;
@@ -729,15 +728,13 @@ unsigned __stdcall ThreadProc( void * )
                         break;
                     Sleep(35);
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
             }
             break;
 
         case POLAR:
             {
-                hdc = GetDC(g_hKakijunWnd);
-                hdcMem = CreateCompatibleDC(hdc);
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
                 hbmTemp = hbm1;
                 hbm1 = hbm2;
                 hbm2 = hbmTemp;
@@ -838,8 +835,6 @@ unsigned __stdcall ThreadProc( void * )
                         Sleep(35);
                     }
                 }
-                DeleteDC(hdcMem);
-                ReleaseDC(g_hKakijunWnd, hdc);
             }
             break;
         }
@@ -847,22 +842,22 @@ unsigned __stdcall ThreadProc( void * )
 
     Sleep(500);
 
-    hdc = GetDC(g_hKakijunWnd);
-    hdcMem = CreateCompatibleDC(hdc);
-    hbmTemp = hbm1;
-    hbm1 = hbm2;
-    hbm2 = hbmTemp;
-    g_hbmKakijun = hbm1;
-    hbmOld = SelectObject(hdcMem, hbm1);
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = siz.cx;
-    rc.bottom = siz.cy;
-    FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    SelectObject(hdcMem, hbmOld);
-    DeleteDC(hdcMem);
-    ReleaseDC(g_hKakijunWnd, hdc);
+    {
+        CDC hdc(g_hKakijunWnd);
+        CDC hdcMem(hdc);
+        hbmTemp = hbm1;
+        hbm1 = hbm2;
+        hbm2 = hbmTemp;
+        g_hbmKakijun = hbm1;
+        hbmOld = SelectObject(hdcMem, hbm1);
+        rc.left = 0;
+        rc.top = 0;
+        rc.right = siz.cx;
+        rc.bottom = siz.cy;
+        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        SelectObject(hdcMem, hbmOld);
+    }
 
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     PlaySound(MAKEINTRESOURCE(1000 + 10 * g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
