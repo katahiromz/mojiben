@@ -769,10 +769,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         return;
 
     if (g_hThread != NULL)
-    {
-        TerminateThread(g_hThread, 0);
         CloseHandle(g_hThread);
-    }
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc2, NULL, 0, NULL);
 }
 

@@ -623,11 +623,9 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         g_print_uppercase_history.insert(nMoji);
     
     PlaySound(MAKEINTRESOURCE(5000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-    if (g_hThread != NULL)
-    {
-        TerminateThread(g_hThread, 0);
+
+    if (g_hThread)
         CloseHandle(g_hThread);
-    }
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
