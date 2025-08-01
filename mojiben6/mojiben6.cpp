@@ -389,7 +389,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"真:True, Genuine",
     L"深:Deep",
     L"進:Move On, Progress, -base number",
-    L"世:World, -th (person)",
+    L"世:World, The -th (person)",
     L"整:Adjust",
     L"昔:Long Ago, Olden Days",
     L"全:All, Entirely",

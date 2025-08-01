@@ -332,7 +332,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"心:Heart, Mind, Core",
     L"新:New",
     L"親:Parent, Familiar",
-    L"図:Figure, Drawing, Plot",
+    L"図:Figure, Drawing, Attempt",
     L"数:Number",
     L"西:West",
     L"声:Voice, Opinion",
