@@ -23,9 +23,9 @@ struct GA
     DWORD cb;
     const BYTE *pb;
 };
-typedef std::vector<GA> KAKIJUN[160];
+typedef std::vector<GA> KAKIJUN[200];
 
 extern KAKIJUN g_kanji3_kakijun;
-extern INT g_map[160];
+extern INT g_map[200];
 
 VOID InitKanji2(VOID);
