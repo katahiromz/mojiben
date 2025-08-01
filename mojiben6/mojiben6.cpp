@@ -55,7 +55,7 @@ HFONT g_hFont;
 HFONT g_hFontSmall;
 POINT g_ptDragging;
 
-HBITMAP g_ahbmKanji3[1];
+HBITMAP g_ahbmKanji3[200];
 HBITMAP g_hbmClient = NULL;
 HBITMAP g_hbmLeft = NULL;
 HBITMAP g_hbmRight = NULL;
@@ -712,7 +712,6 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
             return TRUE;
         }
     }
-
 
     SetCursor(LoadCursor(NULL, IDC_ARROW));
     return TRUE;
