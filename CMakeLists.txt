@@ -47,5 +47,6 @@ add_subdirectory(mojiben2)
 add_subdirectory(mojiben3)
 add_subdirectory(mojiben4)
 add_subdirectory(mojiben5)
+add_subdirectory(mojiben6)
 
 ##############################################################################
