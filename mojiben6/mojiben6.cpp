@@ -677,6 +677,47 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     SetCapture(hwnd);
 }
 
+BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
+{
+    if (codeHitTest != HTCLIENT)
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        return TRUE;
+    }
+
+    POINT pt;
+    GetCursorPos(&pt);
+    ScreenToClient(hwnd, &pt);
+
+    RECT rc;
+
+    if (GetLeftArrowRect(hwnd, &rc) && PtInRect(&rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+
+    if (GetRightArrowRect(hwnd, &rc) && PtInRect(&rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+
+    for (UINT j = 0; j < _countof(g_ahbmKanji3); ++j)
+    {
+        GetMojiRect(j, &rc);
+        if (PtInRect(&rc, pt))
+        {
+            SetCursor(LoadCursor(NULL, IDC_HAND));
+            return TRUE;
+        }
+    }
+
+
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    return TRUE;
+}
+
 VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
 {
     RECT rc;
@@ -1094,6 +1135,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+        HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
 
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
