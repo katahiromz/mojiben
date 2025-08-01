@@ -633,6 +633,23 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
+BOOL HitUppercaseRect(HWND hwnd, LPRECT prc, POINT pt)
+{
+    SetRect(prc, 160, 60, 160 + 200, 60 + 63);
+    return PtInRect(prc, pt);
+}
+
+BOOL HitLowercaseRect(HWND hwnd, LPRECT prc, POINT pt)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    prc->left = rc.right - (160 + 200);
+    prc->top = 60;
+    prc->right = prc->left + 200;
+    prc->bottom = prc->top + 63;
+    return PtInRect(prc, pt);
+}
+
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
     INT i, j;
@@ -653,11 +670,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     pt.x = x;
     pt.y = y;
 
-    rc.left = 160;
-    rc.top = 60;
-    rc.right = rc.left + 200;
-    rc.bottom = rc.top + 63;
-    if (PtInRect(&rc, pt))
+    if (HitUppercaseRect(hwnd, &rc, pt))
     {
         g_fLowerCase = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -668,11 +681,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    rc.left = siz.cx - (160 + 200);
-    rc.top = 60;
-    rc.right = rc.left + 200;
-    rc.bottom = rc.top + 63;
-    if (PtInRect(&rc, pt))
+    if (HitLowercaseRect(hwnd, &rc, pt))
     {
         g_fLowerCase = TRUE;
         PlaySound(MAKEINTRESOURCE(301), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -709,6 +718,61 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
             return;
         }
     }
+}
+
+BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
+{
+    if (codeHitTest != HTCLIENT)
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        return TRUE;
+    }
+
+    POINT pt;
+    GetCursorPos(&pt);
+    ScreenToClient(hwnd, &pt);
+
+    RECT rc;
+    if (HitUppercaseRect(hwnd, &rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+    if (HitLowercaseRect(hwnd, &rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+
+    UINT i, j = 0;
+    for (i = 0; i < 14; i++)
+    {
+        rc.left = i * 54 + 10;
+        rc.top = j * 70 + 180;
+        rc.right = rc.left + 50;
+        rc.bottom = rc.top + 50;
+        if (PtInRect(&rc, pt))
+        {
+            SetCursor(LoadCursor(NULL, IDC_HAND));
+            return TRUE;
+        }
+    }
+    j = 1;
+    for (i = 14; i < 26; i++)
+    {
+        rc.left = (i - 14) * 54 + 10;
+        rc.top = j * 70 + 180;
+        rc.right = rc.left + 50;
+        rc.bottom = rc.top + 50;
+        if (PtInRect(&rc, pt))
+        {
+            SetCursor(LoadCursor(NULL, IDC_HAND));
+            return TRUE;
+        }
+    }
+
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    return TRUE;
 }
 
 VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
@@ -896,6 +960,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+        HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

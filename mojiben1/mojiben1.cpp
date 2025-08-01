@@ -890,13 +890,13 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
-BOOL GetHiraganaRect(HWND hwnd, LPRECT prc, POINT pt)
+BOOL HitHiraganaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
     SetRect(prc, 160, 10, 160 + 200, 10 + 76);
     return PtInRect(prc, pt);
 }
 
-BOOL GetKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
+BOOL HitKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
     RECT rc;
     GetClientRect(hwnd, &rc);
@@ -924,7 +924,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     pt.x = x;
     pt.y = y;
 
-    if (GetHiraganaRect(hwnd, &rc, pt))
+    if (HitHiraganaRect(hwnd, &rc, pt))
     {
         g_fKatakana = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -935,7 +935,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    if (GetKatakanaRect(hwnd, &rc, pt))
+    if (HitKatakanaRect(hwnd, &rc, pt))
     {
         g_fKatakana = TRUE;
         PlaySound(MAKEINTRESOURCE(350), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -1049,13 +1049,13 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     GetCursorPos(&pt);
     ScreenToClient(hwnd, &pt);
 
-    if (GetHiraganaRect(hwnd, &rc, pt))
+    if (HitHiraganaRect(hwnd, &rc, pt))
     {
         SetCursor(LoadCursor(NULL, IDC_HAND));
         return TRUE;
     }
 
-    if (GetKatakanaRect(hwnd, &rc, pt))
+    if (HitKatakanaRect(hwnd, &rc, pt))
     {
         SetCursor(LoadCursor(NULL, IDC_HAND));
         return TRUE;
