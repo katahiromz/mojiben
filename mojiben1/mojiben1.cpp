@@ -890,6 +890,20 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
+BOOL GetHiraganaRect(HWND hwnd, LPRECT prc, POINT pt)
+{
+    SetRect(prc, 160, 10, 160 + 200, 10 + 76);
+    return PtInRect(prc, pt);
+}
+
+BOOL GetKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    SetRect(prc, rc.right - (160 + 200), 10, rc.right - 160, 10 + 76);
+    return PtInRect(prc, pt);
+}
+
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
     INT i, j;
@@ -909,8 +923,8 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     pt.x = x;
     pt.y = y;
-    SetRect(&rc, 160, 10, 160 + 200, 10 + 76);
-    if (PtInRect(&rc, pt))
+
+    if (GetHiraganaRect(hwnd, &rc, pt))
     {
         g_fKatakana = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -920,8 +934,8 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         InvalidateRect(hwnd, NULL, FALSE);
         return;
     }
-    SetRect(&rc, siz.cx - (160 + 200), 10, siz.cx - 160, 10 + 76);
-    if (PtInRect(&rc, pt))
+
+    if (GetKatakanaRect(hwnd, &rc, pt))
     {
         g_fKatakana = TRUE;
         PlaySound(MAKEINTRESOURCE(350), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -1019,6 +1033,125 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
             }
         }
     }
+}
+
+BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
+{
+    RECT rc;
+
+    if (codeHitTest != HTCLIENT)
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        return TRUE;
+    }
+
+    POINT pt;
+    GetCursorPos(&pt);
+    ScreenToClient(hwnd, &pt);
+
+    if (GetHiraganaRect(hwnd, &rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+
+    if (GetKatakanaRect(hwnd, &rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
+
+    UINT i;
+    for (UINT j = 0; j <= 100; j += 10)
+    {
+        if (j == 70)
+        {
+            i = 0;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+            i = 2;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+            i = 4;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+        }
+        else if (j == 90)
+        {
+            i = 0;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+            i = 4;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+        }
+        else if (j == 100)
+        {
+            i = 4;
+            rc.left = 685 - (j * 65) / 10 - 3;
+            rc.top = i * 60 + 100 - 3;
+            rc.right = rc.left + 50 + 6;
+            rc.bottom = rc.top + 50 + 6;
+            if (PtInRect(&rc, pt))
+            {
+                SetCursor(LoadCursor(NULL, IDC_HAND));
+                return TRUE;
+            }
+        }
+        else
+        {
+            for (i = 0; i < 5; i++)
+            {
+                rc.left = 685 - (j * 65) / 10 - 3;
+                rc.top = i * 60 + 100 - 3;
+                rc.right = rc.left + 50 + 6;
+                rc.bottom = rc.top + 50 + 6;
+                if (PtInRect(&rc, pt))
+                {
+                    SetCursor(LoadCursor(NULL, IDC_HAND));
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    return TRUE;
 }
 
 BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
@@ -1211,6 +1344,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+        HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
