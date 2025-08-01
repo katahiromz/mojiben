@@ -289,7 +289,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"悪:Bad, Evil",
     L"安:Cheap, Safe",
     L"暗:Dark",
-    L"医:Medical",
+    L"医:(Medical)",
     L"委:Committee, Entrust",
     L"意:Meaning, Intent",
     L"育:Education, Grow Up",
