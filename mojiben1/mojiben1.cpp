@@ -1,6 +1,6 @@
-// Moji No Benkyo (1)
-// Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// This file is public domain software.
+// Moji No Benkyou (1)
+// Copyright (C) 2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: MIT
 
 // Detect memory leaks (Visual C++ only)
 #if defined(_MSC_VER) && !defined(NDEBUG) && !defined(_CRTDBG_MAP_ALLOC)

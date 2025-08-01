@@ -1,4 +1,8 @@
-﻿// Detect memory leaks (Visual C++ only)
+﻿// Moji No Benkyou (3)
+// Copyright (C) 2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: MIT
+
+// Detect memory leaks (Visual C++ only)
 #if defined(_MSC_VER) && !defined(NDEBUG) && !defined(_CRTDBG_MAP_ALLOC)
     #define _CRTDBG_MAP_ALLOC
     #include <crtdbg.h>
