@@ -400,7 +400,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"夜:Night",
     L"野:Field",
     L"友:Friend, Companion, Pal",
-    L"用:Use, Business, For ―",
+    L"用:Use, Business",
     L"曜:Day Of The Week",
     L"来:Next, Come",
     L"里:Village, Home Country, (Mile)",
