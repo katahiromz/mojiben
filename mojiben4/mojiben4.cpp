@@ -719,6 +719,40 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 }
 
+BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
+{
+    if (codeHitTest != HTCLIENT)
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        return TRUE;
+    }
+
+    POINT pt;
+    GetCursorPos(&pt);
+    ScreenToClient(hwnd, &pt);
+
+    RECT rc;
+    for (INT j = 0; j < 80; ++j)
+    {
+        INT ix = j % 10;
+        INT iy = j / 10;
+        rc.left = ix * (50 + 10) + 5 + 25;
+        rc.top = iy * (50 + 10) + 5 + 10;
+        if (iy >= 4)
+            rc.top += 15;
+        rc.right = rc.left + (50 + 10) - 10;
+        rc.bottom = rc.top + (50 + 10) - 10;
+        if (PtInRect(&rc, pt))
+        {
+            SetCursor(LoadCursor(NULL, IDC_HAND));
+            return TRUE;
+        }
+    }
+
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    return TRUE;
+}
+
 VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
 {
     RECT rc;
@@ -1044,6 +1078,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+        HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
