@@ -474,7 +474,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"羊:Sheep",
     L"洋:Western, Sea",
     L"葉:Leaf",
-    L"陽:Sunlight",
+    L"陽:Sunlight, (Positive)",
     L"様:Mr./Ms., Way, Like, Such As, So That",
     L"落:Fall",
     L"流:Flow, Style, Manner, Method",
