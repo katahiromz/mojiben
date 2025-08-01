@@ -1078,10 +1078,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
 {
     if (codeHitTest != HTCLIENT)
-    {
-        SetCursor(LoadCursor(NULL, IDC_ARROW));
-        return TRUE;
-    }
+        return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, msg, DefWindowProc);
 
     POINT pt;
     GetCursorPos(&pt);

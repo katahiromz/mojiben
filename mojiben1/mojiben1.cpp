@@ -1040,10 +1040,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     RECT rc;
 
     if (codeHitTest != HTCLIENT)
-    {
-        SetCursor(LoadCursor(NULL, IDC_ARROW));
-        return TRUE;
-    }
+        return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, msg, DefWindowProc);
 
     POINT pt;
     GetCursorPos(&pt);
