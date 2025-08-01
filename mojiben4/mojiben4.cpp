@@ -183,7 +183,7 @@ static const LPCWSTR g_aszMojiEnglish[] =
     L"子:Child",
     L"四:Four, 4",
     L"糸:String, Thread",
-    L"字:Character",
+    L"字:Character (not personal), Letter (not mail)",
     L"耳:Ear",
     L"七:Seven, 7",
     L"車:Car, Wheel",
