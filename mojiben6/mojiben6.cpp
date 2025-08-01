@@ -468,7 +468,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"薬:Drug, Medicine",
     L"由:(Reason), (Cause)",
     L"油:Oil",
-    L"有:Possess, Yes",
+    L"有:Possess, There Is",
     L"遊:Play, Enjoy",
     L"予:Forecast",
     L"羊:Sheep",
