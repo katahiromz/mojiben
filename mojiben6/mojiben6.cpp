@@ -485,7 +485,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"列:Column, Queue",
     L"練:Training, Knead",
     L"路:(Road)",
-    L"和:Sum, (Peace), (Harmony)",
+    L"和:Sum, Harmony, (Peace), (Japanese)",
 };
 
 LPTSTR LoadStringDx(INT ids)
