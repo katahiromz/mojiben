@@ -444,6 +444,404 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 1000 WAVE "res/Wave_1000.wav"
 
+1010 WAVE "res/Wave_1010.wav"
+
+1020 WAVE "res/Wave_1020.wav"
+
+1030 WAVE "res/Wave_1030.wav"
+
+1040 WAVE "res/Wave_1040.wav"
+
+1050 WAVE "res/Wave_1050.wav"
+
+1060 WAVE "res/Wave_1060.wav"
+
+1070 WAVE "res/Wave_1070.wav"
+
+1080 WAVE "res/Wave_1080.wav"
+
+1090 WAVE "res/Wave_1090.wav"
+
+1100 WAVE "res/Wave_1100.wav"
+
+1110 WAVE "res/Wave_1110.wav"
+
+1120 WAVE "res/Wave_1120.wav"
+
+1130 WAVE "res/Wave_1130.wav"
+
+1140 WAVE "res/Wave_1140.wav"
+
+1150 WAVE "res/Wave_1150.wav"
+
+1160 WAVE "res/Wave_1160.wav"
+
+1170 WAVE "res/Wave_1170.wav"
+
+1180 WAVE "res/Wave_1180.wav"
+
+1190 WAVE "res/Wave_1190.wav"
+
+1200 WAVE "res/Wave_1200.wav"
+
+1210 WAVE "res/Wave_1210.wav"
+
+1220 WAVE "res/Wave_1220.wav"
+
+1230 WAVE "res/Wave_1230.wav"
+
+1240 WAVE "res/Wave_1240.wav"
+
+1250 WAVE "res/Wave_1250.wav"
+
+1260 WAVE "res/Wave_1260.wav"
+
+1270 WAVE "res/Wave_1270.wav"
+
+1280 WAVE "res/Wave_1280.wav"
+
+1290 WAVE "res/Wave_1290.wav"
+
+1300 WAVE "res/Wave_1300.wav"
+
+1310 WAVE "res/Wave_1310.wav"
+
+1320 WAVE "res/Wave_1320.wav"
+
+1330 WAVE "res/Wave_1330.wav"
+
+1340 WAVE "res/Wave_1340.wav"
+
+1350 WAVE "res/Wave_1350.wav"
+
+1360 WAVE "res/Wave_1360.wav"
+
+1370 WAVE "res/Wave_1370.wav"
+
+1380 WAVE "res/Wave_1380.wav"
+
+1390 WAVE "res/Wave_1390.wav"
+
+1400 WAVE "res/Wave_1400.wav"
+
+1410 WAVE "res/Wave_1410.wav"
+
+1420 WAVE "res/Wave_1420.wav"
+
+1430 WAVE "res/Wave_1430.wav"
+
+1440 WAVE "res/Wave_1440.wav"
+
+1450 WAVE "res/Wave_1450.wav"
+
+1460 WAVE "res/Wave_1460.wav"
+
+1470 WAVE "res/Wave_1470.wav"
+
+1480 WAVE "res/Wave_1480.wav"
+
+1490 WAVE "res/Wave_1490.wav"
+
+1500 WAVE "res/Wave_1500.wav"
+
+1510 WAVE "res/Wave_1510.wav"
+
+1520 WAVE "res/Wave_1520.wav"
+
+1530 WAVE "res/Wave_1530.wav"
+
+1540 WAVE "res/Wave_1540.wav"
+
+1550 WAVE "res/Wave_1550.wav"
+
+1560 WAVE "res/Wave_1560.wav"
+
+1570 WAVE "res/Wave_1570.wav"
+
+1580 WAVE "res/Wave_1580.wav"
+
+1590 WAVE "res/Wave_1590.wav"
+
+1600 WAVE "res/Wave_1600.wav"
+
+1610 WAVE "res/Wave_1610.wav"
+
+1620 WAVE "res/Wave_1620.wav"
+
+1630 WAVE "res/Wave_1630.wav"
+
+1640 WAVE "res/Wave_1640.wav"
+
+1650 WAVE "res/Wave_1650.wav"
+
+1660 WAVE "res/Wave_1660.wav"
+
+1670 WAVE "res/Wave_1670.wav"
+
+1680 WAVE "res/Wave_1680.wav"
+
+1690 WAVE "res/Wave_1690.wav"
+
+1700 WAVE "res/Wave_1700.wav"
+
+1710 WAVE "res/Wave_1710.wav"
+
+1720 WAVE "res/Wave_1720.wav"
+
+1730 WAVE "res/Wave_1730.wav"
+
+1740 WAVE "res/Wave_1740.wav"
+
+1750 WAVE "res/Wave_1750.wav"
+
+1760 WAVE "res/Wave_1760.wav"
+
+1770 WAVE "res/Wave_1770.wav"
+
+1780 WAVE "res/Wave_1780.wav"
+
+1790 WAVE "res/Wave_1790.wav"
+
+1800 WAVE "res/Wave_1800.wav"
+
+1810 WAVE "res/Wave_1810.wav"
+
+1820 WAVE "res/Wave_1820.wav"
+
+1830 WAVE "res/Wave_1830.wav"
+
+1840 WAVE "res/Wave_1840.wav"
+
+1850 WAVE "res/Wave_1850.wav"
+
+1860 WAVE "res/Wave_1860.wav"
+
+1870 WAVE "res/Wave_1870.wav"
+
+1880 WAVE "res/Wave_1880.wav"
+
+1890 WAVE "res/Wave_1890.wav"
+
+1900 WAVE "res/Wave_1900.wav"
+
+1910 WAVE "res/Wave_1910.wav"
+
+1920 WAVE "res/Wave_1920.wav"
+
+1930 WAVE "res/Wave_1930.wav"
+
+1940 WAVE "res/Wave_1940.wav"
+
+1950 WAVE "res/Wave_1950.wav"
+
+1960 WAVE "res/Wave_1960.wav"
+
+1970 WAVE "res/Wave_1970.wav"
+
+1980 WAVE "res/Wave_1980.wav"
+
+1990 WAVE "res/Wave_1990.wav"
+
+2000 WAVE "res/Wave_2000.wav"
+
+2010 WAVE "res/Wave_2010.wav"
+
+2020 WAVE "res/Wave_2020.wav"
+
+2030 WAVE "res/Wave_2030.wav"
+
+2040 WAVE "res/Wave_2040.wav"
+
+2050 WAVE "res/Wave_2050.wav"
+
+2060 WAVE "res/Wave_2060.wav"
+
+2070 WAVE "res/Wave_2070.wav"
+
+2080 WAVE "res/Wave_2080.wav"
+
+2090 WAVE "res/Wave_2090.wav"
+
+2100 WAVE "res/Wave_2100.wav"
+
+2110 WAVE "res/Wave_2110.wav"
+
+2120 WAVE "res/Wave_2120.wav"
+
+2130 WAVE "res/Wave_2130.wav"
+
+2140 WAVE "res/Wave_2140.wav"
+
+2150 WAVE "res/Wave_2150.wav"
+
+2160 WAVE "res/Wave_2160.wav"
+
+2170 WAVE "res/Wave_2170.wav"
+
+2180 WAVE "res/Wave_2180.wav"
+
+2190 WAVE "res/Wave_2190.wav"
+
+2200 WAVE "res/Wave_2200.wav"
+
+2210 WAVE "res/Wave_2210.wav"
+
+2220 WAVE "res/Wave_2220.wav"
+
+2230 WAVE "res/Wave_2230.wav"
+
+2240 WAVE "res/Wave_2240.wav"
+
+2250 WAVE "res/Wave_2250.wav"
+
+2260 WAVE "res/Wave_2260.wav"
+
+2270 WAVE "res/Wave_2270.wav"
+
+2280 WAVE "res/Wave_2280.wav"
+
+2290 WAVE "res/Wave_2290.wav"
+
+2300 WAVE "res/Wave_2300.wav"
+
+2310 WAVE "res/Wave_2310.wav"
+
+2320 WAVE "res/Wave_2320.wav"
+
+2330 WAVE "res/Wave_2330.wav"
+
+2340 WAVE "res/Wave_2340.wav"
+
+2350 WAVE "res/Wave_2350.wav"
+
+2360 WAVE "res/Wave_2360.wav"
+
+2370 WAVE "res/Wave_2370.wav"
+
+2380 WAVE "res/Wave_2380.wav"
+
+2390 WAVE "res/Wave_2390.wav"
+
+2400 WAVE "res/Wave_2400.wav"
+
+2410 WAVE "res/Wave_2410.wav"
+
+2420 WAVE "res/Wave_2420.wav"
+
+2430 WAVE "res/Wave_2430.wav"
+
+2440 WAVE "res/Wave_2440.wav"
+
+2450 WAVE "res/Wave_2450.wav"
+
+2460 WAVE "res/Wave_2460.wav"
+
+2470 WAVE "res/Wave_2470.wav"
+
+2480 WAVE "res/Wave_2480.wav"
+
+2490 WAVE "res/Wave_2490.wav"
+
+2500 WAVE "res/Wave_2500.wav"
+
+2510 WAVE "res/Wave_2510.wav"
+
+2520 WAVE "res/Wave_2520.wav"
+
+2530 WAVE "res/Wave_2530.wav"
+
+2540 WAVE "res/Wave_2540.wav"
+
+2550 WAVE "res/Wave_2550.wav"
+
+2560 WAVE "res/Wave_2560.wav"
+
+2570 WAVE "res/Wave_2570.wav"
+
+2580 WAVE "res/Wave_2580.wav"
+
+2590 WAVE "res/Wave_2590.wav"
+
+2600 WAVE "res/Wave_2600.wav"
+
+2610 WAVE "res/Wave_2610.wav"
+
+2620 WAVE "res/Wave_2620.wav"
+
+2630 WAVE "res/Wave_2630.wav"
+
+2640 WAVE "res/Wave_2640.wav"
+
+2650 WAVE "res/Wave_2650.wav"
+
+2660 WAVE "res/Wave_2660.wav"
+
+2670 WAVE "res/Wave_2670.wav"
+
+2680 WAVE "res/Wave_2680.wav"
+
+2690 WAVE "res/Wave_2690.wav"
+
+2700 WAVE "res/Wave_2700.wav"
+
+2710 WAVE "res/Wave_2710.wav"
+
+2720 WAVE "res/Wave_2720.wav"
+
+2730 WAVE "res/Wave_2730.wav"
+
+2740 WAVE "res/Wave_2740.wav"
+
+2750 WAVE "res/Wave_2750.wav"
+
+2760 WAVE "res/Wave_2760.wav"
+
+2770 WAVE "res/Wave_2770.wav"
+
+2780 WAVE "res/Wave_2780.wav"
+
+2790 WAVE "res/Wave_2790.wav"
+
+2800 WAVE "res/Wave_2800.wav"
+
+2810 WAVE "res/Wave_2810.wav"
+
+2820 WAVE "res/Wave_2820.wav"
+
+2830 WAVE "res/Wave_2830.wav"
+
+2840 WAVE "res/Wave_2840.wav"
+
+2850 WAVE "res/Wave_2850.wav"
+
+2860 WAVE "res/Wave_2860.wav"
+
+2870 WAVE "res/Wave_2870.wav"
+
+2880 WAVE "res/Wave_2880.wav"
+
+2890 WAVE "res/Wave_2890.wav"
+
+2900 WAVE "res/Wave_2900.wav"
+
+2910 WAVE "res/Wave_2910.wav"
+
+2920 WAVE "res/Wave_2920.wav"
+
+2930 WAVE "res/Wave_2930.wav"
+
+2940 WAVE "res/Wave_2940.wav"
+
+2950 WAVE "res/Wave_2950.wav"
+
+2960 WAVE "res/Wave_2960.wav"
+
+2970 WAVE "res/Wave_2970.wav"
+
+2980 WAVE "res/Wave_2980.wav"
+
+2990 WAVE "res/Wave_2990.wav"
+
 //////////////////////////////////////////////////////////////////////////////
 // Languages
 
