@@ -82,7 +82,7 @@ void DoSleep(DWORD dwMilliseconds)
 static const LPCWSTR g_aszMojiReadings[200] =
 {
     L"悪:わる-い、アク",
-    L"安:やす-い、アン",
+    L"安:やす-い、やす-らか、アン",
     L"暗:くら-い、アン",
     L"医:イ",
     L"委:ゆだ-ねる、イ",
@@ -286,8 +286,8 @@ static const LPCWSTR g_aszMojiReadings[200] =
 static const LPCWSTR g_aszMojiEnglish[200] =
 {
     L"悪:Bad, Evil",
-    L"安:Cheap, Safe",
-    L"暗:Dark",
+    L"安:Cheap, Safe, Peace",
+    L"暗:Dark, Dim",
     L"医:(Medical)",
     L"委:Committee, Entrust",
     L"意:Meaning, Intent",
