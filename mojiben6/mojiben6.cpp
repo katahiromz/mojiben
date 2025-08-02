@@ -451,7 +451,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"病:Disease, Illness, Sick",
     L"品:Goods, Product",
     L"負:Negative, Minus, Lose, Bear",
-    L"部:Part, Department, Category",
+    L"部:Part, Department, Category, Club",
     L"服:Clothes",
     L"福:Good Fortune",
     L"物:Object, Thing, Stuff",
