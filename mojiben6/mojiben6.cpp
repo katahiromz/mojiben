@@ -20,7 +20,6 @@
 #include <process.h>
 #include <cmath>
 
-#include <new>
 #include <vector>
 #include <string>
 #include <map>

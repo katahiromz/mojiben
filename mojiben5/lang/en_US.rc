@@ -67,7 +67,7 @@ FILESUBTYPE     0x0
 
 STRINGTABLE
 {
-    1, "Moji No Benkyou (5) 2nd-Grader Kanji"
+    1, "Moji No Benkyou (5) 2nd-Grader's Kanji"
     2, "About"
     3, "Out of memory!"
     4, "Your screen is too small."

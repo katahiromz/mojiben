@@ -8,7 +8,6 @@
 
 #include <map>
 #include <vector>
-using namespace std;
 
 #include "kakijun.h"
 
@@ -105,7 +104,7 @@ BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
 VOID DoIt(INT n, const char *name, HDC hdc, HBITMAP hbm)
 {
     CHAR sz[1024];
-    vector<GA> v;
+    std::vector<GA> v;
     HGDIOBJ hbmOld;
     RECT rc;
     HRGN hRgn, hRgn2;

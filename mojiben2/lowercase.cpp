@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <map>
-using namespace std;
 
 #include "kakijun.h"
 
@@ -3382,7 +3381,7 @@ static const BYTE z2[176] = {
 VOID InitPrintLowerCase(VOID)
 {
     GA ga;
-    vector<GA> vga;
+    std::vector<GA> vga;
     typedef KAKIJUN::value_type value_type;
 
     ADD_POLAR(360, 0, 150, 150, a0);

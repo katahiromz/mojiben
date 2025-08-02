@@ -17,11 +17,9 @@
 #include <process.h>
 #include <cmath>
 
-#include <new>
 #include <vector>
 #include <map>
 #include <set>
-using namespace std;
 
 #include "kakijun.h"
 #include "../CGdiObj.h"
@@ -47,8 +45,8 @@ HANDLE g_hThread;
 HBRUSH g_hbrRed;
 HPEN g_hPenBlue;
 
-set<INT> g_print_uppercase_history;
-set<INT> g_print_lowercase_history;
+std::set<INT> g_print_uppercase_history;
+std::set<INT> g_print_lowercase_history;
 
 LPTSTR LoadStringDx(INT ids)
 {
@@ -108,7 +106,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         InitPrintUpperCase();
         InitPrintLowerCase();
     }
-    catch(bad_alloc)
+    catch(std::bad_alloc)
     {
         return FALSE;
     }
@@ -247,7 +245,7 @@ static unsigned ThreadProcWorker(void)
     SIZE siz;
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld, hPenOld;
-    vector<GA> v;
+    std::vector<GA> v;
     INT k;
     POINT apt[4];
     double cost, sint, cost2, sint2;

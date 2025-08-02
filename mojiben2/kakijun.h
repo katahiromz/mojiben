@@ -16,7 +16,7 @@ struct GA
     DWORD cb;
     const BYTE *pb;
 };
-typedef map<INT, vector<GA> > KAKIJUN;
+typedef std::map<INT, std::vector<GA> > KAKIJUN;
 
 extern KAKIJUN g_print_uppercase_kakijun;
 extern KAKIJUN g_print_lowercase_kakijun;

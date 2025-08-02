@@ -17,7 +17,6 @@
 #include <process.h>
 #include <cmath>
 
-#include <new>
 #include <vector>
 #include <map>
 #include <set>

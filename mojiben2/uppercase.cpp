@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <map>
-using namespace std;
 
 #include "kakijun.h"
 
@@ -5047,7 +5046,7 @@ static const BYTE Z2[144] = {
 VOID InitPrintUpperCase(VOID)
 {
     GA ga;
-    vector<GA> vga;
+    std::vector<GA> vga;
     typedef KAKIJUN::value_type value_type;
 
     ADD_LINEAR(115, A0);
