@@ -718,7 +718,7 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     DoSleep(300);
 
-    PlaySound(MAKEINTRESOURCE(1000 + 10 * g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
+    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
     PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
@@ -945,7 +945,7 @@ static unsigned ThreadProcWorker(void)
         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     }
 
-    PlaySound(MAKEINTRESOURCE(1000 + 10 * g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
+    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
     DoSleep(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
