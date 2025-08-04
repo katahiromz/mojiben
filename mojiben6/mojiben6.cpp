@@ -338,7 +338,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"県:Prefecture",
     L"庫:Repository, Vault, Warehouse",
     L"湖:Lake",
-    L"向:Direction, Suitable",
+    L"向:Go Towards, Direction, Suitable",
     L"幸:Happy",
     L"港:Port, Harbor",
     L"号:Issue, Number",
