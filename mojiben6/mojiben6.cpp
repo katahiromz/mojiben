@@ -341,7 +341,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"向:Go Towards, Direction, Suitable",
     L"幸:Happy",
     L"港:Port, Harbor",
-    L"号:Issue, Number",
+    L"号:#, Issue",
     L"根:Root",
     L"祭:Festival, Enshrining",
     L"皿:Dish, Plate",
