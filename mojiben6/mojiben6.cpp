@@ -336,7 +336,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"決:Decide, Determination",
     L"研:Lab, Study, Training, Sharpen",
     L"県:Prefecture",
-    L"庫:Warehouse",
+    L"庫:Repository, Vault, Warehouse",
     L"湖:Lake",
     L"向:Direction, Suitable",
     L"幸:Happy",
