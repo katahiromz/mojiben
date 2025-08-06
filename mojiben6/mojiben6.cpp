@@ -347,7 +347,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"皿:Dish, Plate",
     L"仕:Serve, Service",
     L"死:Death, Die",
-    L"使:Messenger, Use",
+    L"使:Use, Messenger",
     L"始:Begin",
     L"指:Finger, Pointing",
     L"歯:Teeth",
