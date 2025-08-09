@@ -369,7 +369,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"終:End",
     L"習:Learn, Habit",
     L"集:Collection, Gather",
-    L"住:Living",
+    L"住:Reside, Living",
     L"重:Heavy",
     L"宿:Inn, Stay",
     L"所:Place, Location",
