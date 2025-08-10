@@ -397,7 +397,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"想:Thoughts, Idea, Imagination",
     L"息:Breath",
     L"速:Fast, Quick",
-    L"族:Group, Tribe, (periodic table group)",
+    L"族:Group, Tribe",
     L"他:Others",
     L"打:Hit, Strike",
     L"対:Pair, Versus",
