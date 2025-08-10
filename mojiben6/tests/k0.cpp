@@ -25,7 +25,7 @@ int main(void)
     INT i, j = 0;
 
 #if 1
-    j = 112;
+    j = 113;
 #else
     for (pch = sz; *pch; pch += 2)
 #endif
