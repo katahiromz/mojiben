@@ -408,7 +408,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"炭:Charcoal",
     L"短:Short (of length)",
     L"談:Story, Talk",
-    L"着:Arrival, Suit Of Clothing",
+    L"着:Arrival, Clothing",
     L"注:Note, Annotation, Minding, Pour",
     L"柱:Pillar",
     L"丁:(Counting items), (Even number in gamble)",
