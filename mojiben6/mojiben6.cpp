@@ -403,7 +403,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"対:Pair, Versus",
     L"待:Wait",
     L"代:Generation, Era, Substitution",
-    L"第:No., -th (第-)",
+    L"第:No., -th",
     L"題:Subject, Problem, Theme",
     L"炭:Charcoal",
     L"短:Short (of length)",
