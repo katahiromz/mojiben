@@ -407,7 +407,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"題:Subject, Problem, Theme",
     L"炭:Charcoal",
     L"短:Short (of length)",
-    L"談:Story",
+    L"談:Story, Talk",
     L"着:Arrival, Suit Of Clothing",
     L"注:Note, Annotation, Minding, Pour",
     L"柱:Pillar",
