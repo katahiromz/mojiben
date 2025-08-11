@@ -409,7 +409,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"短:Short (of length)",
     L"談:Story, Talk",
     L"着:Arrival, Clothing",
-    L"注:Note, Annotation, Minding, Pour",
+    L"注:Note, Annotate, Minding, Pour",
     L"柱:Pillar",
     L"丁:(Counting items), (Even number in gamble)",
     L"帳:Account, Notebook",
