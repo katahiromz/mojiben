@@ -1060,7 +1060,11 @@ void Caption_OnPaint(HWND hwnd)
     PAINTSTRUCT ps;
     if (HDC hdc = BeginPaint(hwnd, &ps))
     {
-        if (lstrlen(szText) > 25)
+        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
+        SIZE size;
+        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        SelectObject(hdc, hFontOld);
+        if (size.cx >= 550)
         {
             HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
             SetBkMode(hdc, TRANSPARENT);
@@ -1119,7 +1123,11 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
 
     if (HDC hdc = GetDC(hwndCaption))
     {
-        if (lstrlen(szText) > 25)
+        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
+        SIZE size;
+        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        SelectObject(hdc, hFontOld);
+        if (size.cx >= 550)
         {
             HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
             GetTextExtentPoint32(hdc, szText, lstrlen(szText), &siz);

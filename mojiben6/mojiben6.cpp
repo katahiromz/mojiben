@@ -324,7 +324,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"橋:Bridge",
     L"業:Business, Work, Karma",
     L"曲:Song, Bending",
-    L"局:Bureau, Department",
+    L"局:Bureau, Department, Office Lady",
     L"銀:Silver",
     L"区:Ward, Section, District",
     L"苦:Bitter, Painful, Weak Point",
@@ -341,7 +341,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"向:Go Towards, Direction, Suitable",
     L"幸:Happy, Lucky",
     L"港:Port, Harbor",
-    L"号:#, Issue",
+    L"号:Number, Issue",
     L"根:Root",
     L"祭:Festival, Enshrine",
     L"皿:Dish, Plate",
@@ -1140,7 +1140,11 @@ void Caption_OnPaint(HWND hwnd)
     PAINTSTRUCT ps;
     if (HDC hdc = BeginPaint(hwnd, &ps))
     {
-        if (lstrlen(szText) > 25)
+        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
+        SIZE size;
+        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        SelectObject(hdc, hFontOld);
+        if (size.cx >= 550)
         {
             HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
             SetBkMode(hdc, TRANSPARENT);
@@ -1199,7 +1203,11 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
 
     if (HDC hdc = GetDC(hwndCaption))
     {
-        if (lstrlen(szText) > 25)
+        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
+        SIZE size;
+        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        SelectObject(hdc, hFontOld);
+        if (size.cx >= 550)
         {
             HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
             GetTextExtentPoint32(hdc, szText, lstrlen(szText), &siz);
