@@ -46,7 +46,7 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
-HBITMAP g_ahbmDigits[41];
+HBITMAP g_ahbmDigits[42];
 HBITMAP g_hbmClient;
 HBITMAP g_hbmKakijun;
 HBITMAP g_hbmKazoekata;
@@ -102,6 +102,7 @@ static LPCWSTR g_aszReadings[] =
     L"20000:にまん",
     L"30000:さんまん",
     L"33421:さんまんさんぜんよん\r\nひゃくにじゅういち",
+    L"58698:ごまんはっせんろっ\r\nぴゃくきゅうじゅうはち",
 };
 
 static LPCWSTR g_aszKanji[] =
@@ -147,6 +148,7 @@ static LPCWSTR g_aszKanji[] =
     L"20000:二万",
     L"30000:三万",
     L"33421:三万三千四百二十一",
+    L"58698:五万八千六百九十八",
 };
 
 LPTSTR LoadStringDx(INT ids)
