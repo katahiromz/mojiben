@@ -23,25 +23,47 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 100 BITMAP "res/Bitmap_100.bmp"
 
-101 BITMAP "res/Bitmap_101.bmp"
-
-102 BITMAP "res/Bitmap_102.bmp"
-
-103 BITMAP "res/Bitmap_103.bmp"
-
-104 BITMAP "res/Bitmap_104.bmp"
-
-105 BITMAP "res/Bitmap_105.bmp"
-
-106 BITMAP "res/Bitmap_106.bmp"
-
-107 BITMAP "res/Bitmap_107.bmp"
-
-108 BITMAP "res/Bitmap_108.bmp"
-
-109 BITMAP "res/Bitmap_109.bmp"
-
 1000 BITMAP "res/Bitmap_1000.bmp"
+1001 BITMAP "res/Bitmap_1001.bmp"
+1002 BITMAP "res/Bitmap_1002.bmp"
+1003 BITMAP "res/Bitmap_1003.bmp"
+1004 BITMAP "res/Bitmap_1004.bmp"
+1005 BITMAP "res/Bitmap_1005.bmp"
+1006 BITMAP "res/Bitmap_1006.bmp"
+1007 BITMAP "res/Bitmap_1007.bmp"
+1008 BITMAP "res/Bitmap_1008.bmp"
+1009 BITMAP "res/Bitmap_1009.bmp"
+1010 BITMAP "res/Bitmap_1010.bmp"
+1011 BITMAP "res/Bitmap_1011.bmp"
+1012 BITMAP "res/Bitmap_1012.bmp"
+1013 BITMAP "res/Bitmap_1013.bmp"
+1014 BITMAP "res/Bitmap_1014.bmp"
+1015 BITMAP "res/Bitmap_1015.bmp"
+1016 BITMAP "res/Bitmap_1016.bmp"
+1017 BITMAP "res/Bitmap_1017.bmp"
+1018 BITMAP "res/Bitmap_1018.bmp"
+1019 BITMAP "res/Bitmap_1019.bmp"
+1020 BITMAP "res/Bitmap_1020.bmp"
+1021 BITMAP "res/Bitmap_1021.bmp"
+1022 BITMAP "res/Bitmap_1022.bmp"
+1023 BITMAP "res/Bitmap_1023.bmp"
+1024 BITMAP "res/Bitmap_1024.bmp"
+1025 BITMAP "res/Bitmap_1025.bmp"
+1026 BITMAP "res/Bitmap_1026.bmp"
+1027 BITMAP "res/Bitmap_1027.bmp"
+1028 BITMAP "res/Bitmap_1028.bmp"
+1029 BITMAP "res/Bitmap_1029.bmp"
+1030 BITMAP "res/Bitmap_1030.bmp"
+1031 BITMAP "res/Bitmap_1031.bmp"
+1032 BITMAP "res/Bitmap_1032.bmp"
+1033 BITMAP "res/Bitmap_1033.bmp"
+1034 BITMAP "res/Bitmap_1034.bmp"
+1035 BITMAP "res/Bitmap_1035.bmp"
+1036 BITMAP "res/Bitmap_1036.bmp"
+1037 BITMAP "res/Bitmap_1037.bmp"
+1038 BITMAP "res/Bitmap_1038.bmp"
+1039 BITMAP "res/Bitmap_1039.bmp"
+1040 BITMAP "res/Bitmap_1040.bmp"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_GROUP_ICON
@@ -59,24 +81,46 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 100 WAVE "res/Wave_100.wav"
 
 1000 WAVE "res/Wave_1000.wav"
-
 1001 WAVE "res/Wave_1001.wav"
-
 1002 WAVE "res/Wave_1002.wav"
-
 1003 WAVE "res/Wave_1003.wav"
-
 1004 WAVE "res/Wave_1004.wav"
-
 1005 WAVE "res/Wave_1005.wav"
-
 1006 WAVE "res/Wave_1006.wav"
-
 1007 WAVE "res/Wave_1007.wav"
-
 1008 WAVE "res/Wave_1008.wav"
-
 1009 WAVE "res/Wave_1009.wav"
+1010 WAVE "res/Wave_1010.wav"
+1011 WAVE "res/Wave_1011.wav"
+1012 WAVE "res/Wave_1012.wav"
+1013 WAVE "res/Wave_1013.wav"
+1014 WAVE "res/Wave_1014.wav"
+1015 WAVE "res/Wave_1015.wav"
+1016 WAVE "res/Wave_1016.wav"
+1017 WAVE "res/Wave_1017.wav"
+1018 WAVE "res/Wave_1018.wav"
+1019 WAVE "res/Wave_1019.wav"
+1020 WAVE "res/Wave_1020.wav"
+1021 WAVE "res/Wave_1021.wav"
+1022 WAVE "res/Wave_1022.wav"
+1023 WAVE "res/Wave_1023.wav"
+1024 WAVE "res/Wave_1024.wav"
+1025 WAVE "res/Wave_1025.wav"
+1026 WAVE "res/Wave_1026.wav"
+1027 WAVE "res/Wave_1027.wav"
+1028 WAVE "res/Wave_1028.wav"
+1029 WAVE "res/Wave_1029.wav"
+1030 WAVE "res/Wave_1030.wav"
+1031 WAVE "res/Wave_1031.wav"
+1032 WAVE "res/Wave_1032.wav"
+1033 WAVE "res/Wave_1033.wav"
+1034 WAVE "res/Wave_1034.wav"
+1035 WAVE "res/Wave_1035.wav"
+1036 WAVE "res/Wave_1036.wav"
+1037 WAVE "res/Wave_1037.wav"
+1038 WAVE "res/Wave_1038.wav"
+1039 WAVE "res/Wave_1039.wav"
+1040 WAVE "res/Wave_1040.wav"
 
 //////////////////////////////////////////////////////////////////////////////
 // Languages

@@ -1,15 +1,11 @@
 // Moji No Benkyo (3)
-// Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 
 // Japanese, Shift_JIS
 #include <windows.h>
+#include <windowsx.h>
 #include <stdio.h>
-
-#include <map>
-#include <vector>
-
-#include "kakijun.h"
 
 typedef struct tagBITMAPINFOEX
 {
@@ -99,100 +95,100 @@ BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
     return f;
 }
 
-#define SIZE 300
+#define WIDTH 300
+#define HEIGHT 300
 
-VOID DoIt(INT n, const char *name, HDC hdc, HBITMAP hbm)
+static char g_aszReadings[][64] =
 {
-    CHAR sz[1024];
-    std::vector<GA> v;
-    HGDIOBJ hbmOld;
-    RECT rc;
-    HRGN hRgn, hRgn2;
-
-    v = g_katakana_kakijun[n];
-    hRgn2 = CreateRectRgn(0, 0, 0, 0);
-    for(UINT i = 0; i < v.size(); i++)
-    {
-        hRgn = ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb);
-        CombineRgn(hRgn2, hRgn2, hRgn, RGN_OR);
-        DeleteObject(hRgn);
-    }
-
-    hbmOld = SelectObject(hdc, hbm);
-    rc.left = rc.top = 0;
-    rc.right = rc.bottom = 300;
-    FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-    FillRgn(hdc, hRgn2, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    SelectObject(hdc, hbmOld);
-
-    wsprintf(sz, "KataL\\%sL.bmp", name);
-    SaveBitmapToFile(sz, hbm);
-}
+    "0:ゼロ、(れい)",
+    "1:いち",
+    "2:に",
+    "3:さん",
+    "4:よん",
+    "5:ご",
+    "6:ろく",
+    "7:なな",
+    "8:はち",
+    "9:きゅう",
+    "10:じゅう",
+    "20:にじゅう",
+    "30:さんじゅう",
+    "40:よんじゅう",
+    "50:ごじゅう",
+    "60:ろくじゅう",
+    "70:ななじゅう",
+    "80:はちじゅう",
+    "90:きゅうじゅう",
+    "100:ひゃく",
+    "200:にひゃく",
+    "300:さんびゃく",
+    "400:よんひゃく",
+    "500:ごひゃく",
+    "600:ろっぴゃく",
+    "700:ななひゃく",
+    "800:はっぴゃく",
+    "900:きゅうひゃく",
+    "1000:せん",
+    "2000:にせん",
+    "3000:さんぜん",
+    "4000:よんせん",
+    "5000:ごせん",
+    "6000:ろくせん",
+    "7000:ななせん",
+    "8000:はっせん",
+    "9000:きゅうせん",
+    "10000:いちまん",
+    "20000:にまん",
+    "30000:さんまん",
+    NULL,
+};
 
 int main(void)
 {
     HBITMAP hbm;
     HDC hdc;
+    HGDIOBJ hbmOld, hFontOld;
+    HFONT hFont;
+    LOGFONT lf;
     BITMAPINFO bi;
     LPVOID pvBits;
-    
-    InitKatakana();
+    INT i;
+    CHAR sz2[32];
 
     ZeroMemory(&bi.bmiHeader, sizeof(BITMAPINFOHEADER));
     bi.bmiHeader.biSize         = sizeof(BITMAPINFOHEADER);
-    bi.bmiHeader.biWidth        = SIZE;
-    bi.bmiHeader.biHeight       = SIZE;
+    bi.bmiHeader.biWidth        = WIDTH;
+    bi.bmiHeader.biHeight       = HEIGHT;
     bi.bmiHeader.biPlanes       = 1;
     bi.bmiHeader.biBitCount     = 24;
-    hbm = CreateDIBSection(hdc, &bi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    
+    ZeroMemory(&lf, sizeof(lf));
+    lf.lfHeight = -HEIGHT / 3;
+    lf.lfCharSet = SHIFTJIS_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfWeight = FW_BOLD;
+    lstrcpy(lf.lfFaceName, "モトヤ教科書3等幅");
+    hFont = CreateFontIndirect(&lf);
     hdc = CreateCompatibleDC(NULL);
-    DoIt(0, "ア", hdc, hbm);
-    DoIt(1, "イ", hdc, hbm);
-    DoIt(2, "ウ", hdc, hbm);
-    DoIt(3, "エ", hdc, hbm);
-    DoIt(4, "オ", hdc, hbm);
-    DoIt(10, "カ", hdc, hbm);
-    DoIt(11, "キ", hdc, hbm);
-    DoIt(12, "ク", hdc, hbm);
-    DoIt(13, "ケ", hdc, hbm);
-    DoIt(14, "コ", hdc, hbm);
-    DoIt(20, "サ", hdc, hbm);
-    DoIt(21, "シ", hdc, hbm);
-    DoIt(22, "ス", hdc, hbm);
-    DoIt(23, "セ", hdc, hbm);
-    DoIt(24, "ソ", hdc, hbm);
-    DoIt(30, "タ", hdc, hbm);
-    DoIt(31, "チ", hdc, hbm);
-    DoIt(32, "ツ", hdc, hbm);
-    DoIt(33, "テ", hdc, hbm);
-    DoIt(34, "ト", hdc, hbm);
-    DoIt(40, "ナ", hdc, hbm);
-    DoIt(41, "ニ", hdc, hbm);
-    DoIt(42, "ヌ", hdc, hbm);
-    DoIt(43, "ネ", hdc, hbm);
-    DoIt(44, "ノ", hdc, hbm);
-    DoIt(50, "ハ", hdc, hbm);
-    DoIt(51, "ヒ", hdc, hbm);
-    DoIt(52, "フ", hdc, hbm);
-    DoIt(53, "ヘ", hdc, hbm);
-    DoIt(54, "ホ", hdc, hbm);
-    DoIt(60, "マ", hdc, hbm);
-    DoIt(61, "ミ", hdc, hbm);
-    DoIt(62, "ム", hdc, hbm);
-    DoIt(63, "メ", hdc, hbm);
-    DoIt(64, "モ", hdc, hbm);
-    DoIt(70, "ヤ", hdc, hbm);
-    DoIt(72, "ユ", hdc, hbm);
-    DoIt(74, "ヨ", hdc, hbm);
-    DoIt(80, "ラ", hdc, hbm);
-    DoIt(81, "リ", hdc, hbm);
-    DoIt(82, "ル", hdc, hbm);
-    DoIt(83, "レ", hdc, hbm);
-    DoIt(84, "ロ", hdc, hbm);
-    DoIt(90, "ワ", hdc, hbm);
-    DoIt(94, "ヲ", hdc, hbm);
-    DoIt(104, "ン", hdc, hbm);
-    DeleteDC(hdc);
+    hbm = CreateDIBSection(hdc, &bi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    hFontOld = SelectObject(hdc, hFont);
+
+    for (i = 0; g_aszReadings[i]; ++i)
+    {
+        wsprintfA(sz2, "digit%03d.bmp", i);
+        hbmOld = SelectObject(hdc, hbm);
+        RECT rc = { 0, 0, WIDTH, HEIGHT };
+        FillRect(hdc, &rc, GetStockBrush(WHITE_BRUSH));
+        char *pch = strchr(g_aszReadings[i], ':');
+        *pch = 0;
+        DrawTextA(hdc, g_aszReadings[i], -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+        SelectObject(hdc, hbmOld);
+        SaveBitmapToFile(sz2, hbm);
+    }
+    SelectObject(hdc, hFontOld);
+
     DeleteObject(hbm);
+    DeleteObject(hFont);
+    DeleteDC(hdc);
     return 0;
 }

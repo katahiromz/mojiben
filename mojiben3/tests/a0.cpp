@@ -4,6 +4,8 @@
 
 // Japanese, Shift_JIS
 #include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
 
 typedef struct tagBITMAPINFOEX
 {
@@ -93,7 +95,54 @@ BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
     return f;
 }
 
-#define SIZE 60
+#define WIDTH 80
+#define HEIGHT 30
+
+static char g_aszReadings[][64] =
+{
+    "0:É[ÉçÅA(ÇÍÇ¢)",
+    "1:Ç¢Çø",
+    "2:Ç…",
+    "3:Ç≥ÇÒ",
+    "4:ÇÊÇÒ",
+    "5:Ç≤",
+    "6:ÇÎÇ≠",
+    "7:Ç»Ç»",
+    "8:ÇÕÇø",
+    "9:Ç´Ç„Ç§",
+    "10:Ç∂Ç„Ç§",
+    "20:Ç…Ç∂Ç„Ç§",
+    "30:Ç≥ÇÒÇ∂Ç„Ç§",
+    "40:ÇÊÇÒÇ∂Ç„Ç§",
+    "50:Ç≤Ç∂Ç„Ç§",
+    "60:ÇÎÇ≠Ç∂Ç„Ç§",
+    "70:Ç»Ç»Ç∂Ç„Ç§",
+    "80:ÇÕÇøÇ∂Ç„Ç§",
+    "90:Ç´Ç„Ç§Ç∂Ç„Ç§",
+    "100:Ç–Ç·Ç≠",
+    "200:Ç…Ç–Ç·Ç≠",
+    "300:Ç≥ÇÒÇ—Ç·Ç≠",
+    "400:ÇÊÇÒÇ–Ç·Ç≠",
+    "500:Ç≤Ç–Ç·Ç≠",
+    "600:ÇÎÇ¡Ç“Ç·Ç≠",
+    "700:Ç»Ç»Ç–Ç·Ç≠",
+    "800:ÇÕÇ¡Ç“Ç·Ç≠",
+    "900:Ç´Ç„Ç§Ç–Ç·Ç≠",
+    "1000:ÇπÇÒ",
+    "2000:Ç…ÇπÇÒ",
+    "3000:Ç≥ÇÒÇ∫ÇÒ",
+    "4000:ÇÊÇÒÇπÇÒ",
+    "5000:Ç≤ÇπÇÒ",
+    "6000:ÇÎÇ≠ÇπÇÒ",
+    "7000:Ç»Ç»ÇπÇÒ",
+    "8000:ÇÕÇ¡ÇπÇÒ",
+    "9000:Ç´Ç„Ç§ÇπÇÒ",
+    "10000:Ç¢ÇøÇ‹ÇÒ",
+    "20000:Ç…Ç‹ÇÒ",
+    "30000:Ç≥ÇÒÇ‹ÇÒ",
+    "33421:Ç≥ÇÒÇ‹ÇÒÇ≥ÇÒÇ∫ÇÒÇÊÇÒÇ–Ç·Ç≠Ç…Ç∂Ç„Ç§Ç¢Çø",
+    NULL,
+};
 
 int main(void)
 {
@@ -104,19 +153,18 @@ int main(void)
     LOGFONT lf;
     BITMAPINFO bi;
     LPVOID pvBits;
-    char sz[] = "ÇPÇQÇRÇSÇTÇUÇVÇWÇX10";
-    char sz2[32];
-    char *p;
+    INT i;
+    CHAR sz2[32];
 
     ZeroMemory(&bi.bmiHeader, sizeof(BITMAPINFOHEADER));
     bi.bmiHeader.biSize         = sizeof(BITMAPINFOHEADER);
-    bi.bmiHeader.biWidth        = SIZE;
-    bi.bmiHeader.biHeight       = SIZE;
+    bi.bmiHeader.biWidth        = WIDTH;
+    bi.bmiHeader.biHeight       = HEIGHT;
     bi.bmiHeader.biPlanes       = 1;
     bi.bmiHeader.biBitCount     = 24;
     
     ZeroMemory(&lf, sizeof(lf));
-    lf.lfHeight = -SIZE;
+    lf.lfHeight = -HEIGHT;
     lf.lfCharSet = SHIFTJIS_CHARSET;
     lf.lfQuality = ANTIALIASED_QUALITY;
     lf.lfWeight = FW_BOLD;
@@ -126,16 +174,16 @@ int main(void)
     hbm = CreateDIBSection(hdc, &bi, DIB_RGB_COLORS, &pvBits, NULL, 0);
     hFontOld = SelectObject(hdc, hFont);
 
-    int count = 0;
-    for(p = sz; *p; count++)
+    for (i = 0; g_aszReadings[i]; ++i)
     {
-        sz2[0] = *p++;
-        sz2[1] = *p++;
-        sz2[2] = 0;
+        wsprintfA(sz2, "digit%03d.bmp", i);
         hbmOld = SelectObject(hdc, hbm);
-        TextOut(hdc, 0, 0, sz2, 2);
+        RECT rc = { 0, 0, WIDTH, HEIGHT };
+        FillRect(hdc, &rc, GetStockBrush(WHITE_BRUSH));
+        char *pch = strchr(g_aszReadings[i], ':');
+        *pch = 0;
+        DrawTextA(hdc, g_aszReadings[i], -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
         SelectObject(hdc, hbmOld);
-        wsprintf(sz2, "digit%03d.bmp", count);
         SaveBitmapToFile(sz2, hbm);
     }
     SelectObject(hdc, hFontOld);

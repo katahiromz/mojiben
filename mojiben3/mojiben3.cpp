@@ -46,7 +46,7 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
-HBITMAP g_ahbmDigits[10];
+HBITMAP g_ahbmDigits[41];
 HBITMAP g_hbmClient;
 HBITMAP g_hbmKakijun;
 HBITMAP g_hbmKazoekata;
@@ -55,8 +55,99 @@ INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 HFONT g_hFont;
+HFONT g_hSmallFont;
 
 std::set<INT> g_digits_history;
+
+static LPCWSTR g_aszReadings[] =
+{
+    L"0:ゼロ、(れい)",
+    L"1:いち",
+    L"2:に",
+    L"3:さん",
+    L"4:よん、(し)",
+    L"5:ご",
+    L"6:ろく",
+    L"7:なな、(しち)",
+    L"8:はち",
+    L"9:きゅう、(く)",
+    L"10:じゅう",
+    L"20:にじゅう",
+    L"30:さんじゅう",
+    L"40:よんじゅう",
+    L"50:ごじゅう",
+    L"60:ろくじゅう",
+    L"70:ななじゅう",
+    L"80:はちじゅう",
+    L"90:きゅうじゅう",
+    L"100:ひゃく",
+    L"200:にひゃく",
+    L"300:さんびゃく",
+    L"400:よんひゃく",
+    L"500:ごひゃく",
+    L"600:ろっぴゃく",
+    L"700:ななひゃく",
+    L"800:はっぴゃく",
+    L"900:きゅうひゃく",
+    L"1000:せん",
+    L"2000:にせん",
+    L"3000:さんぜん",
+    L"4000:よんせん",
+    L"5000:ごせん",
+    L"6000:ろくせん",
+    L"7000:ななせん",
+    L"8000:はっせん",
+    L"9000:きゅうせん",
+    L"10000:いちまん",
+    L"20000:にまん",
+    L"30000:さんまん",
+    L"33421:さんまんさんぜんよん\r\nひゃくにじゅういち",
+};
+
+static LPCWSTR g_aszKanji[] =
+{
+    L"0:零",
+    L"1:一",
+    L"2:二",
+    L"3:三",
+    L"4:四",
+    L"5:五",
+    L"6:六",
+    L"7:七",
+    L"8:八",
+    L"9:九",
+    L"10:十",
+    L"20:二十",
+    L"30:三十",
+    L"40:四十",
+    L"50:五十",
+    L"60:六十",
+    L"70:七十",
+    L"80:八十",
+    L"90:九十",
+    L"100:百",
+    L"200:二百",
+    L"300:三百",
+    L"400:四百",
+    L"500:五百",
+    L"600:六百",
+    L"700:七百",
+    L"800:八百",
+    L"900:九百",
+    L"1000:千",
+    L"2000:二千",
+    L"3000:三千",
+    L"4000:四千",
+    L"5000:五千",
+    L"6000:六千",
+    L"7000:七千",
+    L"8000:八千",
+    L"9000:九千",
+    L"10000:一万",
+    L"20000:二万",
+    L"30000:三万",
+    L"33421:三万三千四百二十一",
+};
 
 LPTSTR LoadStringDx(INT ids)
 {
@@ -81,16 +172,20 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
-    g_hbmKazoekata = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000));
+    g_hbmKazoekata = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
-    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
-    lf.lfHeight = -25;
-    lf.lfWeight = FW_BOLD;
+    lf.lfHeight = -90;
     lf.lfCharSet = SHIFTJIS_CHARSET;
     lf.lfQuality = ANTIALIASED_QUALITY;
+    lstrcpyn(lf.lfFaceName, TEXT("Tahoma"), _countof(lf.lfFaceName));
     g_hFont = CreateFontIndirect(&lf);
+
+    lf.lfHeight = -30;
+    lf.lfWeight = FW_BOLD;
+    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
+    g_hSmallFont = CreateFontIndirect(&lf);
 
     HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
@@ -99,11 +194,9 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3330, LoadStringDx(2));
 
     ZeroMemory(g_ahbmDigits, sizeof(g_ahbmDigits));
-    for (UINT j = 0; j < 10; ++j)
+    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
     {
-        int ix = j % 10;
-        int iy = j / 10;
-        g_ahbmDigits[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100 + j));
+        g_ahbmDigits[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
         if (g_ahbmDigits[j] == NULL)
             return FALSE;
     }
@@ -130,6 +223,21 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+BOOL GetMojiRect(LPRECT prc, INT nMoji)
+{
+    prc->left = (nMoji % 6) * 80;
+    prc->top = 20;
+    while (nMoji >= 6)
+    {
+        prc->top += 40;
+        nMoji -= 6;
+    }
+    prc->left = nMoji * 100 + 20;
+    prc->right = prc->left + 80;
+    prc->bottom = prc->top + 30;
+    return TRUE;
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -152,21 +260,19 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < 10; ++j)
+        for (j = 0; j < _countof(g_ahbmDigits); ++j)
         {
-            int ix = j % 5;
-            int iy = j / 5;
-            hbmOld = SelectObject(hdcMem, g_ahbmDigits[j]);
-            rc.left = ix * (80 + 5) + 5 + 135;
-            rc.top = iy * (80 + 5) + 5 + 10;
-            rc.right = rc.left + (80 + 5) - 15;
-            rc.bottom = rc.top + (80 + 5) - 15;
-            if (g_digits_history.find(j) != g_digits_history.end())
-                FillRect(hdcMem2, &rc, g_hbrRed);
+            GetMojiRect(&rc, j);
+            InflateRect(&rc, 3, 3);
+
+            if (g_digits_history.find(j) == g_digits_history.end())
+                FillRect(hdcMem2, &rc, GetStockBrush(BLACK_BRUSH));
             else
-                FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            InflateRect(&rc, -5, -5);
-            BitBlt(hdcMem2, rc.left, rc.top, 60, 60, hdcMem, 0, 0, SRCCOPY);
+                FillRect(hdcMem2, &rc, g_hbrRed);
+
+            InflateRect(&rc, -3, -3);
+            hbmOld = SelectObject(hdcMem, g_ahbmDigits[j]);
+            BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
 
@@ -177,7 +283,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         GetClientRect(hwnd, &rc);
         hbmOld = SelectObject(hdcMem, g_hbmKazoekata);
         INT x = (rc.left + rc.right - bm.bmWidth) / 2;
-        INT y = rc.bottom - bm.bmHeight - 50;
+        INT y = rc.bottom - bm.bmHeight - 20;
         BitBlt(hdcMem2, x, y, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
 
@@ -199,41 +305,36 @@ void OnPaint(HWND hwnd)
     }
 }
 
-void DrawBalls(HDC hdcMem, const RECT *prc, INT nMoji)
-{
-    for (INT m = 0; m <= g_nMoji; ++m)
-    {
-        INT x0 = prc->left + m * 15 + 5;
-        INT y0 = prc->bottom - 15;
-        INT x1 = x0 + 10;
-        INT y1 = y0 + 10;
-        HGDIOBJ hbrOld = SelectObject(hdcMem, g_hbrRed);
-        Ellipse(hdcMem, x0, y0, x1, y1);
-        SelectObject(hdcMem, hbrOld);
-    }
-}
-
 void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
 {
-    static const LPCWSTR g_aszReadings[] =
-    {
-        L"いち、ひと-つ",
-        L"に、ふた-つ",
-        L"さん、み-っつ",
-        L"よん、よ-っつ、し",
-        L"ご、いつ-つ",
-        L"ろく、む-っつ",
-        L"なな、なな-つ、しち",
-        L"はち、や-っつ",
-        L"きゅう、く、ここの-つ",
-        L"じゅう、とう",
-    };
+    WCHAR szText[64];
+    lstrcpynW(szText, g_aszReadings[nMoji], _countof(szText));
+
+    LPWSTR pch = wcschr(szText, L':');
+    *pch = 0;
 
     RECT rc = *prc;
-    rc.left += 5;
 
     HGDIOBJ hFontOld = SelectObject(hdcMem, g_hFont);
-    DrawText(hdcMem, g_aszReadings[nMoji], -1, &rc, DT_SINGLELINE | DT_LEFT | DT_TOP);
+    SetTextColor(hdcMem, RGB(0, 0, 0));
+    DrawText(hdcMem, szText, -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+    SelectObject(hdcMem, g_hSmallFont);
+    SetRect(&rc, 0, 0, 300, 300);
+    SetTextColor(hdcMem, RGB(0, 0, 0));
+    if (wcschr(pch + 1, L'\n'))
+        DrawText(hdcMem, pch + 1, -1, &rc, DT_LEFT | DT_TOP);
+    else
+        DrawText(hdcMem, pch + 1, -1, &rc, DT_SINGLELINE | DT_LEFT | DT_TOP);
+
+    lstrcpynW(szText, g_aszKanji[nMoji], _countof(szText));
+    pch = wcschr(szText, L':');
+    *pch = 0;
+
+    SetRect(&rc, 0, 0, 300, 300);
+    SetTextColor(hdcMem, RGB(0, 0, 0));
+    DrawText(hdcMem, pch + 1, -1, &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
+
     SelectObject(hdcMem, hFontOld);
 }
 
@@ -243,26 +344,12 @@ static unsigned ThreadProcWorker(void)
     SIZE siz;
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld;
-    std::vector<GA> v;
-    INT k;
-    POINT apt[4];
-    double cost, sint, cost2, sint2;
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
-    v = g_digits_kakijun[g_nMoji];
-
-    CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
-    for (UINT i = 0; i < v.size(); i++)
-    {
-        if (v[i].type != WAIT && v[i].pb)
-        {
-            CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
-            CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
-        }
-    }
+    LPCWSTR pszText = g_aszReadings[g_nMoji];
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -271,235 +358,32 @@ static unsigned ThreadProcWorker(void)
         hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = 0;
-        rc.top = 0;
-        rc.right = siz.cx;
-        rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-        DrawBalls(hdcMem, &rc, g_nMoji);
         DrawCaptionText(hdcMem, &rc, g_nMoji);
-
         SelectObject(hdcMem, hbmOld);
     }
 
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DoSleep(300);
+    DoSleep(800);
 
-    CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
     PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-    for (UINT i = 0; i < v.size(); i++)
-    {
-        switch (v[i].type)
-        {
-        case WAIT:
-            DoSleep(500);
-            PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-            break;
-
-        case LINEAR:
-            {
-                CDC hdc(g_hKakijunWnd);
-                CDC hdcMem(hdc);
-                hbm1.Swap(hbm2);
-                g_hbmKakijun = hbm1;
-                hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
-                rc.right = siz.cx;
-                rc.bottom = siz.cy;
-                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-                DrawBalls(hdcMem, &rc, g_nMoji);
-                DrawCaptionText(hdcMem, &rc, g_nMoji);
-
-                SelectObject(hdcMem, hbmOld);
-
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
-                cost = cos(v[i].angle0 * M_PI / 180);
-                sint = sin(v[i].angle0 * M_PI / 180);
-                for (k = -200; k < 200; k += 20)
-                {
-                    if (!IsWindowVisible(g_hKakijunWnd))
-                        return 0;
-                    apt[0].x = LONG(150 + k * cost + 150 * sint);
-                    apt[0].y = LONG(150 + k * sint - 150 * cost);
-                    apt[1].x = LONG(150 + k * cost - 150 * sint);
-                    apt[1].y = LONG(150 + k * sint + 150 * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - 150 * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + 150 * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + 150 * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - 150 * cost);
-                    BeginPath(hdcMem);
-                    Polygon(hdcMem, apt, 4);
-                    EndPath(hdcMem);
-                    CRgn hRgn3(::PathToRegion(hdcMem));
-                    CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                    if (n != NULLREGION)
-                        break;
-                }
-                for ( ; k < 200; k += 20)
-                {
-                    if (!IsWindowVisible(g_hKakijunWnd))
-                        return 0;
-                    hbm1.Swap(hbm2);
-                    g_hbmKakijun = hbm1;
-                    hbmOld = SelectObject(hdcMem, hbm1);
-                    apt[0].x = LONG(150 + k * cost + 150 * sint);
-                    apt[0].y = LONG(150 + k * sint - 150 * cost);
-                    apt[1].x = LONG(150 + k * cost - 150 * sint);
-                    apt[1].y = LONG(150 + k * sint + 150 * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - 150 * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + 150 * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + 150 * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - 150 * cost);
-                    BeginPath(hdcMem);
-                    Polygon(hdcMem, apt, 4);
-                    EndPath(hdcMem);
-                    CRgn hRgn3(::PathToRegion(hdcMem));
-                    CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                    CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                    FillRgn(hdcMem, hRgn5, g_hbrRed);
-                    SelectObject(hdcMem, hbmOld);
-
-                    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-                    if (n == NULLREGION)
-                        break;
-                    DoSleep(35);
-                }
-                break;
-            }
-
-        case POLAR:
-            {
-                CDC hdc(g_hKakijunWnd);
-                CDC hdcMem(hdc);
-                hbm1.Swap(hbm2);
-                g_hbmKakijun = hbm1;
-                hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
-                rc.right = siz.cx;
-                rc.bottom = siz.cy;
-                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-                DrawBalls(hdcMem, &rc, g_nMoji);
-                DrawCaptionText(hdcMem, &rc, g_nMoji);
-
-                SelectObject(hdcMem, hbmOld);
-
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
-                if (v[i].angle0 <= v[i].angle1)
-                {
-                    for (k = v[i].angle0; k < v[i].angle1; k += 20)
-                    {
-                        if (!IsWindowVisible(g_hKakijunWnd))
-                            break;
-                        double theta = k * M_PI / 180.0;
-                        double theta2 = (k + 20) * M_PI / 180.0;
-                        cost = cos(theta);
-                        sint = sin(theta);
-                        cost2 = cos(theta2);
-                        sint2 = sin(theta2);
-                        hbm1.Swap(hbm2);
-                        g_hbmKakijun = hbm1;
-                        hbmOld = SelectObject(hdcMem, hbm1);
-                        apt[0].x = LONG(v[i].cx + 200 * cost);
-                        apt[0].y = LONG(v[i].cy + 200 * sint);
-                        apt[1].x = LONG(v[i].cx + 200 * cost2);
-                        apt[1].y = LONG(v[i].cy + 200 * sint2);
-                        apt[2].x = v[i].cx;
-                        apt[2].y = v[i].cy;
-                        BeginPath(hdcMem);
-                        Polygon(hdcMem, apt, 3);
-                        EndPath(hdcMem);
-                        CRgn hRgn3(::PathToRegion(hdcMem));
-                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                        FillRgn(hdcMem, hRgn5, g_hbrRed);
-                        SelectObject(hdcMem, hbmOld);
-
-                        InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-                        if (n == NULLREGION)
-                            break;
-                        DoSleep(35);
-                    }
-                }
-                else
-                {
-                    for (k = v[i].angle0; k > v[i].angle1; k -= 20)
-                    {
-                        if (!IsWindowVisible(g_hKakijunWnd))
-                            break;
-                        double theta = (k - 20) * M_PI / 180.0;
-                        double theta2 = k * M_PI / 180.0;
-                        cost = cos(theta);
-                        sint = sin(theta);
-                        cost2 = cos(theta2);
-                        sint2 = sin(theta2);
-                        hbm1.Swap(hbm2);
-                        g_hbmKakijun = hbm1;
-                        hbmOld = SelectObject(hdcMem, hbm1);
-                        apt[0].x = LONG(v[i].cx + 200 * cost);
-                        apt[0].y = LONG(v[i].cy + 200 * sint);
-                        apt[1].x = LONG(v[i].cx + 200 * cost2);
-                        apt[1].y = LONG(v[i].cy + 200 * sint2);
-                        apt[2].x = v[i].cx;
-                        apt[2].y = v[i].cy;
-                        BeginPath(hdcMem);
-                        Polygon(hdcMem, apt, 3);
-                        EndPath(hdcMem);
-                        CRgn hRgn3(::PathToRegion(hdcMem));
-                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                        FillRgn(hdcMem, hRgn5, g_hbrRed);
-                        SelectObject(hdcMem, hbmOld);
-
-                        InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-                        if (n == NULLREGION)
-                            break;
-                        DoSleep(35);
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    DoSleep(500);
 
     {
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
-        hbm1.Swap(hbm2);
-        g_hbmKakijun = hbm1;
+        hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+        hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = 0;
-        rc.top = 0;
-        rc.right = siz.cx;
-        rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
-        DrawBalls(hdcMem, &rc, g_nMoji);
         DrawCaptionText(hdcMem, &rc, g_nMoji);
-
         SelectObject(hdcMem, hbmOld);
     }
 
-    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
-    DoSleep(500);
+    DoSleep(800);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
@@ -579,14 +463,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     pt.x = x;
     pt.y = y;
-    for (j = 0; j < 10; ++j)
+    for (j = 0; j < _countof(g_ahbmDigits); ++j)
     {
-        int ix = j % 5;
-        int iy = j / 5;
-        rc.left = ix * (80 + 5) + 5 + 135;
-        rc.top = iy * (80 + 5) + 5 + 10;
-        rc.right = rc.left + (80 + 5) - 15;
-        rc.bottom = rc.top + (80 + 5) - 15;
+        GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
         {
             MojiOnClick(hwnd, j, fRight);
@@ -753,6 +632,7 @@ void OnDestroy(HWND hwnd)
 
     DeleteObject(g_hbrRed);
     DeleteObject(g_hFont);
+    DeleteObject(g_hSmallFont);
 
     g_digits_history.clear();
 
@@ -899,7 +779,7 @@ INT WINAPI WinMain(
     // クライアント領域のサイズとスタイルを元にウィンドウサイズを決める。
     DWORD style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
     DWORD exstyle = 0;
-    RECT rc = { 0, 0, 694, 351 };
+    RECT rc = { 0, 0, 620, 420 };
     AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
     // ウィンドウサイズに基づいてメインウィンドウを作成する。
