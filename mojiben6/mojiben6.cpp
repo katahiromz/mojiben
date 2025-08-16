@@ -357,7 +357,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"持:Hold",
     L"式:Formula, Style, Ceremony, Type",
     L"実:Fruit, Truth, Reality, Nut",
-    L"写:Photo, Copy, Write",
+    L"写:Photo, Copy",
     L"者:Person, Someone",
     L"主:Main, Master, Lord",
     L"守:Protect, Defend, Guard",
