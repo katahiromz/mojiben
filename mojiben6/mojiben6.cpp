@@ -352,7 +352,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"指:Finger, Pointing",
     L"歯:Teeth",
     L"詩:Poem",
-    L"次:Next, Below, (-th)",
+    L"次:Next, (-th)",
     L"事:Thing, Case, Matter",
     L"持:Hold",
     L"式:Formula, Style, Ceremony, Type",
