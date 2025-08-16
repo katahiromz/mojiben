@@ -475,7 +475,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"葉:Leaf",
     L"陽:Sunlight, (Positive)",
     L"様:Mr./Ms., Manner, Way",
-    L"落:Fall",
+    L"落:Fall, Drop",
     L"流:Flow, Stream, Style, Manner, Method",
     L"旅:Journey, Travel, Trip, Tour",
     L"両:Both, (Old Japanese currency)",
