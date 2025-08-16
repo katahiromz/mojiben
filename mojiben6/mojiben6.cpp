@@ -312,7 +312,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"漢:Old China, Kanji, Man",
     L"館:Hall, Mansion",
     L"岸:Shore, Coast",
-    L"起:Wake Up",
+    L"起:Wake Up, Happen",
     L"期:Period, Time, Opportunity",
     L"客:Customer, Guest",
     L"究:Research",
