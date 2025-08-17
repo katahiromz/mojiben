@@ -380,7 +380,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"商:Business, Quotient",
     L"章:Chapter",
     L"勝:Victory, Win",
-    L"乗:Ride, -th power",
+    L"乗:Ride, -th Power",
     L"植:Plant",
     L"申:Stating, (Monkey)",
     L"身:Body",
