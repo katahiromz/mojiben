@@ -39,7 +39,6 @@ KAKIJUN g_digits_kakijun;
 
 VOID InitDigits(VOID)
 {
-    GA ga;
     std::vector<GA> vga;
     size_t index = 0;
     vga.clear();
