@@ -482,7 +482,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"緑:Green",
     L"礼:Courtesy, Etiquette, Manners",
     L"列:Column, Queue",
-    L"練:Training, Kneading",
+    L"練:Training, Kneeding",
     L"路:Road, Path",
     L"和:Sum, Harmony, Japanese style",
 };
