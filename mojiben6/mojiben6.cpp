@@ -461,7 +461,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"放:Release",
     L"味:Taste, Flavor",
     L"命:Life, Command",
-    L"面:Surface, Face, Side",
+    L"面:Face, Side, Surface",
     L"問:Question, Asking",
     L"役:Role, Position, Service, Battle",
     L"薬:Drug, Medicine",
