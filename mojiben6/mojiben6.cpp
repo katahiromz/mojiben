@@ -363,7 +363,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"守:Protect, Defend, Guard",
     L"取:Take, Pick Up",
     L"酒:Alcohol",
-    L"受:Receiving",
+    L"受:Receive",
     L"州:State, Province, Sandbank",
     L"拾:Pick Up",
     L"終:End",
