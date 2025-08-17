@@ -458,7 +458,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"平:Flat, Broad",
     L"返:Return",
     L"勉:Exertion, Study",
-    L"放:Release, Put Away",
+    L"放:Release",
     L"味:Taste, Flavor",
     L"命:Life, Command",
     L"面:Surface, Face, Side",
