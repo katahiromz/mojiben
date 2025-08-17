@@ -446,7 +446,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"鼻:Nose",
     L"筆:Writing Brush",
     L"氷:Ice",
-    L"表:Table, Surface, Express",
+    L"表:Table, Surface, Reveal",
     L"秒:Seconds",
     L"病:Disease, Illness",
     L"品:Goods, Product",
