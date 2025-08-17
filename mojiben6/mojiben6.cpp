@@ -366,7 +366,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"受:Receive",
     L"州:State, Province, Sandbank",
     L"拾:Pick Up",
-    L"終:End",
+    L"終:Ending",
     L"習:Learn, Habit",
     L"集:Collection, Gather",
     L"住:Reside, Living",
