@@ -419,7 +419,7 @@ static const LPCWSTR g_aszMojiEnglish[200] =
     L"庭:Garden, Yard",
     L"笛:Whistle, Flute",
     L"鉄:Iron",
-    L"転:Fall Down, Roll",
+    L"転:Roll, Fall Down",
     L"都:Capital",
     L"度:Degree, Time, Occasion",
     L"投:Throw",
