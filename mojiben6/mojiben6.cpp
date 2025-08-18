@@ -522,7 +522,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     try
     {
-        InitKanji2();
+        InitKanji3();
     }
     catch (std::bad_alloc)
     {

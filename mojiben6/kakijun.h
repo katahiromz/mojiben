@@ -28,4 +28,4 @@ typedef std::vector<GA> KAKIJUN[200];
 extern KAKIJUN g_kanji3_kakijun;
 extern INT g_map[200];
 
-VOID InitKanji2(VOID);
+VOID InitKanji3(VOID);
