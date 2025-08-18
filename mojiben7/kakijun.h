@@ -26,6 +26,6 @@ struct GA
 typedef std::vector<GA> KAKIJUN[200];
 
 extern KAKIJUN g_kanji4_kakijun;
-extern INT g_map[200];
+extern INT g_map[202];
 
 VOID InitKanji4(VOID);

@@ -12,7 +12,7 @@
 
 // Kakijun region data
 KAKIJUN g_kanji4_kakijun;
-INT g_map[200];
+INT g_map[202];
 
 static const BYTE kanji_000_00[640] = {
 0x20,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x26,0x00,0x00,0x00,0x60,0x02,0x00,0x00,
@@ -665,7 +665,7 @@ VOID InitKanji4(VOID)
     g_kanji4_kakijun[index++] = vga;
     vga.clear();
 
-    for (int i = 0; i < 200; ++i)
+    for (int i = 0; i < 202; ++i)
     {
         g_map[i] = i;
     }
