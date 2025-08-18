@@ -28766,7 +28766,7 @@ VOID InitKanji1(VOID)
 
     if (0)
     {
-        for (int i = 0; i < 80; ++i)
+        for (size_t i = 0; i < _countof(g_map); ++i)
         {
             g_map[i] = i;
         }
@@ -28775,11 +28775,11 @@ VOID InitKanji1(VOID)
     {
         char buf[80];
         ZeroMemory(buf, sizeof(buf));
-        for (int i = 0; i < 80; ++i)
+        for (size_t i = 0; i < _countof(g_map); ++i)
         {
             ++buf[g_map[i]];
         }
-        for (int i = 0; i < 80; ++i)
+        for (size_t i = 0; i < _countof(g_map); ++i)
         {
             assert(buf[i] == 1);
         }

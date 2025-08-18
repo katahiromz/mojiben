@@ -665,7 +665,7 @@ VOID InitKanji4(VOID)
     g_kanji4_kakijun[index++] = vga;
     vga.clear();
 
-    for (int i = 0; i < 202; ++i)
+    for (size_t i = 0; i < _countof(g_map); ++i)
     {
         g_map[i] = i;
     }
