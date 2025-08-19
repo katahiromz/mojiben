@@ -155,90 +155,6 @@ static const LPCWSTR g_aszMojiReadings[] =
     L"六:むっ-つ、ロク、む、むい",
 };
 
-static const LPCWSTR g_aszMojiEnglish[] =
-{
-    L"一:One, 1",
-    L"右:Right",
-    L"雨:Rain",
-    L"円:Circle, Yen",
-    L"王:King",
-    L"音:Sound, Audio",
-    L"下:Below, Down, Lower",
-    L"火:Fire, Tue",
-    L"花:Flower",
-    L"貝:Shell",
-    L"学:Learning, Academy",
-    L"気:Mind, Mental, Mental Power",
-    L"九:Nine, 9",
-    L"休:Rest",
-    L"玉:Ball, Bullet",
-    L"金:Money, Gold, Metal, Fri",
-    L"空:Sky, Empty, (Opened)",
-    L"月:Moon, Month, Mon",
-    L"犬:Dog",
-    L"見:Look, See",
-    L"五:Five, 5",
-    L"口:Mouth",
-    L"校:(School)",
-    L"左:Left",
-    L"三:Three, 3",
-    L"山:Mountain, Pile",
-    L"子:Child",
-    L"四:Four, 4",
-    L"糸:String, Thread",
-    L"字:Character (not personal), Letter (not mail)",
-    L"耳:Ear",
-    L"七:Seven, 7",
-    L"車:Car, Wheel",
-    L"手:Hand, Arm",
-    L"十:Ten, 10",
-    L"出:Go Out",
-    L"女:Woman, Female",
-    L"小:Small, Little",
-    L"上:Above, Up, Raise",
-    L"森:Forest",
-    L"人:Person, People",
-    L"水:Water, Wed",
-    L"正:Correct",
-    L"生:Living, Life",
-    L"青:Blue, (Green)",
-    L"夕:Evening",
-    L"石:Stone",
-    L"赤:Red",
-    L"千:Thousand, 1000",
-    L"川:River",
-    L"先:Before, Previous, Ahead",
-    L"早:Early",
-    L"草:Grass",
-    L"足:Leg, Foot",
-    L"村:Village",
-    L"大:Big, Large",
-    L"男:Man, Male",
-    L"竹:Bamboo",
-    L"中:In, Inside, Ing, (China)",
-    L"虫:Insect, Bug, Worm",
-    L"町:Town",
-    L"天:Heaven, Sky",
-    L"田:Rice Field",
-    L"土:Soil, Earth, Sat",
-    L"二:Two, 2",
-    L"日:Day, Sun, (Japan)",
-    L"入:Enter",
-    L"年:Year, Age",
-    L"白:White, (Innocent)",
-    L"八:Eight, 8",
-    L"百:Hundred, 100",
-    L"文:Sentence, Letter, Writing",
-    L"木:Wood, Thu",
-    L"本:Book, Main, Real, Origin",
-    L"名:Name",
-    L"目:Eye",
-    L"立:Stand",
-    L"力:Power, Force",
-    L"林:Woods",
-    L"六:Six, 6",
-};
-
 LPTSTR LoadStringDx(INT ids)
 {
     static TCHAR sz[512];
@@ -659,11 +575,15 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         rc2.bottom - rc2.top,
         TRUE);
 
+    // 読み。
     LPCTSTR psz = g_aszMojiReadings[g_nMoji];
     LPCTSTR pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption1, (pch + 1));
 
-    psz = g_aszMojiEnglish[g_nMoji];
+    // 意味。
+    WCHAR szMeaning[128];
+    LoadString(g_hInstance, 2000 + g_nMoji, szMeaning, _countof(szMeaning));
+    psz = szMeaning;
     pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption2, (pch + 1));
 
