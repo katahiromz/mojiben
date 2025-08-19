@@ -356,7 +356,7 @@ static const LPCWSTR g_aszMojiEnglish[202] =
     L"候:Weather, Season, Time, (Candidate)",
     L"康:Health",
     L"佐:-",
-    L"差:Difference, Variation, (Insert)",
+    L"差:Difference, Variation, (Insert), (Use an umbrella)",
     L"菜:Vegetables, Greens",
     L"最:Most",
     L"埼:-",
