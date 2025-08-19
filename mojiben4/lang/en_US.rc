@@ -26,7 +26,7 @@ STYLE DS_CENTER | DS_SETFOREGROUND | DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | W
 FONT 8, "MS Shell Dlg"
 {
     ICON 1, ico1, 10, 10, 0, 0
-    LTEXT "Moji No Benkyou (4) ver.3.0", -1, 36, 12, 105, 10
+    LTEXT "Moji No Benkyou (4) ver.3.1", -1, 36, 12, 105, 10
     LTEXT "Katayama Hirofumi MZ", -1, 35, 30, 105, 10
     CONTROL "katayama.hirofumi.mz@gmail.com", -1, "EDIT", ES_READONLY, 35, 46, 105, 10
     DEFPUSHBUTTON "OK", IDOK, 52, 70, 45, 14
@@ -36,8 +36,8 @@ FONT 8, "MS Shell Dlg"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     3, 0, 0, 0
-PRODUCTVERSION  3, 0, 0, 0
+FILEVERSION     3, 1, 0, 0
+PRODUCTVERSION  3, 1, 0, 0
 FILEOS          0x40004
 FILETYPE        0x1
 FILESUBTYPE     0x0
@@ -48,12 +48,12 @@ FILESUBTYPE     0x0
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "Moji No Benkyou\0"
-            VALUE "FileVersion", "3.0\0"
+            VALUE "FileVersion", "3.1\0"
             VALUE "InternalName", "mojiben4\0"
             VALUE "LegalCopyright", "(C) Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "OriginalFilename", "mojiben4.exe\0"
             VALUE "ProductName", "Moji No Benkyou (4)\0"
-            VALUE "ProductVersion", "3.0s\0"
+            VALUE "ProductVersion", "3.1s\0"
         }
     }
     BLOCK "VarFileInfo"
