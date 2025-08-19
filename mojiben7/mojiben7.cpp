@@ -294,7 +294,7 @@ static const LPCWSTR g_aszMojiEnglish[202] =
     L"位:Rank, Grade, Throne",
     L"茨:Thorns",
     L"印:Mark, Symbol, Stamp, (India)",
-    L"英:(English)",
+    L"英:English, Excellent, Outstanding",
     L"栄:Thrive",
     L"媛:(Princess)",
     L"塩:Salt",
