@@ -28,6 +28,13 @@ If it comes with an installer, you can uninstall it from the "Add or Remove Prog
 
 If you don't have the installer, just delete the files.
 
+## Notice
+
+This software is available in two languages: Japanese and English.
+If you would like to enjoy it in another language, please try RunInLang.
+
+RunInLang: https://katahiromz.fc2.page/runinlang-en/
+
 ## License
 
 "Moji No Benkyou" is free software.
