@@ -50,6 +50,7 @@ HBITMAP g_ahbmDigits[42];
 HBITMAP g_hbmClient;
 HBITMAP g_hbmKakijun;
 HBITMAP g_hbmKazoekata;
+HBITMAP g_hbmKukuNoUta;
 
 INT g_nMoji;
 HANDLE g_hThread;
@@ -169,12 +170,43 @@ void DoSleep(DWORD dwMilliseconds)
         Sleep(dwMilliseconds);
 }
 
+BOOL GetKazoekataRect(HWND hwnd, LPRECT prc)
+{
+    BITMAP bm;
+    if (!GetObject(g_hbmKazoekata, sizeof(bm), &bm))
+        return FALSE;
+
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+
+    INT x = (rc.left + rc.right - bm.bmWidth) * 1 / 3;
+    INT y = rc.bottom - bm.bmHeight - 20;
+    SetRect(prc, x, y, x + bm.bmWidth, y + bm.bmHeight);
+    return TRUE;
+}
+
+BOOL GetKukuNoUtaRect(HWND hwnd, LPRECT prc)
+{
+    BITMAP bm;
+    if (!GetObject(g_hbmKukuNoUta, sizeof(bm), &bm))
+        return FALSE;
+
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+
+    INT x = (rc.left + rc.right - bm.bmWidth) * 2 / 3;
+    INT y = rc.bottom - bm.bmHeight - 20;
+    SetRect(prc, x, y, x + bm.bmWidth, y + bm.bmHeight);
+    return TRUE;
+}
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
     g_hbmKazoekata = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
+    g_hbmKukuNoUta = LoadBitmap(g_hInstance, MAKEINTRESOURCE(101));
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
@@ -278,15 +310,14 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             SelectObject(hdcMem, hbmOld);
         }
 
-        BITMAP bm;
-        GetObject(g_hbmKazoekata, sizeof(bm), &bm);
-
-        RECT rc;
-        GetClientRect(hwnd, &rc);
+        GetKazoekataRect(hwnd, &rc);
         hbmOld = SelectObject(hdcMem, g_hbmKazoekata);
-        INT x = (rc.left + rc.right - bm.bmWidth) / 2;
-        INT y = rc.bottom - bm.bmHeight - 20;
-        BitBlt(hdcMem2, x, y, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+        BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
+        SelectObject(hdcMem, hbmOld);
+
+        GetKukuNoUtaRect(hwnd, &rc);
+        hbmOld = SelectObject(hdcMem, g_hbmKukuNoUta);
+        BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
 
         SelectObject(hdcMem2, hbmOld2);
@@ -475,16 +506,16 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         }
     }
 
-    BITMAP bm;
-    GetObject(g_hbmKazoekata, sizeof(bm), &bm);
-
-    GetClientRect(hwnd, &rc);
-    x = (rc.left + rc.right - bm.bmWidth) / 2;
-    y = rc.bottom - bm.bmHeight - 50;
-    SetRect(&rc, x, y, x + bm.bmWidth, y + bm.bmHeight);
+    GetKazoekataRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
         ShellExecute(hwnd, NULL, LoadStringDx(1000), NULL, NULL, SW_SHOWNORMAL);
+    }
+
+    GetKukuNoUtaRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
+    {
+        ShellExecute(hwnd, NULL, LoadStringDx(1001), NULL, NULL, SW_SHOWNORMAL);
     }
 }
 
@@ -498,14 +529,9 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     ScreenToClient(hwnd, &pt);
 
     RECT rc;
-    for (INT j = 0; j < 10; ++j)
+    for (INT j = 0; j < _countof(g_ahbmDigits); ++j)
     {
-        INT ix = j % 5;
-        INT iy = j / 5;
-        rc.left = ix * (80 + 5) + 5 + 135;
-        rc.top = iy * (80 + 5) + 5 + 10;
-        rc.right = rc.left + (80 + 5) - 15;
-        rc.bottom = rc.top + (80 + 5) - 15;
+        GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
         {
             SetCursor(LoadCursor(NULL, IDC_HAND));
@@ -513,13 +539,14 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
         }
     }
 
-    BITMAP bm;
-    GetObject(g_hbmKazoekata, sizeof(bm), &bm);
+    GetKazoekataRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
+    }
 
-    GetClientRect(hwnd, &rc);
-    INT x = (rc.left + rc.right - bm.bmWidth) / 2;
-    INT y = rc.bottom - bm.bmHeight - 50;
-    SetRect(&rc, x, y, x + bm.bmWidth, y + bm.bmHeight);
+    GetKukuNoUtaRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
         SetCursor(LoadCursor(NULL, IDC_HAND));
