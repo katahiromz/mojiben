@@ -170,6 +170,7 @@ void DoSleep(DWORD dwMilliseconds)
         Sleep(dwMilliseconds);
 }
 
+// 「数え方」ボタンの位置。
 BOOL GetKazoekataRect(HWND hwnd, LPRECT prc)
 {
     BITMAP bm;
@@ -185,6 +186,7 @@ BOOL GetKazoekataRect(HWND hwnd, LPRECT prc)
     return TRUE;
 }
 
+// 「九九の歌」ボタンの位置。
 BOOL GetKukuNoUtaRect(HWND hwnd, LPRECT prc)
 {
     BITMAP bm;
@@ -257,6 +259,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// 文字ボタンの位置。
 BOOL GetMojiRect(LPRECT prc, INT nMoji)
 {
     prc->left = (nMoji % 6) * 80;
@@ -275,7 +278,6 @@ BOOL GetMojiRect(LPRECT prc, INT nMoji)
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
-    INT j;
     RECT rc;
     SIZE siz;
     HBRUSH hbr;
@@ -294,7 +296,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < _countof(g_ahbmDigits); ++j)
+        for (INT j = 0; j < _countof(g_ahbmDigits); ++j)
         {
             GetMojiRect(&rc, j);
             InflateRect(&rc, 3, 3);
@@ -479,7 +481,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
-    INT j;
     POINT pt;
     RECT rc;
     SIZE siz;
@@ -496,7 +497,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     pt.x = x;
     pt.y = y;
-    for (j = 0; j < _countof(g_ahbmDigits); ++j)
+
+    // 文字ボタンの当たり判定。
+    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
     {
         GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
@@ -506,12 +509,14 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         }
     }
 
+    // 「数え方」ボタンの当たり判定。
     GetKazoekataRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
         ShellExecute(hwnd, NULL, LoadStringDx(1000), NULL, NULL, SW_SHOWNORMAL);
     }
 
+    // 「九九の歌」ボタンの当たり判定。
     GetKukuNoUtaRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
@@ -644,15 +649,13 @@ AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void OnDestroy(HWND hwnd)
 {
-    UINT i;
-
     if (g_hThread)
     {
         ShowWindow(g_hKakijunWnd, SW_HIDE);
         CloseHandle(g_hThread);
     }
 
-    for (i = 0; i < _countof(g_ahbmDigits); ++i)
+    for (UINT i = 0; i < _countof(g_ahbmDigits); ++i)
         DeleteObject(g_ahbmDigits[i]);
 
     DeleteObject(g_hbmClient);
