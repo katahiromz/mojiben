@@ -296,7 +296,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (INT j = 0; j < _countof(g_ahbmDigits); ++j)
+        for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
         {
             GetMojiRect(&rc, j);
             InflateRect(&rc, 3, 3);
@@ -445,15 +445,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     if (fRight)
     {
-        SetForegroundWindow(hwnd);
-        HMENU hMenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(100));
-        HMENU hSubMenu = GetSubMenu(hMenu, 0);
-        POINT pt;
-        GetCursorPos(&pt);
-        INT nCmd = TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
-                                  pt.x, pt.y, 0, hwnd, NULL);
-        DestroyMenu(hMenu);
-        PostMessage(hwnd, WM_COMMAND, nCmd, 0);
         return;
     }
 
@@ -534,7 +525,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     ScreenToClient(hwnd, &pt);
 
     RECT rc;
-    for (INT j = 0; j < _countof(g_ahbmDigits); ++j)
+    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
     {
         GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
@@ -711,23 +702,8 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
-unsigned __stdcall ThreadProc2( void * )
-{
-    for (INT i = 0; i <= g_nMoji; ++i)
-    {
-        PlaySound(MAKEINTRESOURCE(1000 + i), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
-    }
-    return 0;
-}
-
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    if (id == 0)
-        return;
-
-    if (g_hThread != NULL)
-        CloseHandle(g_hThread);
-    g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc2, NULL, 0, NULL);
 }
 
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
