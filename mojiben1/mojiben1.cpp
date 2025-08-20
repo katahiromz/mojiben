@@ -889,12 +889,14 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
+// 「ひらがな」ボタンの当たり判定。
 BOOL HitHiraganaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
     SetRect(prc, 160, 10, 160 + 200, 10 + 76);
     return PtInRect(prc, pt);
 }
 
+// 「カタカナ」ボタンの当たり判定。
 BOOL HitKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
     RECT rc;
@@ -945,6 +947,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
+    // 文字ボタンの当たり判定。
     for (j = 0; j <= 100; j += 10)
     {
         if (j == 70)

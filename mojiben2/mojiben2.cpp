@@ -86,13 +86,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3330, LoadStringDx(2));
 
     INT i;
-    for(i = 0; i < 26; i++)
+    for(i = 0; i < 'Z' - 'A' + 1; i++)
     {
         g_ahbmPrintUpperCase[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + i));
         if (g_ahbmPrintUpperCase[i] == NULL)
             return FALSE;
     }
-    for(i = 0; i < 26; i++)
+    for(i = 0; i < 'Z' - 'A' + 1; i++)
     {
         g_ahbmPrintLowerCase[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + i));
         if (g_ahbmPrintLowerCase[i] == NULL)
@@ -122,10 +122,34 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// 文字ボタンの位置。
+BOOL GetMojiRect(HWND hwnd, LPRECT prc, INT i)
+{
+    RECT rc;
+    INT j = 0;
+    if (i < 14)
+    {
+        rc.left = i * 54 + 10;
+        rc.top = j * 70 + 180;
+        rc.right = rc.left + 48;
+        rc.bottom = rc.top + 48;
+        *prc = rc;
+    }
+    else
+    {
+        j = 1;
+        rc.left = (i - 14) * 54 + 10;
+        rc.top = j * 70 + 180;
+        rc.right = rc.left + 48;
+        rc.bottom = rc.top + 48;
+        *prc = rc;
+    }
+    return TRUE;
+}
+
 void OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
-    INT i, j;
     RECT rc;
     SIZE siz;
     HBRUSH hbr;
@@ -167,14 +191,14 @@ void OnDraw(HWND hwnd, HDC hdc)
             bitmaps = g_ahbmPrintUpperCase;
         }
 
-        j = 0;
-        for(i = 0; i < 14; i++)
+        for (INT i = 0; i < 'Z' - 'A' + 1; i++)
         {
+            GetMojiRect(hwnd, &rc, i);
+
+            InflateRect(&rc, +2, +2);
+            OffsetRect(&rc, +1, +1);
+
             hbmOld = SelectObject(hdcMem, bitmaps[i]);
-                rc.left = i * 54 + 10 - 1;
-                rc.top = j * 70 + 180 - 1;
-                rc.right = rc.left + 50 + 2;
-                rc.bottom = rc.top + 50 + 2;
             if (g_fLowerCase)
             {
                 if (g_print_lowercase_history.find(i) != g_print_lowercase_history.end())
@@ -189,32 +213,11 @@ void OnDraw(HWND hwnd, HDC hdc)
                 else
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
-            BitBlt(hdcMem2, i * 54 + 11, j * 70 + 181, 48, 48, hdcMem, 0, 0, SRCCOPY);
-            SelectObject(hdcMem, hbmOld);
-        }
-        j = 1;
-        for(i = 14; i < 26; i++)
-        {
-            hbmOld = SelectObject(hdcMem, bitmaps[i]);
-                rc.left = (i - 14) * 54 + 10 - 1;
-                rc.top = j * 70 + 180 - 1;
-                rc.right = rc.left + 50 + 2;
-                rc.bottom = rc.top + 50 + 2;
-            if (g_fLowerCase)
-            {
-                if (g_print_lowercase_history.find(i) != g_print_lowercase_history.end())
-                    FillRect(hdcMem2, &rc, g_hbrRed);
-                else
-                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            }
-            else
-            {
-                if (g_print_uppercase_history.find(i) != g_print_uppercase_history.end())
-                    FillRect(hdcMem2, &rc, g_hbrRed);
-                else
-                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            }
-            BitBlt(hdcMem2, (i - 14) * 54 + 11, j * 70 + 181, 48, 48, hdcMem, 0, 0, SRCCOPY);
+
+            OffsetRect(&rc, -1, -1);
+            InflateRect(&rc, -2, -2);
+
+            BitBlt(hdcMem2, rc.left, rc.top, 48, 48, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
         SelectObject(hdcMem2, hbmOld2);
@@ -631,13 +634,15 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
-BOOL HitUppercaseRect(HWND hwnd, LPRECT prc, POINT pt)
+// 「UPPERCASE」ボタンの位置。
+BOOL GetUppercaseRect(HWND hwnd, LPRECT prc)
 {
     SetRect(prc, 160, 60, 160 + 200, 60 + 63);
-    return PtInRect(prc, pt);
+    return TRUE;
 }
 
-BOOL HitLowercaseRect(HWND hwnd, LPRECT prc, POINT pt)
+// 「lowercase」ボタンの位置。
+BOOL GetLowercaseRect(HWND hwnd, LPRECT prc)
 {
     RECT rc;
     GetClientRect(hwnd, &rc);
@@ -645,12 +650,11 @@ BOOL HitLowercaseRect(HWND hwnd, LPRECT prc, POINT pt)
     prc->top = 60;
     prc->right = prc->left + 200;
     prc->bottom = prc->top + 63;
-    return PtInRect(prc, pt);
+    return TRUE;
 }
 
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
-    INT i, j;
     POINT pt;
     RECT rc;
     SIZE siz;
@@ -668,7 +672,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     pt.x = x;
     pt.y = y;
 
-    if (HitUppercaseRect(hwnd, &rc, pt))
+    // 「UPPERCASE」ボタンの当たり判定。
+    GetUppercaseRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
     {
         g_fLowerCase = FALSE;
         PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -679,7 +685,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    if (HitLowercaseRect(hwnd, &rc, pt))
+    // 「lowercase」ボタンの当たり判定。
+    GetLowercaseRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
     {
         g_fLowerCase = TRUE;
         PlaySound(MAKEINTRESOURCE(301), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -690,26 +698,10 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    j = 0;
-    for(i = 0; i < 14; i++)
+    // 文字ボタンの当たり判定。
+    for (INT i = 0; i < 'Z' - 'A' + 1; ++i)
     {
-        rc.left = i * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
-        if (PtInRect(&rc, pt))
-        {
-            MojiOnClick(hwnd, i, fRight);
-            return;
-        }
-    }
-    j = 1;
-    for(i = 14; i < 26; i++)
-    {
-        rc.left = (i - 14) * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
+        GetMojiRect(hwnd, &rc, i);
         if (PtInRect(&rc, pt))
         {
             MojiOnClick(hwnd, i, fRight);
@@ -728,37 +720,24 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     ScreenToClient(hwnd, &pt);
 
     RECT rc;
-    if (HitUppercaseRect(hwnd, &rc, pt))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-        return TRUE;
-    }
-    if (HitLowercaseRect(hwnd, &rc, pt))
+
+    GetUppercaseRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
     {
         SetCursor(LoadCursor(NULL, IDC_HAND));
         return TRUE;
     }
 
-    UINT i, j = 0;
-    for (i = 0; i < 14; i++)
+    GetLowercaseRect(hwnd, &rc);
+    if (PtInRect(&rc, pt))
     {
-        rc.left = i * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
-        if (PtInRect(&rc, pt))
-        {
-            SetCursor(LoadCursor(NULL, IDC_HAND));
-            return TRUE;
-        }
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        return TRUE;
     }
-    j = 1;
-    for (i = 14; i < 26; i++)
+
+    for (INT i = 0; i < 'Z' - 'A' + 1; i++)
     {
-        rc.left = (i - 14) * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
+        GetMojiRect(hwnd, &rc, i);
         if (PtInRect(&rc, pt))
         {
             SetCursor(LoadCursor(NULL, IDC_HAND));
