@@ -28,6 +28,7 @@
 #include "kakijun.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
+#include "../Common.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -62,14 +63,6 @@ HBRUSH g_hbrRed;
 std::set<INT> g_kanji1_history;
 
 BOOL g_bHighSpeed = FALSE;
-
-void DoSleep(DWORD dwMilliseconds)
-{
-    if (g_bHighSpeed)
-        Sleep(dwMilliseconds / 10);
-    else
-        Sleep(dwMilliseconds);
-}
 
 static const LPCWSTR g_aszMojiReadings[] =
 {
@@ -155,14 +148,6 @@ static const LPCWSTR g_aszMojiReadings[] =
     L"六:むっ-つ、ロク、む、むい",
 };
 
-LPTSTR LoadStringDx(INT ids)
-{
-    static TCHAR sz[512];
-    ZeroMemory(sz, sizeof(sz));
-    LoadString(g_hInstance, ids, sz, 512);
-    return sz;
-}
-
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     g_hThread = NULL;
@@ -170,10 +155,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
 
     HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3340, LoadStringDx(5));
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, 0x3330, LoadStringDx(2));
+    updateSystemMenu(hSysMenu);
 
     ZeroMemory(g_ahbmKanji1, sizeof(g_ahbmKanji1));
     for (INT j = 0; j < 80; ++j)
@@ -844,29 +826,6 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK
-AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_INITDIALOG:
-        return TRUE;
-
-    case WM_COMMAND:
-        switch (LOWORD(wParam))
-        {
-        case IDOK:
-            EndDialog(hDlg, IDOK);
-            break;
-
-        case IDCANCEL:
-            EndDialog(hDlg, IDCANCEL);
-            break;
-        }
-    }
-    return FALSE;
-}
-
 void OnDestroy(HWND hwnd)
 {
     if (g_hThread)
@@ -918,17 +877,17 @@ void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 
 void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 {
-    if ((cmd & 0xFFF0) == 0x3330)
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
     {
         DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
         return;
     }
 
-    if ((cmd & 0xFFF0) == 0x3340)
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_HIGH_SPEEED)
     {
         g_bHighSpeed = !g_bHighSpeed;
         HMENU hSysMenu = ::GetSystemMenu(hwnd, FALSE);
-        ::CheckMenuItem(hSysMenu, 0x3340, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
+        ::CheckMenuItem(hSysMenu, SYSCOMMAND_HIGH_SPEEED, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
         return;
     }
 
