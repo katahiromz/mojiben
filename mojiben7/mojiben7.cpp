@@ -1141,7 +1141,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
     {
-        rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
+        rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
         return;
     }
 
