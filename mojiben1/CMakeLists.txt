@@ -51,7 +51,7 @@ endif()
 add_definitions(-DUNICODE -D_UNICODE)
 
 # mojiben1.exe
-add_executable(mojiben1 WIN32 mojiben1.cpp hiragana.cpp katakana.cpp mojiben1_res.rc2)
+add_executable(mojiben1 WIN32 mojiben1.cpp hiragana.cpp katakana.cpp mojiben1_res.rc)
 target_link_libraries(mojiben1 comctl32 winmm shlwapi)
 if(MSVC)
     target_link_options(mojiben1 PRIVATE /MANIFEST:NO)
