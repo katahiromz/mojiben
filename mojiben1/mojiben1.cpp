@@ -65,8 +65,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKatakana2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(250));
     g_fKatakana = FALSE;
 
-    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
-    updateSystemMenu(hSysMenu);
+    updateSystemMenu(hwnd);
 
     INT i, j;
     ZeroMemory(g_aahbmHiragana, sizeof(g_aahbmHiragana));
@@ -1223,6 +1222,18 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
         return;
     }
 
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
+        return;
+    }
+
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_JAPANESE)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
+        return;
+    }
+
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
@@ -1318,6 +1329,9 @@ INT WINAPI WinMain(
     INT         nCmdShow)
 {
     g_hInstance = hInstance;
+
+    // レジストリから読み込んだスタディモードを適用。
+    applyStudyMode(getStudyMode());
 
     // コモンコントロール初期化。
     InitCommonControls();

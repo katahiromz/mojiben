@@ -208,8 +208,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
     g_hSmallFont = CreateFontIndirect(&lf);
 
-    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
-    updateSystemMenu(hSysMenu);
+    updateSystemMenu(hwnd);
 
     ZeroMemory(g_ahbmDigits, sizeof(g_ahbmDigits));
     for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
@@ -650,11 +649,24 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
         DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
         return;
     }
+
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_HIGH_SPEEED)
     {
         g_bHighSpeed = !g_bHighSpeed;
         HMENU hSysMenu = ::GetSystemMenu(hwnd, FALSE);
         ::CheckMenuItem(hSysMenu, SYSCOMMAND_HIGH_SPEEED, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
+        return;
+    }
+
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
+        return;
+    }
+
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_JAPANESE)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
         return;
     }
 
@@ -705,6 +717,9 @@ INT WINAPI WinMain(
     INT         nCmdShow)
 {
     g_hInstance = hInstance;
+
+    // レジストリから読み込んだスタディモードを適用。
+    applyStudyMode(getStudyMode());
 
     // コモンコントロール初期化。
     InitCommonControls();

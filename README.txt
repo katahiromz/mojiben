@@ -37,9 +37,7 @@
 ☆お知らせ☆
 
 このソフトウェアは、日本語と英語の2言語に対応しています。
-別の言語で楽しみたい場合は、RunInLangをお使いください。
-
-RunInLang: https://katahiromz.fc2.page/runinlang-ja/
+別の言語で楽しみたい場合は、タイトルバーのシステムメニューから "Study mode" をお選びください。
 
 ☆使用許諾☆
 

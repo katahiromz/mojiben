@@ -65,8 +65,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     g_fLowerCase = FALSE;
 
-    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
-    updateSystemMenu(hSysMenu);
+    updateSystemMenu(hwnd);
 
     INT i;
     for(i = 0; i < 'Z' - 'A' + 1; i++)
@@ -810,6 +809,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
         DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
         return;
     }
+
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_HIGH_SPEEED)
     {
         g_bHighSpeed = !g_bHighSpeed;
@@ -817,6 +817,19 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
         ::CheckMenuItem(hSysMenu, SYSCOMMAND_HIGH_SPEEED, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
         return;
     }
+
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
+        return;
+    }
+
+    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_JAPANESE)
+    {
+        rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
+        return;
+    }
+
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
@@ -908,6 +921,9 @@ INT WINAPI WinMain(
     INT         nCmdShow)
 {
     g_hInstance = hInstance;
+
+    // レジストリから読み込んだスタディモードを適用。
+    applyStudyMode(getStudyMode());
 
     // コモンコントロール初期化。
     InitCommonControls();
