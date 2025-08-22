@@ -37,10 +37,11 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
+#define NUM_MOJI 92
+
 HBITMAP g_hbmHiragana, g_hbmHiragana2;
 HBITMAP g_hbmKatakana, g_hbmKatakana2;
-HBITMAP g_aahbmHiragana[11][5];
-HBITMAP g_aahbmKatakana[11][5];
+HBITMAP g_ahbmMoji[NUM_MOJI];
 HBITMAP g_hbmClient;
 BOOL g_fKatakana;
 
@@ -53,6 +54,23 @@ std::set<INT> g_katakana_history;
 std::set<INT> g_hiragana_history;
 
 BOOL g_bHighSpeed = FALSE;
+
+struct MOJI
+{
+    SHORT index;
+    SHORT moji_id;
+    SHORT bitmap_id;
+    SHORT x;
+    SHORT y;
+    BOOLEAN is_katakana;
+};
+
+MOJI g_moji_data[NUM_MOJI] = {
+#define DEFINE_MOJI(index, moji_id, wch, bitmap_id, x, y, is_katakana) \
+    { index, moji_id, bitmap_id, x, y, is_katakana },
+#include "mojidata.h"
+#undef DEFINE_MOJI
+};
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
@@ -67,99 +85,10 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     updateSystemMenu(hwnd);
 
-    INT i, j;
-    ZeroMemory(g_aahbmHiragana, sizeof(g_aahbmHiragana));
-    for (j = 0; j <= 100; j += 10)
+    for (UINT i = 0; i < _countof(g_ahbmMoji); ++i)
     {
-        if (j == 70)
-        {
-            i = 0;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-            i = 2;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-            i = 4;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else if (j == 90)
-        {
-            i = 0;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-            i = 4;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else if (j == 100)
-        {
-            i = 4;
-            g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-            if (g_aahbmHiragana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else
-        {
-            for (i = 0; i < 5; i++)
-            {
-                g_aahbmHiragana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j + i));
-                if (g_aahbmHiragana[j / 10][i] == NULL)
-                    return FALSE;
-            }
-        }
-    }
-
-    ZeroMemory(g_aahbmKatakana, sizeof(g_aahbmKatakana));
-    for (j = 0; j <= 100; j += 10)
-    {
-        if (j == 70)
-        {
-            i = 0;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-            i = 2;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-            i = 4;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else if (j == 90)
-        {
-            i = 0;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-            i = 4;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else if (j == 100)
-        {
-            i = 4;
-            g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-            if (g_aahbmKatakana[j / 10][i] == NULL)
-                return FALSE;
-        }
-        else
-        {
-            for (i = 0; i < 5; i++)
-            {
-                g_aahbmKatakana[j / 10][i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + j + i));
-                if (g_aahbmKatakana[j / 10][i] == NULL)
-                    return FALSE;
-            }
-        }
+        assert(g_moji_data[i].index == i);
+        g_ahbmMoji[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(g_moji_data[i].bitmap_id));
     }
 
     g_hbmClient = NULL;
@@ -188,7 +117,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
-    INT i, j;
+    INT j;
     RECT rc;
     SIZE siz;
     HBRUSH hbr;
@@ -207,8 +136,6 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        typedef HBITMAP MYBITMAPS[11][5];
-        MYBITMAPS *bitmaps;
         if (g_fKatakana)
         {
             hbmOld = SelectObject(hdcMem, g_hbmHiragana2);
@@ -217,7 +144,6 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_hbmKatakana);
             BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            bitmaps = &g_aahbmKatakana;
         }
         else
         {
@@ -227,181 +153,38 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_hbmKatakana2);
             BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            bitmaps = &g_aahbmHiragana;
         }
 
-        for (j = 0; j <= 100; j += 10)
+        for (j = 0; j < _countof(g_ahbmMoji); ++j)
         {
-            if (j == 70)
+            assert(g_moji_data[j].index == j);
+            if (g_moji_data[j].is_katakana != g_fKatakana)
+                continue;
+
+            hbmOld = SelectObject(hdcMem, g_ahbmMoji[j]);
+            rc.left = g_moji_data[j].x;
+            rc.top = g_moji_data[j].y;
+            rc.right = rc.left + 50;
+            rc.bottom = rc.top + 50;
+            InflateRect(&rc, +3, +3);
+            if (g_fKatakana)
             {
-                i = 0;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
+                if (g_katakana_history.find(g_moji_data[j].moji_id) != g_katakana_history.end())
+                    FillRect(hdcMem2, &rc, g_hbrRed);
                 else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-                i = 2;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-                i = 4;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-            }
-            else if (j == 90)
-            {
-                i = 0;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-                i = 4;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-            }
-            else if (j == 100)
-            {
-                i = 4;
-                hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                    rc.left = 685 - (j * 65) / 10 - 3;
-                    rc.top = i * 60 + 100 - 3;
-                    rc.right = rc.left + 50 + 6;
-                    rc.bottom = rc.top + 50 + 6;
-                if (g_fKatakana)
-                {
-                    if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                else
-                {
-                    if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                        FillRect(hdcMem2, &rc, g_hbrRed);
-                    else
-                        FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                }
-                BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
+                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
             else
             {
-                for (i = 0; i < 5; i++)
-                {
-                    hbmOld = SelectObject(hdcMem, (*bitmaps)[j / 10][i]);
-                        rc.left = 685 - (j * 65) / 10 - 3;
-                        rc.top = i * 60 + 100 - 3;
-                        rc.right = rc.left + 50 + 6;
-                        rc.bottom = rc.top + 50 + 6;
-                    if (g_fKatakana)
-                    {
-                        if (g_katakana_history.find(j + i) != g_katakana_history.end())
-                            FillRect(hdcMem2, &rc, g_hbrRed);
-                        else
-                            FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                    }
-                    else
-                    {
-                        if (g_hiragana_history.find(j + i) != g_hiragana_history.end())
-                            FillRect(hdcMem2, &rc, g_hbrRed);
-                        else
-                            FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                    }
-                    BitBlt(hdcMem2, 685 - (j * 65) / 10, i * 60 + 100, 70, 70, hdcMem, 0, 0, SRCCOPY);
-                    SelectObject(hdcMem, hbmOld);
-                }
+                if (g_hiragana_history.find(g_moji_data[j].moji_id) != g_hiragana_history.end())
+                    FillRect(hdcMem2, &rc, g_hbrRed);
+                else
+                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
+            InflateRect(&rc, -3, -3);
+            BitBlt(hdcMem2, rc.left, rc.top, 50, 50, hdcMem, 0, 0, SRCCOPY);
+            SelectObject(hdcMem, hbmOld);
         }
-        SelectObject(hdcMem2, hbmOld2);
     }
 
     hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
@@ -889,7 +672,6 @@ BOOL HitKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
 
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
-    INT i, j;
     POINT pt;
     RECT rc;
     SIZE siz;
@@ -930,92 +712,19 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 
     // 文字ボタンの当たり判定。
-    for (j = 0; j <= 100; j += 10)
+    for (UINT j = 0; j < _countof(g_ahbmMoji); ++j)
     {
-        if (j == 70)
+        rc.left = g_moji_data[j].x;
+        rc.top = g_moji_data[j].y;
+        rc.right = rc.left + 50;
+        rc.bottom = rc.top + 50;
+        InflateRect(&rc, +3, +3);
+        if (PtInRect(&rc, pt))
         {
-            i = 0;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
-            i = 2;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
+            MojiOnClick(hwnd, g_moji_data[j].moji_id, fRight);
+            return;
         }
-        else if (j == 90)
-        {
-            i = 0;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
-        }
-        else if (j == 100)
-        {
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                MojiOnClick(hwnd, j + i, fRight);
-                return;
-            }
-        }
-        else
-        {
-            for (i = 0; i < 5; i++)
-            {
-                rc.left = 685 - (j * 65) / 10 - 3;
-                rc.top = i * 60 + 100 - 3;
-                rc.right = rc.left + 50 + 6;
-                rc.bottom = rc.top + 50 + 6;
-                if (PtInRect(&rc, pt))
-                {
-                    MojiOnClick(hwnd, j + i, fRight);
-                    return;
-                }
-            }
-        }
+        InflateRect(&rc, -3, -3);
     }
 }
 
@@ -1042,93 +751,20 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
         return TRUE;
     }
 
-    UINT i;
-    for (UINT j = 0; j <= 100; j += 10)
+    // 文字ボタンの当たり判定。
+    for (UINT j = 0; j < _countof(g_ahbmMoji); ++j)
     {
-        if (j == 70)
+        rc.left = g_moji_data[j].x;
+        rc.top = g_moji_data[j].y;
+        rc.right = rc.left + 50;
+        rc.bottom = rc.top + 50;
+        InflateRect(&rc, +3, +3);
+        if (PtInRect(&rc, pt))
         {
-            i = 0;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
-            i = 2;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
+            SetCursor(LoadCursor(NULL, IDC_HAND));
+            return TRUE;
         }
-        else if (j == 90)
-        {
-            i = 0;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
-        }
-        else if (j == 100)
-        {
-            i = 4;
-            rc.left = 685 - (j * 65) / 10 - 3;
-            rc.top = i * 60 + 100 - 3;
-            rc.right = rc.left + 50 + 6;
-            rc.bottom = rc.top + 50 + 6;
-            if (PtInRect(&rc, pt))
-            {
-                SetCursor(LoadCursor(NULL, IDC_HAND));
-                return TRUE;
-            }
-        }
-        else
-        {
-            for (i = 0; i < 5; i++)
-            {
-                rc.left = 685 - (j * 65) / 10 - 3;
-                rc.top = i * 60 + 100 - 3;
-                rc.right = rc.left + 50 + 6;
-                rc.bottom = rc.top + 50 + 6;
-                if (PtInRect(&rc, pt))
-                {
-                    SetCursor(LoadCursor(NULL, IDC_HAND));
-                    return TRUE;
-                }
-            }
-        }
+        InflateRect(&rc, -3, -3);
     }
 
     SetCursor(LoadCursor(NULL, IDC_ARROW));
@@ -1245,22 +881,10 @@ void OnDestroy(HWND hwnd)
         CloseHandle(g_hThread);
     }
 
-    UINT i, j;
-    for (i = 0; i < _countof(g_aahbmHiragana); ++i)
+    for (UINT i = 0; i < _countof(g_ahbmMoji); ++i)
     {
-        for (j = 0; j < _countof(g_aahbmHiragana[0]); ++j)
-        {
-            if (g_aahbmHiragana[i][j])
-                DeleteObject(g_aahbmHiragana[i][j]);
-        }
-    }
-    for (i = 0; i < _countof(g_aahbmKatakana); ++i)
-    {
-        for (j = 0; j < _countof(g_aahbmKatakana[0]); ++j)
-        {
-            if (g_aahbmKatakana[i][j])
-                DeleteObject(g_aahbmKatakana[i][j]);
-        }
+        if (g_ahbmMoji[i])
+            DeleteObject(g_ahbmMoji[i]);
     }
 
     DeleteObject(g_hbmClient);
