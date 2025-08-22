@@ -3378,6 +3378,11 @@ static const BYTE z2[176] = {
     vga.push_back(ga); \
 } while (0)
 
+#define ADD_MOJI(num) do { \
+    g_print_lowercase_kakijun.insert(value_type((num), vga)); \
+    vga.clear(); \
+} while (0)
+
 VOID InitPrintLowerCase(VOID)
 {
     GA ga;
@@ -3388,73 +3393,63 @@ VOID InitPrintLowerCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, a1);
 
-    g_print_lowercase_kakijun.insert(value_type(0, vga));
-    vga.clear();
+    ADD_MOJI(0);
 
     ADD_LINEAR(90, b0);
     ADD_WAIT();
     ADD_POLAR(180, 540, 150, 150, b1);
 
-    g_print_lowercase_kakijun.insert(value_type(1, vga));
-    vga.clear();
+    ADD_MOJI(1);
 
     ADD_POLAR(355, 15, 150, 151, c0);
 
-    g_print_lowercase_kakijun.insert(value_type(2, vga));
-    vga.clear();
+    ADD_MOJI(2);
 
     ADD_POLAR(360, 0, 147, 151, d0);
     ADD_WAIT();
     ADD_LINEAR(90, d1);
 
-    g_print_lowercase_kakijun.insert(value_type(3, vga));
-    vga.clear();
+    ADD_MOJI(3);
 
     ADD_LINEAR(0, e0);
     ADD_WAIT();
     ADD_POLAR(375, 20, 147, 150, e1);
 
-    g_print_lowercase_kakijun.insert(value_type(4, vga));
-    vga.clear();
+    ADD_MOJI(4);
 
     ADD_POLAR(385, 180, 164, 42, f0);
     ADD_LINEAR(90, f1);
     ADD_WAIT();
     ADD_LINEAR(0, f2);
 
-    g_print_lowercase_kakijun.insert(value_type(5, vga));
-    vga.clear();
+    ADD_MOJI(5);
 
     ADD_POLAR(360, 0, 147, 149, g0);
     ADD_WAIT();
     ADD_LINEAR(90, g1);
     ADD_POLAR(0, 190, 148, 241, g2);
 
-    g_print_lowercase_kakijun.insert(value_type(6, vga));
-    vga.clear();
+    ADD_MOJI(6);
 
     ADD_LINEAR(90, h0);
     ADD_WAIT();
     ADD_POLAR(180, 360, 149, 137, h1);
     ADD_LINEAR(90, h2);
 
-    g_print_lowercase_kakijun.insert(value_type(7, vga));
-    vga.clear();
+    ADD_MOJI(7);
 
     ADD_LINEAR(90, i0);
     ADD_WAIT();
     ADD_DOT(i1);
 
-    g_print_lowercase_kakijun.insert(value_type(8, vga));
-    vga.clear();
+    ADD_MOJI(8);
 
     ADD_LINEAR(90, j0);
     ADD_POLAR(0, 210, 148, 264, j1);
     ADD_WAIT();
     ADD_DOT(j2);
 
-    g_print_lowercase_kakijun.insert(value_type(9, vga));
-    vga.clear();
+    ADD_MOJI(9);
 
     ADD_LINEAR(90, k0);
     ADD_WAIT();
@@ -3462,13 +3457,11 @@ VOID InitPrintLowerCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(50, k2);
 
-    g_print_lowercase_kakijun.insert(value_type(10, vga));
-    vga.clear();
+    ADD_MOJI(10);
 
     ADD_LINEAR(90, l0);
 
-    g_print_lowercase_kakijun.insert(value_type(11, vga));
-    vga.clear();
+    ADD_MOJI(11);
 
     ADD_LINEAR(90, m0);
     ADD_WAIT();
@@ -3478,70 +3471,60 @@ VOID InitPrintLowerCase(VOID)
     ADD_POLAR(180, 360, 181, 138, m3);
     ADD_LINEAR(90, m4);
 
-    g_print_lowercase_kakijun.insert(value_type(12, vga));
-    vga.clear();
+    ADD_MOJI(12);
 
     ADD_LINEAR(90, n0);
     ADD_WAIT();
     ADD_POLAR(180, 365, 148, 137, n1);
     ADD_LINEAR(90, n2);
 
-    g_print_lowercase_kakijun.insert(value_type(13, vga));
-    vga.clear();
+    ADD_MOJI(13);
 
     ADD_POLAR(270, -90, 148, 151, o0);
 
-    g_print_lowercase_kakijun.insert(value_type(14, vga));
-    vga.clear();
+    ADD_MOJI(14);
 
     ADD_LINEAR(90, p0);
     ADD_WAIT();
     ADD_POLAR(180, 540, 148, 151, p1);
 
-    g_print_lowercase_kakijun.insert(value_type(15, vga));
-    vga.clear();
+    ADD_MOJI(15);
 
     ADD_POLAR(360, 0, 148, 151, q0);
     ADD_WAIT();
     ADD_LINEAR(90, q1);
 
-    g_print_lowercase_kakijun.insert(value_type(16, vga));
-    vga.clear();
+    ADD_MOJI(16);
 
     ADD_LINEAR(90, r0);
     ADD_WAIT();
     ADD_POLAR(215, 340, 149, 145, r1);
 
-    g_print_lowercase_kakijun.insert(value_type(17, vga));
-    vga.clear();
+    ADD_MOJI(17);
 
     ADD_POLAR(375, 90, 153, 128, s0);
     ADD_POLAR(270, 540, 146, 162, s1);
 
-    g_print_lowercase_kakijun.insert(value_type(18, vga));
-    vga.clear();
+    ADD_MOJI(18);
 
     ADD_LINEAR(90, t0);
     ADD_WAIT();
     ADD_LINEAR(0, t1);
 
-    g_print_lowercase_kakijun.insert(value_type(19, vga));
-    vga.clear();
+    ADD_MOJI(19);
 
     ADD_LINEAR(90, u0);
     ADD_POLAR(175, -10, 151, 164, u1);
     ADD_WAIT();
     ADD_LINEAR(90, u2);
 
-    g_print_lowercase_kakijun.insert(value_type(20, vga));
-    vga.clear();
+    ADD_MOJI(20);
 
     ADD_LINEAR(70, v0);
     ADD_WAIT();
     ADD_LINEAR(110, v1);
 
-    g_print_lowercase_kakijun.insert(value_type(21, vga));
-    vga.clear();
+    ADD_MOJI(21);
 
     ADD_LINEAR(70, w0);
     ADD_WAIT();
@@ -3551,22 +3534,19 @@ VOID InitPrintLowerCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(110, w3);
 
-    g_print_lowercase_kakijun.insert(value_type(22, vga));
-    vga.clear();
+    ADD_MOJI(22);
 
     ADD_LINEAR(55, x0);
     ADD_WAIT();
     ADD_LINEAR(125, x1);
 
-    g_print_lowercase_kakijun.insert(value_type(23, vga));
-    vga.clear();
+    ADD_MOJI(23);
 
     ADD_LINEAR(65, y0);
     ADD_WAIT();
     ADD_LINEAR(110, y1);
 
-    g_print_lowercase_kakijun.insert(value_type(24, vga));
-    vga.clear();
+    ADD_MOJI(24);
 
     ADD_LINEAR(0, z0);
     ADD_WAIT();
@@ -3574,6 +3554,5 @@ VOID InitPrintLowerCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, z2);
 
-    g_print_lowercase_kakijun.insert(value_type(25, vga));
-    vga.clear();
+    ADD_MOJI(25);
 }

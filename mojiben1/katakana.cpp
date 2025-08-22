@@ -10969,6 +10969,11 @@ static const BYTE n1[2720] = {
     vga.push_back(ga); \
 } while (0)
 
+#define ADD_MOJI(num) do { \
+    g_katakana_kakijun.insert(value_type((num), vga)); \
+    vga.clear(); \
+} while (0)
+
 VOID InitKatakana(VOID)
 {
     GA ga;
@@ -10979,15 +10984,14 @@ VOID InitKatakana(VOID)
     ADD_LINEAR(130, a1);
     ADD_WAIT();
     ADD_LINEAR(110, a2);
-    g_katakana_kakijun.insert(value_type(0, vga));
-    vga.clear();
+
+    ADD_MOJI(0);
 
     ADD_LINEAR(140, i0);
     ADD_WAIT();
     ADD_LINEAR(90, i1);
 
-    g_katakana_kakijun.insert(value_type(1, vga));
-    vga.clear();
+    ADD_MOJI(1);
 
     ADD_LINEAR(90, u0);
     ADD_WAIT();
@@ -10996,8 +11000,7 @@ VOID InitKatakana(VOID)
     ADD_LINEAR(0, u2);
     ADD_LINEAR(120, u3);
 
-    g_katakana_kakijun.insert(value_type(2, vga));
-    vga.clear();
+    ADD_MOJI(2);
 
     ADD_LINEAR(0, e0);
     ADD_WAIT();
@@ -11005,8 +11008,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, e2);
 
-    g_katakana_kakijun.insert(value_type(3, vga));
-    vga.clear();
+    ADD_MOJI(3);
 
     ADD_LINEAR(0, o0);
     ADD_WAIT();
@@ -11015,8 +11017,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(130, o3);
 
-    g_katakana_kakijun.insert(value_type(4, vga));
-    vga.clear();
+    ADD_MOJI(4);
 
     ADD_LINEAR(0, ka0);
     ADD_LINEAR(110, ka1);
@@ -11024,8 +11025,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, ka3);
 
-    g_katakana_kakijun.insert(value_type(10, vga));
-    vga.clear();
+    ADD_MOJI(10);
 
     ADD_LINEAR(10, ki0);
     ADD_WAIT();
@@ -11033,16 +11033,14 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(85, ki2);
 
-    g_katakana_kakijun.insert(value_type(11, vga));
-    vga.clear();
+    ADD_MOJI(11);
 
     ADD_LINEAR(140, ku0);
     ADD_WAIT();
     ADD_LINEAR(0, ku1);
     ADD_LINEAR(130, ku2);
 
-    g_katakana_kakijun.insert(value_type(12, vga));
-    vga.clear();
+    ADD_MOJI(12);
 
     ADD_LINEAR(120, ke0);
     ADD_WAIT();
@@ -11050,16 +11048,14 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, ke2);
 
-    g_katakana_kakijun.insert(value_type(13, vga));
-    vga.clear();
+    ADD_MOJI(13);
 
     ADD_LINEAR(0, ko0);
     ADD_LINEAR(90, ko1);
     ADD_WAIT();
     ADD_LINEAR(0, ko2);
 
-    g_katakana_kakijun.insert(value_type(14, vga));
-    vga.clear();
+    ADD_MOJI(14);
 
     ADD_LINEAR(0, sa0);
     ADD_WAIT();
@@ -11067,8 +11063,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(105, sa2);
 
-    g_katakana_kakijun.insert(value_type(20, vga));
-    vga.clear();
+    ADD_MOJI(20);
 
     ADD_LINEAR(30, si0);
     ADD_WAIT();
@@ -11076,16 +11071,14 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(320, si2);
 
-    g_katakana_kakijun.insert(value_type(21, vga));
-    vga.clear();
+    ADD_MOJI(21);
 
     ADD_LINEAR(0, su0);
     ADD_LINEAR(125, su1);
     ADD_WAIT();
     ADD_LINEAR(50, su2);
 
-    g_katakana_kakijun.insert(value_type(22, vga));
-    vga.clear();
+    ADD_MOJI(22);
 
     ADD_LINEAR(345, se0);
     ADD_LINEAR(130, se1);
@@ -11093,15 +11086,13 @@ VOID InitKatakana(VOID)
     ADD_LINEAR(90, se2);
     ADD_LINEAR(90, se3);
 
-    g_katakana_kakijun.insert(value_type(23, vga));
-    vga.clear();
+    ADD_MOJI(23);
 
     ADD_LINEAR(50, so0);
     ADD_WAIT();
     ADD_LINEAR(125, so1);
 
-    g_katakana_kakijun.insert(value_type(24, vga));
-    vga.clear();
+    ADD_MOJI(24);
 
     ADD_LINEAR(130, ta0);
     ADD_WAIT();
@@ -11110,8 +11101,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(50, ta3);
 
-    g_katakana_kakijun.insert(value_type(30, vga));
-    vga.clear();
+    ADD_MOJI(30);
 
     ADD_LINEAR(160, ti0);
     ADD_WAIT();
@@ -11119,8 +11109,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(110, ti2);
 
-    g_katakana_kakijun.insert(value_type(31, vga));
-    vga.clear();
+    ADD_MOJI(31);
 
     ADD_LINEAR(60, tu0);
     ADD_WAIT();
@@ -11128,8 +11117,7 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, tu2);
 
-    g_katakana_kakijun.insert(value_type(32, vga));
-    vga.clear();
+    ADD_MOJI(32);
 
     ADD_LINEAR(0, te0);
     ADD_WAIT();
@@ -11137,37 +11125,32 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, te2);
 
-    g_katakana_kakijun.insert(value_type(33, vga));
-    vga.clear();
+    ADD_MOJI(33);
 
     ADD_LINEAR(90, to0);
     ADD_WAIT();
     ADD_LINEAR(30, to1);
 
-    g_katakana_kakijun.insert(value_type(34, vga));
-    vga.clear();
+    ADD_MOJI(34);
 
     ADD_LINEAR(0, na0);
     ADD_WAIT();
     ADD_LINEAR(100, na1);
 
-    g_katakana_kakijun.insert(value_type(40, vga));
-    vga.clear();
+    ADD_MOJI(40);
 
     ADD_LINEAR(0, ni0);
     ADD_WAIT();
     ADD_LINEAR(0, ni1);
 
-    g_katakana_kakijun.insert(value_type(41, vga));
-    vga.clear();
+    ADD_MOJI(41);
 
     ADD_LINEAR(0, nu0);
     ADD_LINEAR(120, nu1);
     ADD_WAIT();
     ADD_LINEAR(40, nu2);
 
-    g_katakana_kakijun.insert(value_type(42, vga));
-    vga.clear();
+    ADD_MOJI(42);
 
     ADD_LINEAR(40, ne0);
     ADD_WAIT();
@@ -11178,40 +11161,34 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, ne4);
 
-    g_katakana_kakijun.insert(value_type(43, vga));
-    vga.clear();
+    ADD_MOJI(43);
 
     ADD_LINEAR(125, no0);
 
-    g_katakana_kakijun.insert(value_type(44, vga));
-    vga.clear();
+    ADD_MOJI(44);
 
     ADD_LINEAR(130, ha0);
     ADD_WAIT();
     ADD_LINEAR(50, ha1);
 
-    g_katakana_kakijun.insert(value_type(50, vga));
-    vga.clear();
+    ADD_MOJI(50);
 
     ADD_LINEAR(350, hi0);
     ADD_WAIT();
     ADD_LINEAR(90, hi1);
     ADD_LINEAR(0, hi2);
 
-    g_katakana_kakijun.insert(value_type(51, vga));
-    vga.clear();
+    ADD_MOJI(51);
 
     ADD_LINEAR(0, hu0);
     ADD_LINEAR(130, hu1);
 
-    g_katakana_kakijun.insert(value_type(52, vga));
-    vga.clear();
+    ADD_MOJI(52);
 
     ADD_LINEAR(310, he0);
     ADD_LINEAR(40, he1);
 
-    g_katakana_kakijun.insert(value_type(53, vga));
-    vga.clear();
+    ADD_MOJI(53);
 
     ADD_LINEAR(0, ho0);
     ADD_WAIT();
@@ -11222,16 +11199,14 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(50, ho4);
 
-    g_katakana_kakijun.insert(value_type(54, vga));
-    vga.clear();
+    ADD_MOJI(54);
 
     ADD_LINEAR(350, ma0);
     ADD_LINEAR(130, ma1);
     ADD_WAIT();
     ADD_LINEAR(40, ma2);
 
-    g_katakana_kakijun.insert(value_type(60, vga));
-    vga.clear();
+    ADD_MOJI(60);
 
     ADD_LINEAR(30, mi0);
     ADD_WAIT();
@@ -11239,23 +11214,20 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, mi2);
 
-    g_katakana_kakijun.insert(value_type(61, vga));
-    vga.clear();
+    ADD_MOJI(61);
 
     ADD_LINEAR(120, mu0);
     ADD_LINEAR(350, mu1);
     ADD_WAIT();
     ADD_LINEAR(50, mu2);
 
-    g_katakana_kakijun.insert(value_type(62, vga));
-    vga.clear();
+    ADD_MOJI(62);
 
     ADD_LINEAR(125, me0);
     ADD_WAIT();
     ADD_LINEAR(40, me1);
 
-    g_katakana_kakijun.insert(value_type(63, vga));
-    vga.clear();
+    ADD_MOJI(63);
 
     ADD_LINEAR(350, mo0);
     ADD_WAIT();
@@ -11264,24 +11236,21 @@ VOID InitKatakana(VOID)
     ADD_LINEAR(90, mo2);
     ADD_LINEAR(0, mo3);
 
-    g_katakana_kakijun.insert(value_type(64, vga));
-    vga.clear();
+    ADD_MOJI(64);
 
     ADD_LINEAR(340, ya0);
     ADD_LINEAR(130, ya1);
     ADD_WAIT();
     ADD_LINEAR(75, ya2);
 
-    g_katakana_kakijun.insert(value_type(70, vga));
-    vga.clear();
+    ADD_MOJI(70);
 
     ADD_LINEAR(350, yu0);
     ADD_LINEAR(100, yu1);
     ADD_WAIT();
     ADD_LINEAR(0, yu2);
 
-    g_katakana_kakijun.insert(value_type(72, vga));
-    vga.clear();
+    ADD_MOJI(72);
 
     ADD_LINEAR(0, yo0);
     ADD_LINEAR(90, yo1);
@@ -11290,37 +11259,32 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, yo3);
 
-    g_katakana_kakijun.insert(value_type(74, vga));
-    vga.clear();
+    ADD_MOJI(74);
 
     ADD_LINEAR(0, ra0);
     ADD_WAIT();
     ADD_LINEAR(0, ra1);
     ADD_LINEAR(125, ra2);
 
-    g_katakana_kakijun.insert(value_type(80, vga));
-    vga.clear();
+    ADD_MOJI(80);
 
     ADD_LINEAR(90, ri0);
     ADD_WAIT();
     ADD_LINEAR(100, ri1);
 
-    g_katakana_kakijun.insert(value_type(81, vga));
-    vga.clear();
+    ADD_MOJI(81);
 
     ADD_LINEAR(110, ru0);
     ADD_WAIT();
     ADD_LINEAR(90, ru1);
     ADD_LINEAR(310, ru2);
 
-    g_katakana_kakijun.insert(value_type(82, vga));
-    vga.clear();
+    ADD_MOJI(82);
 
     ADD_LINEAR(90, re0);
     ADD_LINEAR(320, re1);
 
-    g_katakana_kakijun.insert(value_type(83, vga));
-    vga.clear();
+    ADD_MOJI(83);
 
     ADD_LINEAR(80, ro0);
     ADD_WAIT();
@@ -11329,16 +11293,14 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, ro3);
 
-    g_katakana_kakijun.insert(value_type(84, vga));
-    vga.clear();
+    ADD_MOJI(84);
 
     ADD_LINEAR(90, wa0);
     ADD_WAIT();
     ADD_LINEAR(0, wa1);
     ADD_LINEAR(120, wa2);
 
-    g_katakana_kakijun.insert(value_type(90, vga));
-    vga.clear();
+    ADD_MOJI(90);
 
     ADD_LINEAR(10, wo0);
     ADD_WAIT();
@@ -11346,13 +11308,11 @@ VOID InitKatakana(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, wo2);
 
-    g_katakana_kakijun.insert(value_type(94, vga));
-    vga.clear();
+    ADD_MOJI(94);
 
     ADD_LINEAR(40, n0);
     ADD_WAIT();
     ADD_LINEAR(320, n1);
 
-    g_katakana_kakijun.insert(value_type(104, vga));
-    vga.clear();
+    ADD_MOJI(104);
 }

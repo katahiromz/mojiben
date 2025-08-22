@@ -15733,6 +15733,11 @@ static const BYTE n2[2640] = {
     vga.push_back(ga); \
 } while (0)
 
+#define ADD_MOJI(num) do { \
+    g_hiragana_kakijun.insert(value_type((num), vga)); \
+    vga.clear(); \
+} while (0)
+
 VOID InitHiragana(VOID)
 {
     GA ga;
@@ -15746,24 +15751,21 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(125, a2);
     ADD_POLAR(140, 450, 140, 195, a3);
 
-    g_hiragana_kakijun.insert(value_type(0, vga));
-    vga.clear();
+    ADD_MOJI(0);
 
     ADD_LINEAR(70, i0);
     ADD_LINEAR(295, i1);
     ADD_WAIT();
     ADD_LINEAR(55, i2);
 
-    g_hiragana_kakijun.insert(value_type(1, vga));
-    vga.clear();
+    ADD_MOJI(1);
 
     ADD_LINEAR(10, u0);
     ADD_WAIT();
     ADD_LINEAR(340, u1);
     ADD_LINEAR(95, u2);
 
-    g_hiragana_kakijun.insert(value_type(2, vga));
-    vga.clear();
+    ADD_MOJI(2);
 
     ADD_LINEAR(10, e0);
     ADD_WAIT();
@@ -15773,8 +15775,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, e4);
     ADD_LINEAR(5, e5);
 
-    g_hiragana_kakijun.insert(value_type(3, vga));
-    vga.clear();
+    ADD_MOJI(3);
 
     ADD_LINEAR(340, o0);
     ADD_WAIT();
@@ -15785,8 +15786,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(40, o5);
 
-    g_hiragana_kakijun.insert(value_type(4, vga));
-    vga.clear();
+    ADD_MOJI(4);
 
     ADD_LINEAR(345, ka0);
     ADD_LINEAR(110, ka1);
@@ -15796,8 +15796,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(55, ka4);
 
-    g_hiragana_kakijun.insert(value_type(10, vga));
-    vga.clear();
+    ADD_MOJI(10);
 
     ADD_LINEAR(345, ki0);
     ADD_WAIT();
@@ -15808,13 +15807,11 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, ki4);
 
-    g_hiragana_kakijun.insert(value_type(11, vga));
-    vga.clear();
+    ADD_MOJI(11);
 
     ADD_LINEAR(90, ku0);
 
-    g_hiragana_kakijun.insert(value_type(12, vga));
-    vga.clear();
+    ADD_MOJI(12);
 
     ADD_LINEAR(90, ke0);
     ADD_LINEAR(290, ke1);
@@ -15823,16 +15820,14 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(105, ke3);
 
-    g_hiragana_kakijun.insert(value_type(13, vga));
-    vga.clear();
+    ADD_MOJI(13);
 
     ADD_LINEAR(5, ko0);
     ADD_LINEAR(160, ko1);
     ADD_WAIT();
     ADD_LINEAR(20, ko2);
 
-    g_hiragana_kakijun.insert(value_type(14, vga));
-    vga.clear();
+    ADD_MOJI(14);
 
     ADD_LINEAR(15, sa0);
     ADD_WAIT();
@@ -15841,14 +15836,12 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, sa3);
 
-    g_hiragana_kakijun.insert(value_type(20, vga));
-    vga.clear();
+    ADD_MOJI(20);
 
     ADD_LINEAR(90, si0);
     ADD_LINEAR(0, si1);
 
-    g_hiragana_kakijun.insert(value_type(21, vga));
-    vga.clear();
+    ADD_MOJI(21);
 
     ADD_LINEAR(355, su0);
     ADD_WAIT();
@@ -15856,8 +15849,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 360, 148, 160, su2);
     ADD_LINEAR(110, su3);
 
-    g_hiragana_kakijun.insert(value_type(22, vga));
-    vga.clear();
+    ADD_MOJI(22);
 
     ADD_LINEAR(350, se0);
     ADD_WAIT();
@@ -15867,16 +15859,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, se3);
     ADD_LINEAR(0, se4);
 
-    g_hiragana_kakijun.insert(value_type(23, vga));
-    vga.clear();
+    ADD_MOJI(23);
 
     ADD_LINEAR(350, so0);
     ADD_LINEAR(145, so1);
     ADD_LINEAR(350, so2);
     ADD_POLAR(305, 85, 212, 187, so3);
 
-    g_hiragana_kakijun.insert(value_type(24, vga));
-    vga.clear();
+    ADD_MOJI(24);
 
     ADD_LINEAR(350, ta0);
     ADD_WAIT();
@@ -15886,8 +15876,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(20, ta3);
 
-    g_hiragana_kakijun.insert(value_type(30, vga));
-    vga.clear();
+    ADD_MOJI(30);
 
     ADD_LINEAR(350, ti0);
     ADD_WAIT();
@@ -15895,29 +15884,25 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(335, ti2);
     ADD_POLAR(270, 500, 189, 196, ti3);
 
-    g_hiragana_kakijun.insert(value_type(31, vga));
-    vga.clear();
+    ADD_MOJI(31);
 
     ADD_LINEAR(15, tu0);
     ADD_POLAR(280, 490, 175, 150, tu1);
 
-    g_hiragana_kakijun.insert(value_type(32, vga));
-    vga.clear();
+    ADD_MOJI(32);
 
     ADD_LINEAR(350, te0);
     ADD_LINEAR(135, te1);
     ADD_LINEAR(50, te2);
 
-    g_hiragana_kakijun.insert(value_type(33, vga));
-    vga.clear();
+    ADD_MOJI(33);
 
     ADD_LINEAR(55, to0);
     ADD_WAIT();
     ADD_LINEAR(140, to1);
     ADD_LINEAR(20, to2);
 
-    g_hiragana_kakijun.insert(value_type(34, vga));
-    vga.clear();
+    ADD_MOJI(34);
 
     ADD_LINEAR(345, na0);
     ADD_WAIT();
@@ -15929,8 +15914,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(20, 270, 144, 226, na4);
     ADD_LINEAR(20, na5);
 
-    g_hiragana_kakijun.insert(value_type(40, vga));
-    vga.clear();
+    ADD_MOJI(40);
 
     ADD_LINEAR(90, ni0);
     ADD_LINEAR(290, ni1);
@@ -15939,8 +15923,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(20, ni3);
 
-    g_hiragana_kakijun.insert(value_type(41, vga));
-    vga.clear();
+    ADD_MOJI(41);
 
     ADD_LINEAR(75, nu0);
     ADD_WAIT();
@@ -15949,8 +15932,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 270, 192, 208, nu3);
     ADD_LINEAR(30, nu4);
 
-    g_hiragana_kakijun.insert(value_type(42, vga));
-    vga.clear();
+    ADD_MOJI(42);
 
     ADD_LINEAR(90, ne0);
     ADD_WAIT();
@@ -15961,14 +15943,12 @@ VOID InitHiragana(VOID)
     ADD_POLAR(40, 290, 189, 219, ne5);
     ADD_LINEAR(30, ne6);
 
-    g_hiragana_kakijun.insert(value_type(43, vga));
-    vga.clear();
+    ADD_MOJI(43);
 
     ADD_LINEAR(115, no0);
     ADD_POLAR(135, 450, 143, 152, no1);
 
-    g_hiragana_kakijun.insert(value_type(44, vga));
-    vga.clear();
+    ADD_MOJI(44);
 
     ADD_LINEAR(90, ha0);
     ADD_LINEAR(290, ha1);
@@ -15979,8 +15959,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(30, 280, 175, 222, ha4);
     ADD_LINEAR(20, ha5);
 
-    g_hiragana_kakijun.insert(value_type(50, vga));
-    vga.clear();
+    ADD_MOJI(50);
 
     ADD_LINEAR(340, hi0);
     ADD_LINEAR(120, hi1);
@@ -15988,8 +15967,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(285, hi3);
     ADD_LINEAR(60, hi4);
 
-    g_hiragana_kakijun.insert(value_type(51, vga));
-    vga.clear();
+    ADD_MOJI(51);
 
     ADD_LINEAR(30, hu0);
     ADD_LINEAR(160, hu1);
@@ -16001,14 +15979,12 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(55, hu5);
 
-    g_hiragana_kakijun.insert(value_type(52, vga));
-    vga.clear();
+    ADD_MOJI(52);
 
     ADD_LINEAR(315, he0);
     ADD_LINEAR(40, he1);
 
-    g_hiragana_kakijun.insert(value_type(53, vga));
-    vga.clear();
+    ADD_MOJI(53);
 
     ADD_LINEAR(90, ho0);
     ADD_LINEAR(295, ho1);
@@ -16021,8 +15997,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(60, 270, 188, 224, ho5);
     ADD_LINEAR(30, ho6);
 
-    g_hiragana_kakijun.insert(value_type(54, vga));
-    vga.clear();
+    ADD_MOJI(54);
 
     ADD_LINEAR(350, ma0);
     ADD_WAIT();
@@ -16032,8 +16007,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(40, 280, 123, 228, ma3);
     ADD_LINEAR(20, ma4);
 
-    g_hiragana_kakijun.insert(value_type(60, vga));
-    vga.clear();
+    ADD_MOJI(60);
 
     ADD_LINEAR(350, mi0);
     ADD_LINEAR(120, mi1);
@@ -16042,8 +16016,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, mi4);
 
-    g_hiragana_kakijun.insert(value_type(61, vga));
-    vga.clear();
+    ADD_MOJI(61);
 
     ADD_LINEAR(15, mu0);
     ADD_WAIT();
@@ -16053,16 +16026,14 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(35, mu4);
 
-    g_hiragana_kakijun.insert(value_type(62, vga));
-    vga.clear();
+    ADD_MOJI(62);
 
     ADD_LINEAR(75, me0);
     ADD_WAIT();
     ADD_LINEAR(120, me1);
     ADD_POLAR(135, 440, 134, 172, me2);
 
-    g_hiragana_kakijun.insert(value_type(63, vga));
-    vga.clear();
+    ADD_MOJI(63);
 
     ADD_LINEAR(95, mo0);
     ADD_POLAR(170, -60, 152, 198, mo1);
@@ -16071,8 +16042,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(10, mo3);
 
-    g_hiragana_kakijun.insert(value_type(64, vga));
-    vga.clear();
+    ADD_MOJI(64);
 
     ADD_LINEAR(345, ya0);
     ADD_POLAR(270, 480, 200, 116, ya1);
@@ -16082,8 +16052,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(70, ya4);
 
-    g_hiragana_kakijun.insert(value_type(70, vga));
-    vga.clear();
+    ADD_MOJI(70);
 
     ADD_LINEAR(85, yu0);
     ADD_POLAR(160, 340, 166, 191, yu1);
@@ -16091,8 +16060,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(95, yu3);
 
-    g_hiragana_kakijun.insert(value_type(72, vga));
-    vga.clear();
+    ADD_MOJI(72);
 
     ADD_LINEAR(350, yo0);
     ADD_WAIT();
@@ -16100,8 +16068,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(50, 270, 129, 227, yo2);
     ADD_LINEAR(20, yo3);
 
-    g_hiragana_kakijun.insert(value_type(74, vga));
-    vga.clear();
+    ADD_MOJI(74);
 
     ADD_LINEAR(35, ra0);
     ADD_LINEAR(160, ra1);
@@ -16110,16 +16077,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(330, ra3);
     ADD_POLAR(270, 495, 186, 189, ra4);
 
-    g_hiragana_kakijun.insert(value_type(80, vga));
-    vga.clear();
+    ADD_MOJI(80);
 
     ADD_LINEAR(90, ri0);
     ADD_LINEAR(290, ri1);
     ADD_WAIT();
     ADD_LINEAR(100, ri2);
 
-    g_hiragana_kakijun.insert(value_type(81, vga));
-    vga.clear();
+    ADD_MOJI(81);
 
     ADD_LINEAR(350, ru0);
     ADD_LINEAR(130, ru1);
@@ -16128,8 +16093,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 285, 135, 235, ru4);
     ADD_LINEAR(30, ru5);
 
-    g_hiragana_kakijun.insert(value_type(82, vga));
-    vga.clear();
+    ADD_MOJI(82);
 
     ADD_LINEAR(95, re0);
     ADD_WAIT();
@@ -16139,16 +16103,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, re4);
     ADD_LINEAR(340, re5);
 
-    g_hiragana_kakijun.insert(value_type(83, vga));
-    vga.clear();
+    ADD_MOJI(83);
 
     ADD_LINEAR(350, ro0);
     ADD_LINEAR(130, ro1);
     ADD_LINEAR(335, ro2);
     ADD_POLAR(270, 480, 168, 180, ro3);
 
-    g_hiragana_kakijun.insert(value_type(84, vga));
-    vga.clear();
+    ADD_MOJI(84);
 
     ADD_LINEAR(95, wa0);
     ADD_WAIT();
@@ -16157,8 +16119,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(330, wa3);
     ADD_POLAR(270, 480, 188, 163, wa4);
 
-    g_hiragana_kakijun.insert(value_type(90, vga));
-    vga.clear();
+    ADD_MOJI(90);
 
     ADD_LINEAR(355, wo0);
     ADD_WAIT();
@@ -16168,13 +16129,11 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(150, wo3);
     ADD_LINEAR(10, wo4);
 
-    g_hiragana_kakijun.insert(value_type(94, vga));
-    vga.clear();
+    ADD_MOJI(94);
 
     ADD_LINEAR(120, n0);
     ADD_LINEAR(310, n1);
     ADD_POLAR(195, 5, 200, 155, n2);
 
-    g_hiragana_kakijun.insert(value_type(104, vga));
-    vga.clear();
+    ADD_MOJI(104);
 }

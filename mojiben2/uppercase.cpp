@@ -5043,6 +5043,11 @@ static const BYTE Z2[144] = {
     vga.push_back(ga); \
 } while (0)
 
+#define ADD_MOJI(num) do { \
+    g_print_uppercase_kakijun.insert(value_type((num), vga)); \
+    vga.clear(); \
+} while (0)
+
 VOID InitPrintUpperCase(VOID)
 {
     GA ga;
@@ -5055,8 +5060,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, A2);
 
-    g_print_uppercase_kakijun.insert(value_type(0, vga));
-    vga.clear();
+    ADD_MOJI(0);
 
     ADD_LINEAR(90, B0);
     ADD_WAIT();
@@ -5067,13 +5071,11 @@ VOID InitPrintUpperCase(VOID)
     ADD_POLAR(270, 450, 173, 153, B4);
     ADD_LINEAR(180, B5);
 
-    g_print_uppercase_kakijun.insert(value_type(1, vga));
-    vga.clear();
+    ADD_MOJI(1);
 
     ADD_POLAR(340, 20, 154, 106, C0);
 
-    g_print_uppercase_kakijun.insert(value_type(2, vga));
-    vga.clear();
+    ADD_MOJI(2);
 
     ADD_LINEAR(90, D0);
     ADD_WAIT();
@@ -5081,8 +5083,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_POLAR(270, 450, 133, 106, D2);
     ADD_LINEAR(180, D3);
 
-    g_print_uppercase_kakijun.insert(value_type(3, vga));
-    vga.clear();
+    ADD_MOJI(3);
 
     ADD_LINEAR(90, E0);
     ADD_WAIT();
@@ -5092,8 +5093,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, E3);
 
-    g_print_uppercase_kakijun.insert(value_type(4, vga));
-    vga.clear();
+    ADD_MOJI(4);
 
     ADD_LINEAR(90, F0);
     ADD_WAIT();
@@ -5101,16 +5101,14 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, F2);
 
-    g_print_uppercase_kakijun.insert(value_type(5, vga));
-    vga.clear();
+    ADD_MOJI(5);
 
     ADD_POLAR(340, 25, 155, 105, G0);
     ADD_WAIT();
     ADD_LINEAR(0, G1);
     ADD_LINEAR(90, G2);
 
-    g_print_uppercase_kakijun.insert(value_type(6, vga));
-    vga.clear();
+    ADD_MOJI(6);
 
     ADD_LINEAR(90, H0);
     ADD_WAIT();
@@ -5118,8 +5116,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, H2);
 
-    g_print_uppercase_kakijun.insert(value_type(7, vga));
-    vga.clear();
+    ADD_MOJI(7);
 
     ADD_LINEAR(90, I0);
     ADD_WAIT();
@@ -5127,14 +5124,12 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, I2);
 
-    g_print_uppercase_kakijun.insert(value_type(8, vga));
-    vga.clear();
+    ADD_MOJI(8);
 
     ADD_LINEAR(90, J0);
     ADD_POLAR(0, 190, 150, 141, J1);
 
-    g_print_uppercase_kakijun.insert(value_type(9, vga));
-    vga.clear();
+    ADD_MOJI(9);
 
     ADD_LINEAR(90, K0);
     ADD_WAIT();
@@ -5142,15 +5137,13 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, K2);
 
-    g_print_uppercase_kakijun.insert(value_type(10, vga));
-    vga.clear();
+    ADD_MOJI(10);
 
     ADD_LINEAR(90, L0);
     ADD_WAIT();
     ADD_LINEAR(0, L1);
 
-    g_print_uppercase_kakijun.insert(value_type(11, vga));
-    vga.clear();
+    ADD_MOJI(11);
 
     ADD_LINEAR(90, M0);
     ADD_WAIT();
@@ -5160,8 +5153,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(115, M3);
 
-    g_print_uppercase_kakijun.insert(value_type(12, vga));
-    vga.clear();
+    ADD_MOJI(12);
 
     ADD_LINEAR(90, N0);
     ADD_WAIT();
@@ -5169,27 +5161,23 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(50, N2);
 
-    g_print_uppercase_kakijun.insert(value_type(13, vga));
-    vga.clear();
+    ADD_MOJI(13);
 
     ADD_POLAR(270, -90, 149, 105, O0);
 
-    g_print_uppercase_kakijun.insert(value_type(14, vga));
-    vga.clear();
+    ADD_MOJI(14);
 
     ADD_LINEAR(90, P0);
     ADD_WAIT();
     ADD_POLAR(230, 485, 111, 61, P1);
 
-    g_print_uppercase_kakijun.insert(value_type(15, vga));
-    vga.clear();
+    ADD_MOJI(15);
 
     ADD_POLAR(270, -90, 149, 105, Q0);
     ADD_WAIT();
     ADD_LINEAR(45, Q1);
 
-    g_print_uppercase_kakijun.insert(value_type(16, vga));
-    vga.clear();
+    ADD_MOJI(16);
 
     ADD_LINEAR(90, R0);
     ADD_WAIT();
@@ -5197,35 +5185,30 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(50, R2);
 
-    g_print_uppercase_kakijun.insert(value_type(17, vga));
-    vga.clear();
+    ADD_MOJI(17);
 
     ADD_POLAR(370, 90, 152, 59, S0);
     ADD_POLAR(-90, 190, 144, 147, S1);
 
-    g_print_uppercase_kakijun.insert(value_type(18, vga));
-    vga.clear();
+    ADD_MOJI(18);
 
     ADD_LINEAR(90, T0);
     ADD_WAIT();
     ADD_LINEAR(0, T1);
 
-    g_print_uppercase_kakijun.insert(value_type(19, vga));
-    vga.clear();
+    ADD_MOJI(19);
 
     ADD_LINEAR(90, U0);
     ADD_POLAR(170, 10, 149, 140, U1);
     ADD_LINEAR(270, U2);
 
-    g_print_uppercase_kakijun.insert(value_type(20, vga));
-    vga.clear();
+    ADD_MOJI(20);
 
     ADD_LINEAR(65, V0);
     ADD_WAIT();
     ADD_LINEAR(115, V1);
 
-    g_print_uppercase_kakijun.insert(value_type(21, vga));
-    vga.clear();
+    ADD_MOJI(21);
 
     ADD_LINEAR(75, W0);
     ADD_WAIT();
@@ -5235,15 +5218,13 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(105, W3);
 
-    g_print_uppercase_kakijun.insert(value_type(22, vga));
-    vga.clear();
+    ADD_MOJI(22);
 
     ADD_LINEAR(55, X0);
     ADD_WAIT();
     ADD_LINEAR(125, X1);
 
-    g_print_uppercase_kakijun.insert(value_type(23, vga));
-    vga.clear();
+    ADD_MOJI(23);
 
     ADD_LINEAR(55, Y0);
     ADD_WAIT();
@@ -5251,8 +5232,7 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, Y2);
 
-    g_print_uppercase_kakijun.insert(value_type(24, vga));
-    vga.clear();
+    ADD_MOJI(24);
 
     ADD_LINEAR(0, Z0);
     ADD_WAIT();
@@ -5260,6 +5240,5 @@ VOID InitPrintUpperCase(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, Z2);
 
-    g_print_uppercase_kakijun.insert(value_type(25, vga));
-    vga.clear();
+    ADD_MOJI(25);
 }
