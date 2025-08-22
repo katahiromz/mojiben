@@ -27560,17 +27560,20 @@ static const BYTE kanji079_03[1504] = {
     vga.push_back(ga); \
 } while (0)
 
+#define NEXT_MOJI() do { \
+    g_kanji1_kakijun[index++] = vga; \
+    vga.clear(); \
+} while (0)
+
 VOID InitKanji1(VOID)
 {
     GA ga;
     std::vector<GA> vga;
     size_t index = 0;
-    vga.clear();
 
     ADD_LINEAR(0, kanji000_00);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji001_00);
     ADD_WAIT();
@@ -27583,8 +27586,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji001_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji002_00);
     ADD_WAIT();
@@ -27604,8 +27606,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji002_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji003_00);
     ADD_WAIT();
@@ -27617,8 +27618,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji003_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji004_00);
     ADD_WAIT();
@@ -27628,8 +27628,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji004_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji005_00);
     ADD_WAIT();
@@ -27650,8 +27649,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji005_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji006_00);
     ADD_WAIT();
@@ -27659,8 +27657,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji006_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji007_00);
     ADD_WAIT();
@@ -27670,8 +27667,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji007_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji008_00);
     ADD_WAIT();
@@ -27689,8 +27685,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(0, kanji008_07);
     ADD_LINEAR(270, kanji008_08);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji009_00);
     ADD_WAIT();
@@ -27707,8 +27702,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji009_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji010_00);
     ADD_WAIT();
@@ -27729,8 +27723,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji010_10);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji011_00);
     ADD_WAIT();
@@ -27746,8 +27739,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji011_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji012_00);
     ADD_WAIT();
@@ -27756,8 +27748,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(0, kanji012_03);
     ADD_LINEAR(270, kanji012_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji013_00);
     ADD_WAIT();
@@ -27771,8 +27762,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji013_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji014_00);
     ADD_WAIT();
@@ -27784,8 +27774,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji014_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji015_00);
     ADD_WAIT();
@@ -27803,8 +27792,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji015_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji016_00);
     ADD_WAIT();
@@ -27823,8 +27811,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji016_08);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji017_00);
     ADD_WAIT();
@@ -27836,8 +27823,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji017_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji018_00);
     ADD_WAIT();
@@ -27847,8 +27833,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji018_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji019_00);
     ADD_WAIT();
@@ -27867,8 +27852,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(0, kanji019_08);
     ADD_LINEAR(270, kanji019_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji020_00);
     ADD_WAIT();
@@ -27879,8 +27863,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji020_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji021_00);
     ADD_WAIT();
@@ -27889,8 +27872,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji021_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji022_00);
     ADD_WAIT();
@@ -27912,8 +27894,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji022_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji023_00);
     ADD_WAIT();
@@ -27925,8 +27906,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji023_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji024_00);
     ADD_WAIT();
@@ -27934,8 +27914,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji024_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji025_00);
     ADD_WAIT();
@@ -27944,8 +27923,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji025_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji026_00);
     ADD_LINEAR(135, kanji026_01);
@@ -27955,8 +27933,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji026_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji027_00);
     ADD_WAIT();
@@ -27970,8 +27947,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji027_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji028_00);
     ADD_LINEAR(45, kanji028_01);
@@ -27987,8 +27963,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji028_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji029_00);
     ADD_WAIT();
@@ -28005,8 +27980,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji029_08);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji030_00);
     ADD_WAIT();
@@ -28020,16 +27994,14 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji030_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji031_00);
     ADD_WAIT();
     ADD_LINEAR(90, kanji031_01);
     ADD_LINEAR(0, kanji031_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji032_00);
     ADD_WAIT();
@@ -28046,8 +28018,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji032_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(180, kanji033_00);
     ADD_WAIT();
@@ -28058,15 +28029,13 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(90, kanji033_03);
     ADD_LINEAR(180, kanji033_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji034_00);
     ADD_WAIT();
     ADD_LINEAR(90, kanji034_01);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji035_00);
     ADD_WAIT();
@@ -28080,8 +28049,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji035_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji036_00);
     ADD_LINEAR(45, kanji036_01);
@@ -28090,8 +28058,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji036_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji037_00);
     ADD_LINEAR(180, kanji037_01);
@@ -28100,8 +28067,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji037_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji038_00);
     ADD_WAIT();
@@ -28109,8 +28075,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji038_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji039_00);
     ADD_WAIT();
@@ -28136,15 +28101,13 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji039_11);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji040_00);
     ADD_WAIT();
     ADD_LINEAR(45, kanji040_01);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji041_00);
     ADD_LINEAR(180, kanji041_01);
@@ -28156,8 +28119,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji041_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji042_00);
     ADD_WAIT();
@@ -28169,8 +28131,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji042_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji043_00);
     ADD_WAIT();
@@ -28182,8 +28143,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji043_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji044_00);
     ADD_WAIT();
@@ -28203,8 +28163,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji044_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji045_00);
     ADD_WAIT();
@@ -28213,8 +28172,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji045_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji046_00);
     ADD_WAIT();
@@ -28227,8 +28185,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji046_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji047_00);
     ADD_WAIT();
@@ -28245,8 +28202,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji047_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(180, kanji048_00);
     ADD_WAIT();
@@ -28254,8 +28210,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji048_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji049_00);
     ADD_WAIT();
@@ -28263,8 +28218,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji049_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji050_00);
     ADD_WAIT();
@@ -28280,8 +28234,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(0, kanji050_06);
     ADD_LINEAR(270, kanji050_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji051_00);
     ADD_WAIT();
@@ -28296,8 +28249,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji051_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji052_00);
     ADD_WAIT();
@@ -28318,8 +28270,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji052_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji053_00);
     ADD_WAIT();
@@ -28336,8 +28287,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji053_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji054_00);
     ADD_WAIT();
@@ -28354,8 +28304,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji054_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji055_00);
     ADD_WAIT();
@@ -28363,8 +28312,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji055_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji056_00);
     ADD_WAIT();
@@ -28383,8 +28331,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(135, kanji056_09);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji057_00);
     ADD_WAIT();
@@ -28399,8 +28346,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(90, kanji057_05);
     ADD_LINEAR(180, kanji057_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji058_00);
     ADD_WAIT();
@@ -28411,8 +28357,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji058_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji059_00);
     ADD_WAIT();
@@ -28427,8 +28372,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji059_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji060_00);
     ADD_WAIT();
@@ -28446,8 +28390,7 @@ VOID InitKanji1(VOID)
     ADD_LINEAR(90, kanji060_07);
     ADD_LINEAR(180, kanji060_08);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji061_00);
     ADD_WAIT();
@@ -28457,8 +28400,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji061_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji062_00);
     ADD_WAIT();
@@ -28471,8 +28413,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji062_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji063_00);
     ADD_WAIT();
@@ -28480,15 +28421,13 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji063_02);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji064_00);
     ADD_WAIT();
     ADD_LINEAR(0, kanji064_01);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji065_00);
     ADD_WAIT();
@@ -28499,15 +28438,13 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji065_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji066_00);
     ADD_WAIT();
     ADD_LINEAR(45, kanji066_01);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji067_00);
     ADD_WAIT();
@@ -28521,8 +28458,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(90, kanji067_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji068_00);
     ADD_WAIT();
@@ -28535,15 +28471,13 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji068_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji069_00);
     ADD_WAIT();
     ADD_LINEAR(45, kanji069_01);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji070_00);
     ADD_WAIT();
@@ -28558,8 +28492,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji070_06);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji071_00);
     ADD_WAIT();
@@ -28569,8 +28502,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji071_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji072_00);
     ADD_WAIT();
@@ -28580,8 +28512,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji072_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji073_00);
     ADD_WAIT();
@@ -28593,8 +28524,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji073_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(135, kanji074_00);
     ADD_WAIT();
@@ -28610,8 +28540,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji074_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji075_00);
     ADD_WAIT();
@@ -28624,8 +28553,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji075_05);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji076_00);
     ADD_WAIT();
@@ -28637,8 +28565,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(0, kanji076_04);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji077_00);
     ADD_LINEAR(90, kanji077_01);
@@ -28646,8 +28573,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(135, kanji077_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(0, kanji078_00);
     ADD_WAIT();
@@ -28665,8 +28591,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji078_07);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     ADD_LINEAR(90, kanji079_00);
     ADD_WAIT();
@@ -28676,8 +28601,7 @@ VOID InitKanji1(VOID)
     ADD_WAIT();
     ADD_LINEAR(45, kanji079_03);
 
-    g_kanji1_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     assert(index == 80);
 

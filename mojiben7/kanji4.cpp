@@ -871,12 +871,16 @@ static const BYTE kanji_000_16[1424] = {
     vga.push_back(ga); \
 } while (0)
 
+#define NEXT_MOJI() do { \
+    g_kanji4_kakijun[index++] = vga; \
+    vga.clear(); \
+} while (0)
+
 VOID InitKanji4(VOID)
 {
     GA ga;
     std::vector<GA> vga;
     size_t index = 0;
-    vga.clear();
 
     ADD_LINEAR(170, kanji_000_00);
     ADD_WAIT();
@@ -908,8 +912,7 @@ VOID InitKanji4(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, kanji_000_16);
 
-    g_kanji4_kakijun[index++] = vga;
-    vga.clear();
+    NEXT_MOJI();
 
     for (size_t i = 0; i < _countof(g_map); ++i)
     {
