@@ -18,12 +18,9 @@ struct GA
     INT angle1;
     INT cx;     // width
     INT cy;     // height
-
-    // Win32 Region data
-    DWORD cb;
-    const BYTE *pb;
+    INT res;
 };
-typedef std::map<INT, std::vector<GA> > KAKIJUN;
+typedef std::vector<GA> KAKIJUN[46];
 
 extern KAKIJUN g_hiragana_kakijun;
 extern KAKIJUN g_katakana_kakijun;

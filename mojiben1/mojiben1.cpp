@@ -205,6 +205,15 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     SelectObject(hdcMem2, hbmOld2);
 }
 
+HRGN MyCreateRegion(INT res)
+{
+    HRSRC hRsrc = ::FindResource(g_hInstance, MAKEINTRESOURCE(res), RT_RCDATA);
+    DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
+    PVOID pvData = ::LockResource(hGlobal);
+    return ::ExtCreateRegion(NULL, cbData, (RGNDATA *)pvData);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -233,18 +242,18 @@ static unsigned ThreadProcWorker(void)
     INT index = MojiIndexFromMojiID(g_nMoji);
 
     if (g_fKatakana)
-        v = g_katakana_kakijun[g_nMoji];
+        v = g_katakana_kakijun[index];
     else
-        v = g_hiragana_kakijun[g_nMoji];
+        v = g_hiragana_kakijun[index];
 
     romaji = g_moji_data[index].romaji;
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
     {
-        if (v[i].type != WAIT && v[i].pb)
+        if (v[i].type != WAIT)
         {
-            CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+            CRgn hRgn2(MyCreateRegion(v[i].res));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }
     }
@@ -314,7 +323,7 @@ static unsigned ThreadProcWorker(void)
                 }
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 cost = cos(v[i].angle0 * M_PI / 180);
                 sint = sin(v[i].angle0 * M_PI / 180);
                 for (k = -200; k < 200; k += 20)
@@ -394,7 +403,7 @@ static unsigned ThreadProcWorker(void)
                 }
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 if (v[i].angle0 <= v[i].angle1)
                 {
                     for (k = v[i].angle0; k < v[i].angle1; k += 20)

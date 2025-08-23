@@ -10935,49 +10935,51 @@ static const BYTE n1[2720] = {
 0x56,0x00,0x00,0x00,0xFC,0x00,0x00,0x00,0x5B,0x00,0x00,0x00,0xFD,0x00,0x00,0x00,
 };
 
-#define DO_IT(a) do_it(#a, a, sizeof(a), j, i), ++i;
+void do_it(const BYTE *ptr, size_t size, INT j, INT i)
+{
+    char buf[64];
+    sprintf(buf, "katakana-%03d%02d.bin", j + 200, i);
+    FILE *fp = fopen(buf, "wb");
+    fwrite(ptr, size, 1, fp);
+    fclose(fp);
+}
+
+#define DO_IT(data) do { \
+    do_it(data, sizeof(data), j, i); \
+    ++i; \
+} while (0)
 
 #define ADD_LINEAR(angle, data) do { \
-    std::vector<BYTE> d(data, data + sizeof(data)); \
-    vga.push_back(d); \
+    DO_IT(data); \
 } while (0)
 
 #define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
-    std::vector<BYTE> d(data, data + sizeof(data)); \
-    vga.push_back(d); \
+    DO_IT(data); \
 } while (0)
 
 #define ADD_WAIT() do { \
 } while (0)
 
-#define ADD_MOJI(num) do { \
-    for (size_t i = 0; i < vga.size(); ++i) \
-    { \
-        char buf[32]; \
-        sprintf(buf, "katakana-%03d%02d.bin", num, (int)i); \
-        FILE *fp = fopen(buf, "wb"); \
-        fwrite(&vga[i][0], vga[i].size(), 1, fp); \
-        fclose(fp); \
-    } \
-    vga.clear(); \
+#define NEXT_MOJI() do { \
+    i = 0; ++j; \
 } while (0)
 
 int main(void)
 {
-    std::vector<std::vector<BYTE> > vga;
+    INT j = 0, i = 0;
 
     ADD_LINEAR(0, a0);
     ADD_LINEAR(130, a1);
     ADD_WAIT();
     ADD_LINEAR(110, a2);
 
-    ADD_MOJI(0);
+    NEXT_MOJI();
 
     ADD_LINEAR(140, i0);
     ADD_WAIT();
     ADD_LINEAR(90, i1);
 
-    ADD_MOJI(1);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, u0);
     ADD_WAIT();
@@ -10986,7 +10988,7 @@ int main(void)
     ADD_LINEAR(0, u2);
     ADD_LINEAR(120, u3);
 
-    ADD_MOJI(2);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, e0);
     ADD_WAIT();
@@ -10994,7 +10996,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(0, e2);
 
-    ADD_MOJI(3);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, o0);
     ADD_WAIT();
@@ -11003,7 +11005,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(130, o3);
 
-    ADD_MOJI(4);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, ka0);
     ADD_LINEAR(110, ka1);
@@ -11011,7 +11013,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(120, ka3);
 
-    ADD_MOJI(10);
+    NEXT_MOJI();
 
     ADD_LINEAR(10, ki0);
     ADD_WAIT();
@@ -11019,14 +11021,14 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(85, ki2);
 
-    ADD_MOJI(11);
+    NEXT_MOJI();
 
     ADD_LINEAR(140, ku0);
     ADD_WAIT();
     ADD_LINEAR(0, ku1);
     ADD_LINEAR(130, ku2);
 
-    ADD_MOJI(12);
+    NEXT_MOJI();
 
     ADD_LINEAR(120, ke0);
     ADD_WAIT();
@@ -11034,14 +11036,14 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(120, ke2);
 
-    ADD_MOJI(13);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, ko0);
     ADD_LINEAR(90, ko1);
     ADD_WAIT();
     ADD_LINEAR(0, ko2);
 
-    ADD_MOJI(14);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, sa0);
     ADD_WAIT();
@@ -11049,7 +11051,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(105, sa2);
 
-    ADD_MOJI(20);
+    NEXT_MOJI();
 
     ADD_LINEAR(30, si0);
     ADD_WAIT();
@@ -11057,14 +11059,14 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(320, si2);
 
-    ADD_MOJI(21);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, su0);
     ADD_LINEAR(125, su1);
     ADD_WAIT();
     ADD_LINEAR(50, su2);
 
-    ADD_MOJI(22);
+    NEXT_MOJI();
 
     ADD_LINEAR(345, se0);
     ADD_LINEAR(130, se1);
@@ -11072,13 +11074,13 @@ int main(void)
     ADD_LINEAR(90, se2);
     ADD_LINEAR(90, se3);
 
-    ADD_MOJI(23);
+    NEXT_MOJI();
 
     ADD_LINEAR(50, so0);
     ADD_WAIT();
     ADD_LINEAR(125, so1);
 
-    ADD_MOJI(24);
+    NEXT_MOJI();
 
     ADD_LINEAR(130, ta0);
     ADD_WAIT();
@@ -11087,7 +11089,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(50, ta3);
 
-    ADD_MOJI(30);
+    NEXT_MOJI();
 
     ADD_LINEAR(160, ti0);
     ADD_WAIT();
@@ -11095,7 +11097,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(110, ti2);
 
-    ADD_MOJI(31);
+    NEXT_MOJI();
 
     ADD_LINEAR(60, tu0);
     ADD_WAIT();
@@ -11103,7 +11105,7 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(120, tu2);
 
-    ADD_MOJI(32);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, te0);
     ADD_WAIT();
@@ -11111,32 +11113,32 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(120, te2);
 
-    ADD_MOJI(33);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, to0);
     ADD_WAIT();
     ADD_LINEAR(30, to1);
 
-    ADD_MOJI(34);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, na0);
     ADD_WAIT();
     ADD_LINEAR(100, na1);
 
-    ADD_MOJI(40);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, ni0);
     ADD_WAIT();
     ADD_LINEAR(0, ni1);
 
-    ADD_MOJI(41);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, nu0);
     ADD_LINEAR(120, nu1);
     ADD_WAIT();
     ADD_LINEAR(40, nu2);
 
-    ADD_MOJI(42);
+    NEXT_MOJI();
 
     ADD_LINEAR(40, ne0);
     ADD_WAIT();
@@ -11147,34 +11149,34 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(30, ne4);
 
-    ADD_MOJI(43);
+    NEXT_MOJI();
 
     ADD_LINEAR(125, no0);
 
-    ADD_MOJI(44);
+    NEXT_MOJI();
 
     ADD_LINEAR(130, ha0);
     ADD_WAIT();
     ADD_LINEAR(50, ha1);
 
-    ADD_MOJI(50);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, hi0);
     ADD_WAIT();
     ADD_LINEAR(90, hi1);
     ADD_LINEAR(0, hi2);
 
-    ADD_MOJI(51);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, hu0);
     ADD_LINEAR(130, hu1);
 
-    ADD_MOJI(52);
+    NEXT_MOJI();
 
     ADD_LINEAR(310, he0);
     ADD_LINEAR(40, he1);
 
-    ADD_MOJI(53);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, ho0);
     ADD_WAIT();
@@ -11185,14 +11187,14 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(50, ho4);
 
-    ADD_MOJI(54);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ma0);
     ADD_LINEAR(130, ma1);
     ADD_WAIT();
     ADD_LINEAR(40, ma2);
 
-    ADD_MOJI(60);
+    NEXT_MOJI();
 
     ADD_LINEAR(30, mi0);
     ADD_WAIT();
@@ -11200,20 +11202,20 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(30, mi2);
 
-    ADD_MOJI(61);
+    NEXT_MOJI();
 
     ADD_LINEAR(120, mu0);
     ADD_LINEAR(350, mu1);
     ADD_WAIT();
     ADD_LINEAR(50, mu2);
 
-    ADD_MOJI(62);
+    NEXT_MOJI();
 
     ADD_LINEAR(125, me0);
     ADD_WAIT();
     ADD_LINEAR(40, me1);
 
-    ADD_MOJI(63);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, mo0);
     ADD_WAIT();
@@ -11222,21 +11224,21 @@ int main(void)
     ADD_LINEAR(90, mo2);
     ADD_LINEAR(0, mo3);
 
-    ADD_MOJI(64);
+    NEXT_MOJI();
 
     ADD_LINEAR(340, ya0);
     ADD_LINEAR(130, ya1);
     ADD_WAIT();
     ADD_LINEAR(75, ya2);
 
-    ADD_MOJI(70);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, yu0);
     ADD_LINEAR(100, yu1);
     ADD_WAIT();
     ADD_LINEAR(0, yu2);
 
-    ADD_MOJI(72);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, yo0);
     ADD_LINEAR(90, yo1);
@@ -11245,32 +11247,32 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(0, yo3);
 
-    ADD_MOJI(74);
+    NEXT_MOJI();
 
     ADD_LINEAR(0, ra0);
     ADD_WAIT();
     ADD_LINEAR(0, ra1);
     ADD_LINEAR(125, ra2);
 
-    ADD_MOJI(80);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ri0);
     ADD_WAIT();
     ADD_LINEAR(100, ri1);
 
-    ADD_MOJI(81);
+    NEXT_MOJI();
 
     ADD_LINEAR(110, ru0);
     ADD_WAIT();
     ADD_LINEAR(90, ru1);
     ADD_LINEAR(310, ru2);
 
-    ADD_MOJI(82);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, re0);
     ADD_LINEAR(320, re1);
 
-    ADD_MOJI(83);
+    NEXT_MOJI();
 
     ADD_LINEAR(80, ro0);
     ADD_WAIT();
@@ -11279,14 +11281,14 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(0, ro3);
 
-    ADD_MOJI(84);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, wa0);
     ADD_WAIT();
     ADD_LINEAR(0, wa1);
     ADD_LINEAR(120, wa2);
 
-    ADD_MOJI(90);
+    NEXT_MOJI();
 
     ADD_LINEAR(10, wo0);
     ADD_WAIT();
@@ -11294,11 +11296,11 @@ int main(void)
     ADD_WAIT();
     ADD_LINEAR(90, wo2);
 
-    ADD_MOJI(94);
+    NEXT_MOJI();
 
     ADD_LINEAR(40, n0);
     ADD_WAIT();
     ADD_LINEAR(320, n1);
 
-    ADD_MOJI(104);
+    NEXT_MOJI();
 }

@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include <vector>
 
 static const BYTE a0[688] = {
 0x20,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x29,0x00,0x00,0x00,0x90,0x02,0x00,0x00,
@@ -15698,40 +15699,38 @@ static const BYTE n2[2640] = {
 0xAF,0x00,0x00,0x00,0x03,0x01,0x00,0x00,0xC0,0x00,0x00,0x00,0x04,0x01,0x00,0x00,
 };
 
+void do_it(const BYTE *ptr, size_t size, INT j, INT i)
+{
+    char buf[64];
+    sprintf(buf, "hiragana-%03d%02d.bin", j + 100, i);
+    FILE *fp = fopen(buf, "wb");
+    fwrite(ptr, size, 1, fp);
+    fclose(fp);
+}
+
+#define DO_IT(data) do { \
+    do_it(data, sizeof(data), j, i); \
+    ++i; \
+} while (0)
+
 #define ADD_LINEAR(angle, data) do { \
-    ga.type     = LINEAR; \
-    ga.angle0   = angle; \
-    ga.cb       = sizeof(data); \
-    ga.pb       = data; \
-    vga.push_back(ga); \
+    DO_IT(data); \
 } while (0)
 
 #define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
-    ga.type     = POLAR; \
-    ga.angle0   = a0; \
-    ga.angle1   = a1; \
-    ga.cx       = center_x; \
-    ga.cy       = center_y; \
-    ga.cb       = sizeof(data); \
-    ga.pb       = data; \
-    vga.push_back(ga); \
+    DO_IT(data); \
 } while (0)
 
 #define ADD_WAIT() do { \
-    ga.type     = WAIT; \
-    vga.push_back(ga); \
 } while (0)
 
-#define ADD_MOJI(num) do { \
-    g_hiragana_kakijun.insert(value_type((num), vga)); \
-    vga.clear(); \
+#define NEXT_MOJI() do { \
+    i = 0; ++j; \
 } while (0)
 
-VOID InitHiragana(VOID)
+int main(void)
 {
-    GA ga;
-    std::vector<GA> vga;
-    typedef KAKIJUN::value_type value_type;
+    INT j = 0, i = 0;
 
     ADD_LINEAR(350, a0);
     ADD_WAIT();
@@ -15740,21 +15739,21 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(125, a2);
     ADD_POLAR(140, 450, 140, 195, a3);
 
-    ADD_MOJI(0);
+    NEXT_MOJI();
 
     ADD_LINEAR(70, i0);
     ADD_LINEAR(295, i1);
     ADD_WAIT();
     ADD_LINEAR(55, i2);
 
-    ADD_MOJI(1);
+    NEXT_MOJI();
 
     ADD_LINEAR(10, u0);
     ADD_WAIT();
     ADD_LINEAR(340, u1);
     ADD_LINEAR(95, u2);
 
-    ADD_MOJI(2);
+    NEXT_MOJI();
 
     ADD_LINEAR(10, e0);
     ADD_WAIT();
@@ -15764,7 +15763,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, e4);
     ADD_LINEAR(5, e5);
 
-    ADD_MOJI(3);
+    NEXT_MOJI();
 
     ADD_LINEAR(340, o0);
     ADD_WAIT();
@@ -15775,7 +15774,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(40, o5);
 
-    ADD_MOJI(4);
+    NEXT_MOJI();
 
     ADD_LINEAR(345, ka0);
     ADD_LINEAR(110, ka1);
@@ -15785,7 +15784,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(55, ka4);
 
-    ADD_MOJI(10);
+    NEXT_MOJI();
 
     ADD_LINEAR(345, ki0);
     ADD_WAIT();
@@ -15796,11 +15795,11 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, ki4);
 
-    ADD_MOJI(11);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ku0);
 
-    ADD_MOJI(12);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ke0);
     ADD_LINEAR(290, ke1);
@@ -15809,14 +15808,14 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(105, ke3);
 
-    ADD_MOJI(13);
+    NEXT_MOJI();
 
     ADD_LINEAR(5, ko0);
     ADD_LINEAR(160, ko1);
     ADD_WAIT();
     ADD_LINEAR(20, ko2);
 
-    ADD_MOJI(14);
+    NEXT_MOJI();
 
     ADD_LINEAR(15, sa0);
     ADD_WAIT();
@@ -15825,12 +15824,12 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(30, sa3);
 
-    ADD_MOJI(20);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, si0);
     ADD_LINEAR(0, si1);
 
-    ADD_MOJI(21);
+    NEXT_MOJI();
 
     ADD_LINEAR(355, su0);
     ADD_WAIT();
@@ -15838,7 +15837,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 360, 148, 160, su2);
     ADD_LINEAR(110, su3);
 
-    ADD_MOJI(22);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, se0);
     ADD_WAIT();
@@ -15848,14 +15847,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, se3);
     ADD_LINEAR(0, se4);
 
-    ADD_MOJI(23);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, so0);
     ADD_LINEAR(145, so1);
     ADD_LINEAR(350, so2);
     ADD_POLAR(305, 85, 212, 187, so3);
 
-    ADD_MOJI(24);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ta0);
     ADD_WAIT();
@@ -15865,7 +15864,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(20, ta3);
 
-    ADD_MOJI(30);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ti0);
     ADD_WAIT();
@@ -15873,25 +15872,25 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(335, ti2);
     ADD_POLAR(270, 500, 189, 196, ti3);
 
-    ADD_MOJI(31);
+    NEXT_MOJI();
 
     ADD_LINEAR(15, tu0);
     ADD_POLAR(280, 490, 175, 150, tu1);
 
-    ADD_MOJI(32);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, te0);
     ADD_LINEAR(135, te1);
     ADD_LINEAR(50, te2);
 
-    ADD_MOJI(33);
+    NEXT_MOJI();
 
     ADD_LINEAR(55, to0);
     ADD_WAIT();
     ADD_LINEAR(140, to1);
     ADD_LINEAR(20, to2);
 
-    ADD_MOJI(34);
+    NEXT_MOJI();
 
     ADD_LINEAR(345, na0);
     ADD_WAIT();
@@ -15903,7 +15902,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(20, 270, 144, 226, na4);
     ADD_LINEAR(20, na5);
 
-    ADD_MOJI(40);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ni0);
     ADD_LINEAR(290, ni1);
@@ -15912,7 +15911,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(20, ni3);
 
-    ADD_MOJI(41);
+    NEXT_MOJI();
 
     ADD_LINEAR(75, nu0);
     ADD_WAIT();
@@ -15921,7 +15920,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 270, 192, 208, nu3);
     ADD_LINEAR(30, nu4);
 
-    ADD_MOJI(42);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ne0);
     ADD_WAIT();
@@ -15932,12 +15931,12 @@ VOID InitHiragana(VOID)
     ADD_POLAR(40, 290, 189, 219, ne5);
     ADD_LINEAR(30, ne6);
 
-    ADD_MOJI(43);
+    NEXT_MOJI();
 
     ADD_LINEAR(115, no0);
     ADD_POLAR(135, 450, 143, 152, no1);
 
-    ADD_MOJI(44);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ha0);
     ADD_LINEAR(290, ha1);
@@ -15948,7 +15947,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(30, 280, 175, 222, ha4);
     ADD_LINEAR(20, ha5);
 
-    ADD_MOJI(50);
+    NEXT_MOJI();
 
     ADD_LINEAR(340, hi0);
     ADD_LINEAR(120, hi1);
@@ -15956,7 +15955,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(285, hi3);
     ADD_LINEAR(60, hi4);
 
-    ADD_MOJI(51);
+    NEXT_MOJI();
 
     ADD_LINEAR(30, hu0);
     ADD_LINEAR(160, hu1);
@@ -15968,12 +15967,12 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(55, hu5);
 
-    ADD_MOJI(52);
+    NEXT_MOJI();
 
     ADD_LINEAR(315, he0);
     ADD_LINEAR(40, he1);
 
-    ADD_MOJI(53);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ho0);
     ADD_LINEAR(295, ho1);
@@ -15986,7 +15985,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(60, 270, 188, 224, ho5);
     ADD_LINEAR(30, ho6);
 
-    ADD_MOJI(54);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ma0);
     ADD_WAIT();
@@ -15996,7 +15995,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(40, 280, 123, 228, ma3);
     ADD_LINEAR(20, ma4);
 
-    ADD_MOJI(60);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, mi0);
     ADD_LINEAR(120, mi1);
@@ -16005,7 +16004,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(120, mi4);
 
-    ADD_MOJI(61);
+    NEXT_MOJI();
 
     ADD_LINEAR(15, mu0);
     ADD_WAIT();
@@ -16015,14 +16014,14 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(35, mu4);
 
-    ADD_MOJI(62);
+    NEXT_MOJI();
 
     ADD_LINEAR(75, me0);
     ADD_WAIT();
     ADD_LINEAR(120, me1);
     ADD_POLAR(135, 440, 134, 172, me2);
 
-    ADD_MOJI(63);
+    NEXT_MOJI();
 
     ADD_LINEAR(95, mo0);
     ADD_POLAR(170, -60, 152, 198, mo1);
@@ -16031,7 +16030,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(10, mo3);
 
-    ADD_MOJI(64);
+    NEXT_MOJI();
 
     ADD_LINEAR(345, ya0);
     ADD_POLAR(270, 480, 200, 116, ya1);
@@ -16041,7 +16040,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(70, ya4);
 
-    ADD_MOJI(70);
+    NEXT_MOJI();
 
     ADD_LINEAR(85, yu0);
     ADD_POLAR(160, 340, 166, 191, yu1);
@@ -16049,7 +16048,7 @@ VOID InitHiragana(VOID)
     ADD_WAIT();
     ADD_LINEAR(95, yu3);
 
-    ADD_MOJI(72);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, yo0);
     ADD_WAIT();
@@ -16057,7 +16056,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(50, 270, 129, 227, yo2);
     ADD_LINEAR(20, yo3);
 
-    ADD_MOJI(74);
+    NEXT_MOJI();
 
     ADD_LINEAR(35, ra0);
     ADD_LINEAR(160, ra1);
@@ -16066,14 +16065,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(330, ra3);
     ADD_POLAR(270, 495, 186, 189, ra4);
 
-    ADD_MOJI(80);
+    NEXT_MOJI();
 
     ADD_LINEAR(90, ri0);
     ADD_LINEAR(290, ri1);
     ADD_WAIT();
     ADD_LINEAR(100, ri2);
 
-    ADD_MOJI(81);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ru0);
     ADD_LINEAR(130, ru1);
@@ -16082,7 +16081,7 @@ VOID InitHiragana(VOID)
     ADD_POLAR(90, 285, 135, 235, ru4);
     ADD_LINEAR(30, ru5);
 
-    ADD_MOJI(82);
+    NEXT_MOJI();
 
     ADD_LINEAR(95, re0);
     ADD_WAIT();
@@ -16092,14 +16091,14 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(90, re4);
     ADD_LINEAR(340, re5);
 
-    ADD_MOJI(83);
+    NEXT_MOJI();
 
     ADD_LINEAR(350, ro0);
     ADD_LINEAR(130, ro1);
     ADD_LINEAR(335, ro2);
     ADD_POLAR(270, 480, 168, 180, ro3);
 
-    ADD_MOJI(84);
+    NEXT_MOJI();
 
     ADD_LINEAR(95, wa0);
     ADD_WAIT();
@@ -16108,7 +16107,7 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(330, wa3);
     ADD_POLAR(270, 480, 188, 163, wa4);
 
-    ADD_MOJI(90);
+    NEXT_MOJI();
 
     ADD_LINEAR(355, wo0);
     ADD_WAIT();
@@ -16118,11 +16117,11 @@ VOID InitHiragana(VOID)
     ADD_LINEAR(150, wo3);
     ADD_LINEAR(10, wo4);
 
-    ADD_MOJI(94);
+    NEXT_MOJI();
 
     ADD_LINEAR(120, n0);
     ADD_LINEAR(310, n1);
     ADD_POLAR(195, 5, 200, 155, n2);
 
-    ADD_MOJI(104);
+    NEXT_MOJI();
 }
