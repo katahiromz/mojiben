@@ -728,26 +728,12 @@ void Caption_OnPaint(HWND hwnd)
     PAINTSTRUCT ps;
     if (HDC hdc = BeginPaint(hwnd, &ps))
     {
+        SetBkMode(hdc, TRANSPARENT);
+        SetTextColor(hdc, RGB(0, 0, 0));
+
         HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-        SIZE size;
-        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        smartDrawText(hdc, szText, &rc, 550);
         SelectObject(hdc, hFontOld);
-        if (size.cx >= 550)
-        {
-            HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
-            SetBkMode(hdc, TRANSPARENT);
-            SetTextColor(hdc, RGB(0, 0, 0));
-            DrawText(hdc, szText, -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
-            SelectObject(hdc, hFontOld);
-        }
-        else
-        {
-            HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-            SetBkMode(hdc, TRANSPARENT);
-            SetTextColor(hdc, RGB(0, 0, 0));
-            DrawText(hdc, szText, -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
-            SelectObject(hdc, hFontOld);
-        }
         EndPaint(hwnd, &ps);
     }
 }
@@ -787,38 +773,26 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
     TCHAR szText[256];
     GetWindowText(hwndCaption, szText, 256);
 
+    BOOL multiline = FALSE;
     SIZE siz;
-
     if (HDC hdc = GetDC(hwndCaption))
     {
         HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-        SIZE size;
-        GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+        multiline = smartGetTextExtent(hdc, szText, 550, &siz);
         SelectObject(hdc, hFontOld);
-        if (size.cx >= 550)
-        {
-            HGDIOBJ hFontOld = SelectObject(hdc, g_hFontSmall);
-            GetTextExtentPoint32(hdc, szText, lstrlen(szText), &siz);
-            SelectObject(hdc, hFontOld);
-        }
-        else
-        {
-            HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-            GetTextExtentPoint32(hdc, szText, lstrlen(szText), &siz);
-            SelectObject(hdc, hFontOld);
-        }
         ReleaseDC(hwndCaption, hdc);
     }
-    siz.cx += 16;
 
-    if (nIndex == 0)
-    {
-        MoveWindow(hwndCaption, (rc.left + rc.right - siz.cx) / 2, rc.top - 50, siz.cx, 40, TRUE);
-    }
-    else
-    {
-        MoveWindow(hwndCaption, (rc.left + rc.right - siz.cx) / 2, rc.bottom + 10, siz.cx, 40, TRUE);
-    }
+    RECT rcNew;
+    rcNew.left = (rc.left + rc.right - siz.cx) / 2;
+    rcNew.top = (nIndex == 0) ? (rc.top - 10 - siz.cy) : (rc.bottom + 10);
+    rcNew.right = rcNew.left + siz.cx;
+    rcNew.bottom = rcNew.top + siz.cy;
+
+    DWORD style = GetWindowStyle(hwndCaption);
+    DWORD exstyle = GetWindowExStyle(hwndCaption);
+    AdjustWindowRectEx(&rcNew, style, FALSE, exstyle);
+    MoveWindow(hwndCaption, rcNew.left, rcNew.top, rcNew.right - rcNew.left, rcNew.bottom - rcNew.top, TRUE);
 }
 
 void Kakijun_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
