@@ -245,12 +245,27 @@ smartGetTextExtent(HDC hDC, LPCTSTR text, LONG maxWidth, LPSIZE pSize)
 
     RECT rc = { 0, 0, maxWidth, 0 };
     DrawText(hDC, text, -1, &rc, DT_LEFT | DT_TOP | DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK);
-    siz.cx = rc.right;
-    siz.cy = rc.bottom;
+    siz.cx = rc.right - rc.left;
+    siz.cy = rc.bottom - rc.top;
     *pSize = siz;
     return TRUE; // Multiple line
 }
 
+static inline BOOL
+smartDrawText(HDC hDC, LPCTSTR text, LPRECT prc, INT maxWidth)
+{
+    SIZE siz;
+    BOOL multiline = smartGetTextExtent(hDC, text, maxWidth, &siz);
+
+    prc->right = prc->left + siz.cx;
+    prc->bottom = prc->top + siz.cy;
+
+    if (multiline)
+        DrawText(hDC, text, -1, prc, DT_CENTER | DT_TOP | DT_NOPREFIX | DT_WORDBREAK);
+    else
+        DrawText(hDC, text, -1, prc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_WORDBREAK);
+    return TRUE;
+}
 
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
 HRGN DeserializeRegion(const WORD *pw, size_t size);
