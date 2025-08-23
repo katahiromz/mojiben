@@ -13,10 +13,9 @@ struct GA
     INT angle1;
     INT cx;
     INT cy;
-    DWORD cb;
-    const BYTE *pb;
+    INT res;
 };
-typedef std::map<INT, std::vector<GA> > KAKIJUN;
+typedef std::vector<GA> KAKIJUN[26];
 
 extern KAKIJUN g_print_uppercase_kakijun;
 extern KAKIJUN g_print_lowercase_kakijun;

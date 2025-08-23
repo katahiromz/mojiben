@@ -224,6 +224,15 @@ VOID DrawGuideline(HDC hdcMem, INT cx)
     LineTo(hdcMem, cx, 285);
 }
 
+HRGN MyCreateRegion(INT res)
+{
+    HRSRC hRsrc = ::FindResource(g_hInstance, MAKEINTRESOURCE(res), RT_RCDATA);
+    DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
+    PVOID pvData = ::LockResource(hGlobal);
+    return ::ExtCreateRegion(NULL, cbData, (RGNDATA *)pvData);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -247,9 +256,9 @@ static unsigned ThreadProcWorker(void)
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for(UINT i = 0; i < v.size(); i++)
     {
-        if (v[i].type != WAIT && v[i].pb)
+        if (v[i].type != WAIT)
         {
-            CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+            CRgn hRgn2(MyCreateRegion(v[i].res));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }
     }
@@ -312,7 +321,7 @@ static unsigned ThreadProcWorker(void)
 
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
                 SelectObject(hdcMem, hbmOld);
@@ -343,7 +352,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 cost = cos(v[i].angle0 * M_PI / 180);
                 sint = sin(v[i].angle0 * M_PI / 180);
                 for(k = -200; k < 200; k += 30)
@@ -428,7 +437,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 if (v[i].angle0 <= v[i].angle1)
                 {
                     for(k = v[i].angle0; k < v[i].angle1; k += 20)
