@@ -243,6 +243,15 @@ void OnPaint(HWND hwnd)
     }
 }
 
+HRGN MyCreateRegion(INT res)
+{
+    HRSRC hRsrc = ::FindResource(g_hInstance, MAKEINTRESOURCE(res), RT_RCDATA);
+    DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
+    PVOID pvData = ::LockResource(hGlobal);
+    return ::ExtCreateRegion(NULL, cbData, (RGNDATA *)pvData);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -262,9 +271,9 @@ static unsigned ThreadProcWorker(void)
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
     {
-        if (v[i].type != WAIT && v[i].pb)
+        if (v[i].type != WAIT)
         {
-            CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+            CRgn hRgn2(MyCreateRegion(v[i].res));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }
     }
@@ -326,7 +335,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
 
                 cost = std::cos(v[i].angle0 * M_PI / 180);
                 sint = std::sin(v[i].angle0 * M_PI / 180);
@@ -414,7 +423,7 @@ static unsigned ThreadProcWorker(void)
 
                 g_hbmKakijun = hbm1;
 
-                CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+                CRgn hRgn2(MyCreateRegion(v[i].res));
                 if (v[i].angle0 <= v[i].angle1)
                 {
                     for (k = v[i].angle0; k < v[i].angle1; k += 20)

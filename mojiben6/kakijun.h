@@ -18,10 +18,7 @@ struct GA
     INT angle1;
     INT cx;
     INT cy;
-
-    // Win32 Region data
-    DWORD cb;
-    const BYTE *pb;
+    INT res;
 };
 typedef std::vector<GA> KAKIJUN[200];
 
