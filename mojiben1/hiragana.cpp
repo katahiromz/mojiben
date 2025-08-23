@@ -37,7 +37,7 @@ KAKIJUN g_hiragana_kakijun;
 } while (0)
 
 #define NEXT_MOJI() do { \
-    g_hiragana_kakijun[index++] = vga; \
+    g_hiragana_kakijun.push_back(vga); \
     vga.clear(); \
     ++j; i = 0; \
 } while (0)

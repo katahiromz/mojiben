@@ -232,5 +232,25 @@ applyStudyMode(STUDY_MODE mode)
     return TRUE;
 }
 
+static inline BOOL
+smartGetTextExtent(HDC hDC, LPCTSTR text, LONG maxWidth, LPSIZE pSize)
+{
+    SIZE siz;
+    GetTextExtentPoint32(hDC, text, lstrlen(text), &siz);
+    if (siz.cx <= maxWidth)
+    {
+        *pSize = siz;
+        return FALSE; // Single line
+    }
+
+    RECT rc = { 0, 0, maxWidth, 0 };
+    DrawText(hDC, text, -1, &rc, DT_LEFT | DT_TOP | DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK);
+    siz.cx = rc.right;
+    siz.cy = rc.bottom;
+    *pSize = siz;
+    return TRUE; // Multiple line
+}
+
+
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
 HRGN DeserializeRegion(const WORD *pw, size_t size);

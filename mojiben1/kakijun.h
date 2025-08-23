@@ -20,7 +20,7 @@ struct GA
     INT cy;     // height
     INT res;
 };
-typedef std::vector<GA> KAKIJUN[46];
+typedef std::vector<std::vector<GA> > KAKIJUN;
 
 extern KAKIJUN g_hiragana_kakijun;
 extern KAKIJUN g_katakana_kakijun;
