@@ -20,6 +20,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <cassert>
 
 #include "kakijun.h"
 #include "../CGdiObj.h"
@@ -63,14 +64,26 @@ struct MOJI
     SHORT x;
     SHORT y;
     BOOLEAN is_katakana;
+    const char *romaji;
 };
 
 MOJI g_moji_data[NUM_MOJI] = {
-#define DEFINE_MOJI(index, moji_id, wch, bitmap_id, x, y, is_katakana) \
-    { index, moji_id, bitmap_id, x, y, is_katakana },
+#define DEFINE_MOJI(index, moji_id, wch, bitmap_id, x, y, is_katakana, romaji) \
+    { index, moji_id, bitmap_id, x, y, is_katakana, romaji },
 #include "mojidata.h"
 #undef DEFINE_MOJI
 };
+
+INT MojiIndexFromMojiID(INT moji_id)
+{
+    for (size_t i = 0; i < _countof(g_moji_data); ++i)
+    {
+        if (g_moji_data[i].moji_id == moji_id)
+            return (INT)i;
+    }
+    assert(0);
+    return -1;
+}
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
@@ -217,115 +230,14 @@ static unsigned ThreadProcWorker(void)
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
+    INT index = MojiIndexFromMojiID(g_nMoji);
+
     if (g_fKatakana)
         v = g_katakana_kakijun[g_nMoji];
     else
         v = g_hiragana_kakijun[g_nMoji];
 
-    switch (g_nMoji / 10)
-    {
-    case 0:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "a"; break;
-        case 1: romaji = "i"; break;
-        case 2: romaji = "u"; break;
-        case 3: romaji = "e"; break;
-        case 4: romaji = "o"; break;
-        }
-        break;
-    case 1:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ka"; break;
-        case 1: romaji = "ki"; break;
-        case 2: romaji = "ku"; break;
-        case 3: romaji = "ke"; break;
-        case 4: romaji = "ko"; break;
-        }
-        break;
-    case 2:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "sa"; break;
-        case 1: romaji = "shi"; break;
-        case 2: romaji = "su"; break;
-        case 3: romaji = "se"; break;
-        case 4: romaji = "so"; break;
-        }
-        break;
-    case 3:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ta"; break;
-        case 1: romaji = "chi"; break;
-        case 2: romaji = "tsu (tz)"; break;
-        case 3: romaji = "te"; break;
-        case 4: romaji = "to"; break;
-        }
-        break;
-    case 4:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "na"; break;
-        case 1: romaji = "ni"; break;
-        case 2: romaji = "nu"; break;
-        case 3: romaji = "ne"; break;
-        case 4: romaji = "no"; break;
-        }
-        break;
-    case 5:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ha (wa)"; break;
-        case 1: romaji = "hi"; break;
-        case 2: romaji = "fu"; break;
-        case 3: romaji = "he"; break;
-        case 4: romaji = "ho"; break;
-        }
-        break;
-    case 6:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ma"; break;
-        case 1: romaji = "mi"; break;
-        case 2: romaji = "mu"; break;
-        case 3: romaji = "me"; break;
-        case 4: romaji = "mo"; break;
-        }
-        break;
-    case 7:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ya"; break;
-        case 2: romaji = "yu"; break;
-        case 4: romaji = "yo"; break;
-        }
-        break;
-    case 8:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "ra (la)"; break;
-        case 1: romaji = "ri (li)"; break;
-        case 2: romaji = "ru (lu)"; break;
-        case 3: romaji = "re (le)"; break;
-        case 4: romaji = "ro (lo)"; break;
-        }
-        break;
-    case 9:
-        switch (g_nMoji % 10)
-        {
-        case 0: romaji = "wa"; break;
-        case 4: romaji = "wo (o)"; break;
-        }
-        break;
-    case 10:
-        switch (g_nMoji % 10)
-        {
-        case 4: romaji = "nn (n/m)"; break;
-        }
-        break;
-    }
+    romaji = g_moji_data[index].romaji;
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
