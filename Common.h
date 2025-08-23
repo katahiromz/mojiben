@@ -231,3 +231,6 @@ applyStudyMode(STUDY_MODE mode)
 
     return TRUE;
 }
+
+BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
+HRGN DeserializeRegion(const WORD *pw, size_t size);

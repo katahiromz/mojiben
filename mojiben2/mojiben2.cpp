@@ -230,7 +230,7 @@ HRGN MyCreateRegion(INT res)
     DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
     HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     PVOID pvData = ::LockResource(hGlobal);
-    return ::ExtCreateRegion(NULL, cbData, (RGNDATA *)pvData);
+    return DeserializeRegion((const WORD *)pvData, cbData / sizeof(WORD));
 }
 
 static unsigned ThreadProcWorker(void)
