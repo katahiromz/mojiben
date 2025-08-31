@@ -962,6 +962,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case 1002:
     case 1003:
+    case 1004:
+    case 1005:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
             LPTSTR psz = szText;
