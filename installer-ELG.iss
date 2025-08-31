@@ -41,15 +41,15 @@ Source: "build\Release\mojiben3.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben5.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben6.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_en.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "font\Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall; Tasks: japanesefont
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{cm:ReadMeJPN}"; Filename: "{app}\README.txt"
-Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README-ENG.txt"
+Name: "{group}\{cm:ReadMeJPN}"; Filename: "{app}\README_ja.txt"
+Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README_en.txt"
 Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"
 Name: "{group}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"
