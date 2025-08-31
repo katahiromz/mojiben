@@ -58,12 +58,12 @@ Name: "{group}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"
 Name: "{group}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"
 Name: "{group}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"
 Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{cm:MojiBen} (1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
-Name: "{commondesktop}\{cm:MojiBen} (2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
-Name: "{commondesktop}\{cm:MojiBen} (3) {cm:DigitsAndNumbers}"; Filename: "{app}\mojiben3.exe"; Tasks: desktopicon
-Name: "{commondesktop}\{cm:MojiBen} (4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"; Tasks: desktopicon
-Name: "{commondesktop}\{cm:MojiBen} (5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"; Tasks: desktopicon
-Name: "{commondesktop}\{cm:MojiBen} (6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(3) {cm:DigitsAndNumbers}"; Filename: "{app}\mojiben3.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"; Tasks: desktopicon
 
 [CustomMessages]
 ja.AppName=もじのべんきょう

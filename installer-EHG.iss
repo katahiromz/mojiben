@@ -48,7 +48,7 @@ Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README-ENG.txt"
 Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"
 Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{cm:MojiBen} (7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"; Tasks: desktopicon
 
 [CustomMessages]
 ja.AppName=もじのべんきょう
