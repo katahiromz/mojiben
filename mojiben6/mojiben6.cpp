@@ -936,7 +936,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     WCHAR wch;
-    TCHAR szText[MAX_PATH];
+    TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
 
     switch (id)
@@ -948,8 +948,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             LPWSTR pch = _tcschr(psz, TEXT(':'));
             *pch = 0;
             str = psz;
-            wsprintf(szText, LoadStringDx(1000), str.c_str());
-            ShellExecute(hwnd, NULL, szText, NULL, NULL, SW_SHOWNORMAL);
+            wsprintf(szURL, LoadStringDx(1000), str.c_str());
+            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
 
@@ -965,10 +965,19 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             MultiByteToWideChar(CP_ACP, 0, psz, -1, sz, 2);
             wch = sz[0];
 #endif
-            wsprintf(szText, LoadStringDx(1001), wch);
-            ShellExecute(hwnd, NULL, szText, NULL, NULL, SW_SHOWNORMAL);
+            wsprintf(szURL, LoadStringDx(1001), wch);
+            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
+    case 1002:
+        {
+            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
+            LPTSTR psz = szText;
+            LPTSTR pch = _tcschr(psz, TEXT(':'));
+            *pch = 0;
+            wsprintf(szURL, LoadStringDx(1002), psz);
+            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
+        }
     }
 }
 
