@@ -970,12 +970,13 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         }
         break;
     case 1002:
+    case 1003:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
             LPTSTR psz = szText;
             LPTSTR pch = _tcschr(psz, TEXT(':'));
             *pch = 0;
-            wsprintf(szURL, LoadStringDx(1002), psz);
+            wsprintf(szURL, LoadStringDx(id), psz);
             ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
     }
