@@ -62,13 +62,14 @@ HBITMAP g_hbmRight = NULL;
 
 HBITMAP g_hbmKakijun;
 INT g_nMoji;
+INT g_nMoji2;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 INT g_iPage = 0;
 float g_eGoalPage = 0;
 float g_eDisplayPage = 0;
 
-std::set<INT> g_kanji3_history;
+std::set<INT> g_kanji4_history;
 
 BOOL g_bHighSpeed = FALSE;
 
@@ -193,7 +194,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         {
             GetMojiRect(j, &rc);
             hbmOld = SelectObject(hdcMem, g_ahbmKanji4[g_map[j]]);
-            if (g_kanji3_history.find(j) != g_kanji3_history.end())
+            if (g_kanji4_history.find(j) != g_kanji4_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
                 FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -544,6 +545,7 @@ unsigned __stdcall ThreadProc(void *)
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
     RECT rc, rc2;
+    g_nMoji2 = nMoji;
     g_nMoji = g_map[nMoji];
 
     if (fRight)
@@ -581,7 +583,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption2, (pch + 1));
 
-    g_kanji3_history.insert(nMoji);
+    g_kanji4_history.insert(nMoji);
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
@@ -866,7 +868,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmKakijun);
     DeleteObject(g_hbrRed);
 
-    g_kanji3_history.clear();
+    g_kanji4_history.clear();
 
     PostQuitMessage(0);
 }
@@ -928,6 +930,14 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
+
+    g_kanji4_history.insert(g_nMoji2);
+    if (g_hbmClient)
+    {
+        DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
+    }
+    InvalidateRect(hwnd, NULL, TRUE);
 
     switch (id)
     {

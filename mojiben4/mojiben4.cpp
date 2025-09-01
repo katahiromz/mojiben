@@ -57,6 +57,7 @@ HBITMAP g_hbmClient;
 
 HBITMAP g_hbmKakijun;
 INT g_nMoji;
+INT g_nMoji2;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 
@@ -458,6 +459,7 @@ unsigned __stdcall ThreadProc(void *)
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
     RECT rc, rc2;
+    g_nMoji2 = nMoji;
     g_nMoji = g_map[nMoji];
 
     if (fRight)
@@ -810,6 +812,14 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
+
+    g_kanji1_history.insert(g_nMoji2);
+    if (g_hbmClient)
+    {
+        DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
+    }
+    InvalidateRect(hwnd, NULL, TRUE);
 
     switch (id)
     {
