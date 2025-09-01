@@ -557,7 +557,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
                                   pt.x, pt.y, 0, hwnd, NULL);
         DestroyMenu(hMenu);
-        PostMessage(hwnd, WM_COMMAND, nCmd, 0);
+        if (nCmd)
+            PostMessage(hwnd, WM_COMMAND, nCmd, 0);
         return;
     }
 
