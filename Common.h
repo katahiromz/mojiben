@@ -232,6 +232,32 @@ applyStudyMode(STUDY_MODE mode)
     return TRUE;
 }
 
+static inline
+BOOL CopyText(HWND hwnd, LPCWSTR text)
+{
+    BOOL ret = FALSE;
+    if (OpenClipboard(hwnd))
+    {
+        EmptyClipboard();
+        SIZE_T cbText = (lstrlenW(text) + 1) * sizeof(WCHAR);
+        HGLOBAL hGlobal = GlobalAlloc(GHND | GMEM_SHARE, cbText);
+        if (hGlobal)
+        {
+            LPWSTR psz = (LPWSTR)GlobalLock(hGlobal);
+            if (psz)
+            {
+                CopyMemory(psz, text, cbText);
+                GlobalUnlock(hGlobal);
+
+                SetClipboardData(CF_UNICODETEXT, hGlobal);
+                ret = TRUE;
+            }
+        }
+        CloseClipboard();
+    }
+    return ret;
+}
+
 static inline BOOL
 smartGetTextExtent(HDC hDC, LPCTSTR text, LONG maxWidth, LPSIZE pSize)
 {

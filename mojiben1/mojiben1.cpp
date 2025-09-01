@@ -60,6 +60,7 @@ struct MOJI
 {
     SHORT index;
     SHORT moji_id;
+    WCHAR wch;
     SHORT bitmap_id;
     SHORT x;
     SHORT y;
@@ -69,7 +70,7 @@ struct MOJI
 
 MOJI g_moji_data[NUM_MOJI] = {
 #define DEFINE_MOJI(index, moji_id, wch, bitmap_id, x, y, is_katakana, romaji) \
-    { index, moji_id, bitmap_id, x, y, is_katakana, romaji },
+    { index, moji_id, wch, bitmap_id, x, y, is_katakana, romaji },
 #include "mojidata.h"
 #undef DEFINE_MOJI
 };
@@ -546,6 +547,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     if (fRight)
     {
         HMENU hMenu = CreatePopupMenu();
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 3000, LoadStringDx(3000));
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + nMoji, LoadStringDx(1000 + g_nMoji));
         SetForegroundWindow(hwnd);
 
@@ -827,6 +829,15 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     if (id == 0)
         return;
+
+    if (id == 3000)
+    {
+        INT index = MojiIndexFromMojiID(g_nMoji);
+        WCHAR wch = g_moji_data[index + (g_fKatakana ? 46 : 0)].wch;
+        WCHAR sz[2] = { wch, 0 };
+        CopyText(hwnd, sz);
+        return;
+    }
 
     LPTSTR psz = LoadStringDx(2000 + g_nMoji);
     if (psz[0])
