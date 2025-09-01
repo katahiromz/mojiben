@@ -935,7 +935,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    WCHAR wch;
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
 
@@ -944,51 +943,39 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case 1000:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPWSTR psz = szText;
-            LPWSTR pch = _tcschr(psz, TEXT(':'));
+            LPWSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
-            str = psz;
+            str = szText;
             wsprintf(szURL, LoadStringDx(1000), str.c_str());
             ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
-
     case 1001:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPWSTR psz = szText;
-            LPWSTR pch = _tcschr(psz, TEXT(':'));
+            LPWSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
-#ifdef UNICODE
-            wch = *psz;
-#else
-            MultiByteToWideChar(CP_ACP, 0, psz, -1, sz, 2);
-            wch = sz[0];
-#endif
-            wsprintf(szURL, LoadStringDx(1001), wch);
+            wsprintf(szURL, LoadStringDx(1001), szText[0]);
             ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
     case 1002:
     case 1003:
     case 1004:
-    case 1005:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPTSTR psz = szText;
-            LPTSTR pch = _tcschr(psz, TEXT(':'));
+            LPTSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
-            wsprintf(szURL, LoadStringDx(id), psz);
+            wsprintf(szURL, LoadStringDx(id), szText);
             ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
     case 1006:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPTSTR psz = szText;
-            LPTSTR pch = _tcschr(psz, TEXT(':'));
+            LPTSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
-            CopyText(hwnd, psz);
+            CopyText(hwnd, szText);
         }
         break;
     }
