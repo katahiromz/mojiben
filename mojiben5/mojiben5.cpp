@@ -981,6 +981,16 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             wsprintf(szURL, LoadStringDx(id), psz);
             ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
         }
+        break;
+    case 1006:
+        {
+            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
+            LPTSTR psz = szText;
+            LPTSTR pch = _tcschr(psz, TEXT(':'));
+            *pch = 0;
+            CopyText(hwnd, psz);
+        }
+        break;
     }
 }
 
