@@ -31,7 +31,7 @@ If you don't have the installer, just delete the files.
 ## Notice
 
 This software is available in two languages: Japanese and English.
-If you would like to enjoy the game in a different language, choose "Study mode" from the system menu on the title bar.
+If you would like to study in a different language, choose "Study mode" from the system menu on the title bar.
 
 ## License
 
