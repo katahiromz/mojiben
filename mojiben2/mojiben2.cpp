@@ -886,6 +886,18 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (id == 0)
         return;
 
+    if (g_fLowerCase)
+        g_print_lowercase_history.insert(g_nMoji);
+    else
+        g_print_uppercase_history.insert(g_nMoji);
+
+    if (g_hbmClient)
+    {
+        DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
+    }
+    InvalidateRect(hwnd, NULL, TRUE);
+
     LPTSTR psz = LoadStringDx(200 + g_nMoji);
     if (psz[0])
         ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);

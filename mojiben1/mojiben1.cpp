@@ -831,9 +831,22 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (id == 0)
         return;
 
+    if (g_fKatakana)
+        g_katakana_history.insert(g_nMoji);
+    else
+        g_hiragana_history.insert(g_nMoji);
+
+    if (g_hbmClient)
+    {
+        DeleteObject(g_hbmClient);
+        g_hbmClient = NULL;
+    }
+    InvalidateRect(hwnd, NULL, TRUE);
+
+    INT index = MojiIndexFromMojiID(g_nMoji);
+
     if (id == 3000)
     {
-        INT index = MojiIndexFromMojiID(g_nMoji);
         WCHAR wch = g_moji_data[index + (g_fKatakana ? 46 : 0)].wch;
         WCHAR sz[2] = { wch, 0 };
         CopyText(hwnd, sz);
