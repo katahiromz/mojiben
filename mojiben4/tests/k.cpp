@@ -104,7 +104,7 @@ BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
 VOID DoIt(INT n, const char *name, HDC hdc, HBITMAP hbm)
 {
     CHAR sz[1024];
-    std::vector<GA> v;
+    std::vector<STROKE> v;
     HGDIOBJ hbmOld;
     RECT rc;
     HRGN hRgn, hRgn2;

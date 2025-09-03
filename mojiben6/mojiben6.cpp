@@ -267,7 +267,7 @@ static unsigned ThreadProcWorker(void)
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
-    const std::vector<GA>& v = g_kanji3_kakijun[g_nMoji];
+    const std::vector<STROKE>& v = g_kanji3_kakijun[g_nMoji];
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)

@@ -239,7 +239,7 @@ static unsigned ThreadProcWorker(void)
     SIZE siz;
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld, hPenOld;
-    std::vector<GA> v;
+    std::vector<STROKE> v;
     INT k;
     POINT apt[4];
     double cost, sint, cost2, sint2;

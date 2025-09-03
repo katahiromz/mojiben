@@ -46,8 +46,8 @@ KAKIJUN g_print_lowercase_kakijun;
 
 VOID InitPrintLowerCase(VOID)
 {
-    GA ga;
-    std::vector<GA> vga;
+    STROKE ga;
+    std::vector<STROKE> vga;
     size_t index = 0;
     INT j = 0, i = 0;
 

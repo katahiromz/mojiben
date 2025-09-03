@@ -46,8 +46,8 @@ INT g_map[160];
 
 VOID InitKanji2(VOID)
 {
-    GA ga;
-    std::vector<GA> vga;
+    STROKE ga;
+    std::vector<STROKE> vga;
     size_t index = 0;
     INT j = 0, i = 0;
 
