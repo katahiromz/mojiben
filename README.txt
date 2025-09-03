@@ -44,6 +44,7 @@ We are not responsible for any damages caused by using this program.
 ## Thank you from us
 
 Thank you for using this program.
+
 Some characters represent sounds and others represent meanings.
 Hiragana and katakana represent sounds. Kanji have more than one sound and meaning.
 Furthermore, when multiple kanji are combined, they form compound words, which can have different meanings.
