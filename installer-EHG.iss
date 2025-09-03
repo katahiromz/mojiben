@@ -36,15 +36,15 @@ Name: "japanesefont"; Description: "{cm:InstallJapaneseFont}"; GroupDescription:
 
 [Files]
 Source: "build\Release\mojiben7.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README_en.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "font\Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall; Tasks: japanesefont
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
+Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README.txt"
 Name: "{group}\{cm:ReadMeJPN}"; Filename: "{app}\README_ja.txt"
-Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README_en.txt"
 Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"
 Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"

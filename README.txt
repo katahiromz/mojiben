@@ -41,6 +41,23 @@ You are free to reproduce and distribute it.
 
 We are not responsible for any damages caused by using this program.
 
+## Thank you from us
+
+Thank you for using this program.
+Some characters represent sounds and others represent meanings.
+Hiragana and katakana represent sounds. Kanji have more than one sound and meaning.
+Furthermore, when multiple kanji are combined, they form compound words, which can have different meanings.
+You can say you have mastered a character only once you can read, write, pronounce, and understand it.
+
+Correct stroke order trains you to write neatly and get things done efficiently.
+Stroke order is also used as a measure of teamwork in job hunting.
+Don't underestimate stroke order.
+
+Kanji can be read in two ways: on-yomi and kun-yomi.
+Onyomi is a reading style introduced from ancient China. Kunyomi is a reading style unique to Japan.
+
+It's a good idea to start by studying hiragana and katakana.
+
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [ANT]
 // Homepage     https://katahiromz.fc2.page/moji-no-benkyou/
