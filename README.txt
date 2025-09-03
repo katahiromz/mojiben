@@ -47,7 +47,7 @@ Thank you for using this program.
 
 Some characters represent sounds and others represent meanings.
 Hiragana and katakana represent sounds. Kanji have more than one sound and meaning.
-Furthermore, when multiple kanji are combined, they form compound words, which can have different meanings.
+Furthermore, when multiple kanji are combined, they form Kanji idiom, which can have different meanings.
 You can say you have mastered a character only once you can read, write, pronounce, and understand it.
 
 Correct stroke order trains you to write neatly and get things done efficiently.
