@@ -331,14 +331,15 @@ static unsigned ThreadProcWorker(void)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
-                    apt[0].x = LONG(150 + k * cost + 150 * sint);
-                    apt[0].y = LONG(150 + k * sint - 150 * cost);
-                    apt[1].x = LONG(150 + k * cost - 150 * sint);
-                    apt[1].y = LONG(150 + k * sint + 150 * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - 150 * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + 150 * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + 150 * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - 150 * cost);
+#define LEN (150 * 1414 / 1000)
+                    apt[0].x = LONG(LEN + k * cost + LEN * sint);
+                    apt[0].y = LONG(LEN + k * sint - LEN * cost);
+                    apt[1].x = LONG(LEN + k * cost - LEN * sint);
+                    apt[1].y = LONG(LEN + k * sint + LEN * cost);
+                    apt[2].x = LONG(LEN + (k + 20) * cost - LEN * sint);
+                    apt[2].y = LONG(LEN + (k + 20) * sint + LEN * cost);
+                    apt[3].x = LONG(LEN + (k + 20) * cost + LEN * sint);
+                    apt[3].y = LONG(LEN + (k + 20) * sint - LEN * cost);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -355,14 +356,14 @@ static unsigned ThreadProcWorker(void)
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
-                    apt[0].x = LONG(150 + k * cost + 150 * sint);
-                    apt[0].y = LONG(150 + k * sint - 150 * cost);
-                    apt[1].x = LONG(150 + k * cost - 150 * sint);
-                    apt[1].y = LONG(150 + k * sint + 150 * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - 150 * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + 150 * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + 150 * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - 150 * cost);
+                    apt[0].x = LONG(LEN + k * cost + LEN * sint);
+                    apt[0].y = LONG(LEN + k * sint - LEN * cost);
+                    apt[1].x = LONG(LEN + k * cost - LEN * sint);
+                    apt[1].y = LONG(LEN + k * sint + LEN * cost);
+                    apt[2].x = LONG(LEN + (k + 20) * cost - LEN * sint);
+                    apt[2].y = LONG(LEN + (k + 20) * sint + LEN * cost);
+                    apt[3].x = LONG(LEN + (k + 20) * cost + LEN * sint);
+                    apt[3].y = LONG(LEN + (k + 20) * sint - LEN * cost);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
