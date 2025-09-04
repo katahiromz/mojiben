@@ -11,7 +11,7 @@ enum TYPE
 };
 
 // stroke info
-struct GA
+struct STROKE
 {
     TYPE type;
     INT angle0;
@@ -20,7 +20,7 @@ struct GA
     INT cy;
     INT res;
 };
-typedef std::vector<GA> KAKIJUN[160];
+typedef std::vector<STROKE> KAKIJUN[160];
 
 extern KAKIJUN g_kanji2_kakijun;
 extern INT g_map[160];

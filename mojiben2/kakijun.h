@@ -6,7 +6,7 @@ enum TYPE
     DOT
 };
 
-struct GA
+struct STROKE
 {
     INT type;
     INT angle0;
@@ -15,7 +15,7 @@ struct GA
     INT cy;
     INT res;
 };
-typedef std::vector<GA> KAKIJUN[26];
+typedef std::vector<STROKE> KAKIJUN[26];
 
 extern KAKIJUN g_print_uppercase_kakijun;
 extern KAKIJUN g_print_lowercase_kakijun;
