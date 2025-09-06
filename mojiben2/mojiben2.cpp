@@ -70,13 +70,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     INT i;
     for(i = 0; i < 'Z' - 'A' + 1; i++)
     {
-        g_ahbmPrintUpperCase[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + i));
+        g_ahbmPrintUpperCase[i] = LoadGif(g_hInstance, 1000 + i);
         if (g_ahbmPrintUpperCase[i] == NULL)
             return FALSE;
     }
     for(i = 0; i < 'Z' - 'A' + 1; i++)
     {
-        g_ahbmPrintLowerCase[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(2000 + i));
+        g_ahbmPrintLowerCase[i] = LoadGif(g_hInstance, 2000 + i);
         if (g_ahbmPrintLowerCase[i] == NULL)
             return FALSE;
     }

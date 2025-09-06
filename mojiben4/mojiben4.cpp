@@ -80,7 +80,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         int ix = j % 10;
         int iy = j / 10;
-        g_ahbmKanji1[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100 + j));
+        g_ahbmKanji1[j] = LoadGif(g_hInstance, 100 + j);
         if (g_ahbmKanji1[j] == NULL)
             return FALSE;
     }

@@ -89,7 +89,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ZeroMemory(g_ahbmKanji3, sizeof(g_ahbmKanji3));
     for (UINT j = 0; j < _countof(g_ahbmKanji3); ++j)
     {
-        g_ahbmKanji3[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
+        g_ahbmKanji3[j] = LoadGif(g_hInstance, 1000 + j);
         if (g_ahbmKanji3[j] == NULL)
             return FALSE;
     }

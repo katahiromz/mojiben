@@ -102,7 +102,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     for (UINT i = 0; i < _countof(g_ahbmMoji); ++i)
     {
         assert(g_moji_data[i].index == i);
-        g_ahbmMoji[i] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(g_moji_data[i].bitmap_id));
+        g_ahbmMoji[i] = LoadGif(g_hInstance, g_moji_data[i].bitmap_id);
     }
 
     g_hbmClient = NULL;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <olectl.h>
+#include <shlwapi.h>
+
 #ifndef GET_SC_WPARAM
     #define GET_SC_WPARAM(wParam) ((INT)wParam & 0xFFF0)
 #endif
@@ -295,3 +298,33 @@ smartDrawText(HDC hDC, LPCTSTR text, LPRECT prc, INT maxWidth)
 
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
 HRGN DeserializeRegion(const WORD *pw, size_t size);
+
+static inline HBITMAP
+LoadGif(HINSTANCE hInst, INT res)
+{
+    HRSRC hRsrc = ::FindResource(hInst, MAKEINTRESOURCE(res), TEXT("GIF"));
+    DWORD cbData = ::SizeofResource(hInst, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(hInst, hRsrc);
+    PVOID pvData = ::LockResource(hGlobal);
+    if (!pvData)
+        return FALSE;
+
+    IStream *pStream = SHCreateMemStream((PBYTE)pvData, cbData);
+    if (!pStream)
+        return FALSE;
+
+    IPicture *pPicture;
+    HRESULT hr = OleLoadPicture(pStream, 0, FALSE, IID_IPicture, (void**)&pPicture);
+    if (FAILED(hr))
+    {
+        pStream->Release();
+        return FALSE;
+    }
+
+    OLE_HANDLE hPic = NULL;
+    pPicture->get_Handle(&hPic);
+    HBITMAP hBitmap = (HBITMAP)CopyImage((HBITMAP)hPic, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG);
+    pPicture->Release();
+    pStream->Release();
+    return hBitmap;
+}
