@@ -416,10 +416,12 @@ static unsigned ThreadProcWorker(void)
 
                 g_hbmKakijun = hbm1;
 
+                INT dk = 20;
+
                 CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
                 if (v[i].angle0 <= v[i].angle1)
                 {
-                    for (k = v[i].angle0; k < v[i].angle1; k += 20)
+                    for (k = v[i].angle0; k < v[i].angle1; k += dk)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
@@ -458,7 +460,7 @@ static unsigned ThreadProcWorker(void)
                 }
                 else
                 {
-                    for (k = v[i].angle0; k > v[i].angle1; k -= 20)
+                    for (k = v[i].angle0; k > v[i].angle1; k -= dk)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
