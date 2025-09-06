@@ -7,12 +7,12 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3DF66435-0FE1-4E20-B7CE-72C48D809045}
 AppName=Moji No Benkyou
-AppVerName={cm:AppName} 3.3
+AppVerName={cm:AppName} 3.4
 AppPublisher=katahiromz
 VersionInfoProductName=Moji No Benkyou
 VersionInfoDescription=Moji No Benkyou
 VersionInfoCompany=katahiromz
-VersionInfoVersion=3.3
+VersionInfoVersion=3.4
 VersionInfoCopyright=Copyright (C) 2009-2025 Katayama Hirofumi MZ. All rights reserved.
 AppPublisherURL=https://katahiromz.fc2.page
 AppSupportURL=https://katahiromz.fc2.page/moji-no-benkyou/
@@ -21,7 +21,7 @@ DefaultDirName={pf}\Moji No Benkyou
 DefaultGroupName={cm:AppName}
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=mojiben-3.3-ALL-setup
+OutputBaseFilename=mojiben-3.4-ALL-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
