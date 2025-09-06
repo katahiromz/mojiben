@@ -300,7 +300,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
 int main(void)
 {
     WIN32_FIND_DATA find;
-    HANDLE hFind = FindFirstFileA("REGION_*.bin", &find);
+    HANDLE hFind = FindFirstFileA("RCData_*.bin", &find);
     if (hFind == INVALID_HANDLE_VALUE)
     {
         PRINTF("No region data\n");

@@ -18,10 +18,7 @@ struct STROKE
     INT angle1;
     INT cx;
     INT cy;
-
-    // Win32 Region data
-    DWORD cb;
-    const BYTE *pb;
+    INT res;
 };
 typedef std::vector<STROKE> KAKIJUN[200];
 
