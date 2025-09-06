@@ -355,7 +355,7 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
                 cost = cos(v[i].angle0 * M_PI / 180);
                 sint = sin(v[i].angle0 * M_PI / 180);
-                for(k = -200; k < 200; k += 30)
+                for (k = -400; k < 400; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
@@ -439,14 +439,25 @@ static unsigned ThreadProcWorker(void)
                 SelectObject(hdcMem, hbmOld);
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
+
+                INT step = 0;
+                for (; step < 300 / 20; ++step)
+                {
+                    CRgn hRgn8(::CreateRectRgn(0, 0, 0, 0));
+                    CRgn hRgn9(::CreateEllipticRgn(v[i].cx - 20 * step, v[i].cy - 20 * step, v[i].cx + 20 * step, v[i].cy + 20 * step));
+                    if (CombineRgn(hRgn8, hRgn2, hRgn9, RGN_AND) != NULLREGION)
+                        break;
+                };
+                INT dk = 100 / (step + 2);
+
                 if (v[i].angle0 <= v[i].angle1)
                 {
-                    for(k = v[i].angle0; k < v[i].angle1; k += 20)
+                    for(k = v[i].angle0; k < v[i].angle1; k += dk)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
                         double theta = k * M_PI / 180.0;
-                        double theta2 = (k + 20) * M_PI / 180.0;
+                        double theta2 = (k + dk) * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);
                         cost2 = cos(theta2);
@@ -486,11 +497,11 @@ static unsigned ThreadProcWorker(void)
                 }
                 else
                 {
-                    for(k = v[i].angle0; k > v[i].angle1; k -= 20)
+                    for(k = v[i].angle0; k > v[i].angle1; k -= dk)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
-                        double theta = (k - 20) * M_PI / 180.0;
+                        double theta = (k - dk) * M_PI / 180.0;
                         double theta2 = k * M_PI / 180.0;
                         cost = cos(theta);
                         sint = sin(theta);

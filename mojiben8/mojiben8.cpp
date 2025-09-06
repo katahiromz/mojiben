@@ -333,7 +333,7 @@ static unsigned ThreadProcWorker(void)
                 sint = std::sin(v[i].angle0 * M_PI / 180);
 
                 // NULLREGIONでない場所を探す。
-                for (k = -200; k < 200; k += 20)
+                for (k = -400; k < 400; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
@@ -360,7 +360,7 @@ static unsigned ThreadProcWorker(void)
                 }
 
                 // NULLREGIONでない位置から赤い画を描画する。
-                for ( ; k < 200; k += 20)
+                for ( ; k < 400; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
@@ -424,7 +424,7 @@ static unsigned ThreadProcWorker(void)
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
                         double theta = k * M_PI / 180.0;
-                        double theta2 = (k + 20) * M_PI / 180.0;
+                        double theta2 = (k + dk) * M_PI / 180.0;
                         cost = std::cos(theta);
                         sint = std::sin(theta);
                         cost2 = std::cos(theta2);
@@ -462,7 +462,7 @@ static unsigned ThreadProcWorker(void)
                     {
                         if (!IsWindowVisible(g_hKakijunWnd))
                             return 0;
-                        double theta = (k - 20) * M_PI / 180.0;
+                        double theta = (k - dk) * M_PI / 180.0;
                         double theta2 = k * M_PI / 180.0;
                         cost = std::cos(theta);
                         sint = std::sin(theta);
