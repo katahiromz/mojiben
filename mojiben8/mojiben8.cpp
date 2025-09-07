@@ -333,20 +333,20 @@ static unsigned ThreadProcWorker(void)
                 sint = std::sin(v[i].angle0 * M_PI / 180);
 
                 // NULLREGIONでない場所を探す。
-                for (k = -400; k < 400; k += 20)
+#define LEN (KAKIJUN_CENTER_X * 1414 / 1000) // 半径 * √2
+                for (k = -LEN; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
 
-#define LEN (150 * 1414 / 1000)
-                    apt[0].x = LONG(150 + k * cost + LEN * sint);
-                    apt[0].y = LONG(150 + k * sint - LEN * cost);
-                    apt[1].x = LONG(150 + k * cost - LEN * sint);
-                    apt[1].y = LONG(150 + k * sint + LEN * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - LEN * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + LEN * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + LEN * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost - LEN * sint);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint + LEN * cost);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost + LEN * sint);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint - LEN * cost);
 
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
@@ -360,7 +360,7 @@ static unsigned ThreadProcWorker(void)
                 }
 
                 // NULLREGIONでない位置から赤い画を描画する。
-                for ( ; k < 400; k += 20)
+                for ( ; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
@@ -368,14 +368,14 @@ static unsigned ThreadProcWorker(void)
                     hbm1.Swap(hbm2);
 
                     hbmOld = SelectObject(hdcMem, hbm1);
-                    apt[0].x = LONG(150 + k * cost + LEN * sint);
-                    apt[0].y = LONG(150 + k * sint - LEN * cost);
-                    apt[1].x = LONG(150 + k * cost - LEN * sint);
-                    apt[1].y = LONG(150 + k * sint + LEN * cost);
-                    apt[2].x = LONG(150 + (k + 20) * cost - LEN * sint);
-                    apt[2].y = LONG(150 + (k + 20) * sint + LEN * cost);
-                    apt[3].x = LONG(150 + (k + 20) * cost + LEN * sint);
-                    apt[3].y = LONG(150 + (k + 20) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost - LEN * sint);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint + LEN * cost);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost + LEN * sint);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint - LEN * cost);
 
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
@@ -438,10 +438,10 @@ static unsigned ThreadProcWorker(void)
 
                     hbmOld = SelectObject(hdcMem, hbm1);
 
-                    apt[0].x = LONG(v[i].cx + 200 * cost);
-                    apt[0].y = LONG(v[i].cy + 200 * sint);
-                    apt[1].x = LONG(v[i].cx + 200 * cost2);
-                    apt[1].y = LONG(v[i].cy + 200 * sint2);
+                    apt[0].x = LONG(v[i].cx + LEN * cost);
+                    apt[0].y = LONG(v[i].cy + LEN * sint);
+                    apt[1].x = LONG(v[i].cx + LEN * cost2);
+                    apt[1].y = LONG(v[i].cy + LEN * sint2);
                     apt[2].x = v[i].cx;
                     apt[2].y = v[i].cy;
 

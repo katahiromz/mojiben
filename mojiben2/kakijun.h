@@ -1,4 +1,4 @@
-enum TYPE
+﻿enum TYPE
 {
     WAIT,
     LINEAR,
@@ -22,3 +22,10 @@ extern KAKIJUN g_print_lowercase_kakijun;
 
 VOID InitPrintUpperCase(VOID);
 VOID InitPrintLowerCase(VOID);
+
+// 書き順イメージのサイズ。
+#define KAKIJUN_WIDTH 300
+#define KAKIJUN_HEIGHT 300
+// 書き順イメージの中心点。
+#define KAKIJUN_CENTER_X (KAKIJUN_WIDTH / 2)
+#define KAKIJUN_CENTER_Y (KAKIJUN_HEIGHT / 2)

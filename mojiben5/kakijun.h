@@ -1,4 +1,4 @@
-// Moji No Benkyo (1)
+﻿// Moji No Benkyo (1)
 // Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 
@@ -26,3 +26,10 @@ extern KAKIJUN g_kanji2_kakijun;
 extern INT g_map[160];
 
 VOID InitKanji2(VOID);
+
+// 書き順イメージのサイズ。
+#define KAKIJUN_WIDTH 300
+#define KAKIJUN_HEIGHT 300
+// 書き順イメージの中心点。
+#define KAKIJUN_CENTER_X (KAKIJUN_WIDTH / 2)
+#define KAKIJUN_CENTER_Y (KAKIJUN_HEIGHT / 2)

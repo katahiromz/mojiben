@@ -1,4 +1,4 @@
-// Moji No Benkyou (2)
+Ôªø// Moji No Benkyou (2)
 // Copyright (C) 2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: MIT
 
@@ -104,7 +104,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
-// ï∂éöÉ{É^ÉìÇÃà íuÅB
+// ÊñáÂ≠ó„Éú„Çø„É≥„ÅÆ‰ΩçÁΩÆ„ÄÇ
 BOOL GetMojiRect(HWND hwnd, LPRECT prc, INT i)
 {
     RECT rc;
@@ -358,19 +358,19 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
                 cost = cos(v[i].angle0 * M_PI / 180);
                 sint = sin(v[i].angle0 * M_PI / 180);
-                for (k = -400; k < 400; k += 20)
+#define LEN (KAKIJUN_CENTER_X * 1414 / 1000) // ÂçäÂæÑ * ‚àö2
+                for (k = -LEN; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
-#define LEN (150 * 1414 / 1000)
-                    apt[0].x = LONG(LEN + k * cost + LEN * sint);
-                    apt[0].y = LONG(LEN + k * sint - LEN * cost);
-                    apt[1].x = LONG(LEN + k * cost - LEN * sint);
-                    apt[1].y = LONG(LEN + k * sint + LEN * cost);
-                    apt[2].x = LONG(LEN + (k + 30) * cost - LEN * sint);
-                    apt[2].y = LONG(LEN + (k + 30) * sint + LEN * cost);
-                    apt[3].x = LONG(LEN + (k + 30) * cost + LEN * sint);
-                    apt[3].y = LONG(LEN + (k + 30) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 30) * cost - LEN * sint);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 30) * sint + LEN * cost);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 30) * cost + LEN * sint);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 30) * sint - LEN * cost);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -380,7 +380,7 @@ static unsigned ThreadProcWorker(void)
                     if (n != NULLREGION)
                         break;
                 }
-                for( ; k < 200; k += 30)
+                for( ; k < LEN; k += 30)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         break;
@@ -394,14 +394,14 @@ static unsigned ThreadProcWorker(void)
 
                     FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                    apt[0].x = LONG(LEN + k * cost + LEN * sint);
-                    apt[0].y = LONG(LEN + k * sint - LEN * cost);
-                    apt[1].x = LONG(LEN + k * cost - LEN * sint);
-                    apt[1].y = LONG(LEN + k * sint + LEN * cost);
-                    apt[2].x = LONG(LEN + (k + 30) * cost - LEN * sint);
-                    apt[2].y = LONG(LEN + (k + 30) * sint + LEN * cost);
-                    apt[3].x = LONG(LEN + (k + 30) * cost + LEN * sint);
-                    apt[3].y = LONG(LEN + (k + 30) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 30) * cost - LEN * sint);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 30) * sint + LEN * cost);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 30) * cost + LEN * sint);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 30) * sint - LEN * cost);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -476,10 +476,10 @@ static unsigned ThreadProcWorker(void)
 
                     FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                    apt[0].x = LONG(v[i].cx + 200 * cost);
-                    apt[0].y = LONG(v[i].cy + 200 * sint);
-                    apt[1].x = LONG(v[i].cx + 200 * cost2);
-                    apt[1].y = LONG(v[i].cy + 200 * sint2);
+                    apt[0].x = LONG(v[i].cx + LEN * cost);
+                    apt[0].y = LONG(v[i].cy + LEN * sint);
+                    apt[1].x = LONG(v[i].cx + LEN * cost2);
+                    apt[1].y = LONG(v[i].cy + LEN * sint2);
                     apt[2].x = v[i].cx;
                     apt[2].y = v[i].cy;
                     BeginPath(hdcMem);
@@ -601,14 +601,14 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
-// ÅuUPPERCASEÅvÉ{É^ÉìÇÃà íuÅB
+// „ÄåUPPERCASE„Äç„Éú„Çø„É≥„ÅÆ‰ΩçÁΩÆ„ÄÇ
 BOOL GetUppercaseRect(HWND hwnd, LPRECT prc)
 {
     SetRect(prc, 160, 60, 160 + 200, 60 + 63);
     return TRUE;
 }
 
-// ÅulowercaseÅvÉ{É^ÉìÇÃà íuÅB
+// „Äålowercase„Äç„Éú„Çø„É≥„ÅÆ‰ΩçÁΩÆ„ÄÇ
 BOOL GetLowercaseRect(HWND hwnd, LPRECT prc)
 {
     RECT rc;
@@ -639,7 +639,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     pt.x = x;
     pt.y = y;
 
-    // ÅuUPPERCASEÅvÉ{É^ÉìÇÃìñÇΩÇËîªíËÅB
+    // „ÄåUPPERCASE„Äç„Éú„Çø„É≥„ÅÆÂΩì„Åü„ÇäÂà§ÂÆö„ÄÇ
     GetUppercaseRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
@@ -652,7 +652,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    // ÅulowercaseÅvÉ{É^ÉìÇÃìñÇΩÇËîªíËÅB
+    // „Äålowercase„Äç„Éú„Çø„É≥„ÅÆÂΩì„Åü„ÇäÂà§ÂÆö„ÄÇ
     GetLowercaseRect(hwnd, &rc);
     if (PtInRect(&rc, pt))
     {
@@ -665,7 +665,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    // ï∂éöÉ{É^ÉìÇÃìñÇΩÇËîªíËÅB
+    // ÊñáÂ≠ó„Éú„Çø„É≥„ÅÆÂΩì„Åü„ÇäÂà§ÂÆö„ÄÇ
     for (INT i = 0; i < 'Z' - 'A' + 1; ++i)
     {
         GetMojiRect(hwnd, &rc, i);
@@ -889,7 +889,7 @@ void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     }
 }
 
-// ÉEÉBÉìÉhÉEÉvÉçÉVÅ[ÉWÉÉÅB
+// „Ç¶„Ç£„É≥„Éâ„Ç¶„Éó„É≠„Ç∑„Éº„Ç∏„É£„ÄÇ
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -919,13 +919,13 @@ INT WINAPI WinMain(
 {
     g_hInstance = hInstance;
 
-    // ÉåÉWÉXÉgÉäÇ©ÇÁì«Ç›çûÇÒÇæÉXÉ^ÉfÉBÉÇÅ[ÉhÇìKópÅB
+    // „É¨„Ç∏„Çπ„Éà„É™„Åã„ÇâË™≠„ÅøËæº„Çì„Å†„Çπ„Çø„Éá„Ç£„É¢„Éº„Éâ„ÇíÈÅ©Áî®„ÄÇ
     applyStudyMode(getStudyMode());
 
-    // ÉRÉÇÉìÉRÉìÉgÉçÅ[Éãèâä˙âªÅB
+    // „Ç≥„É¢„É≥„Ç≥„É≥„Éà„É≠„Éº„É´ÂàùÊúüÂåñ„ÄÇ
     InitCommonControls();
 
-    // âÊñ Ç™è¨Ç≥Ç∑Ç¨ÇÈèÍçáÇÕÉGÉâÅ[ÉÅÉbÉZÅ[ÉWÇï\é¶ÇµÇƒèIóπÅB
+    // ÁîªÈù¢„ÅåÂ∞è„Åï„Åô„Åé„ÇãÂ†¥Âêà„ÅØ„Ç®„É©„Éº„É°„ÉÉ„Çª„Éº„Ç∏„ÇíË°®Á§∫„Åó„Å¶ÁµÇ‰∫Ü„ÄÇ
     RECT rcWorkArea;
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
     INT cxWork = (rcWorkArea.right - rcWorkArea.left);
@@ -936,7 +936,7 @@ INT WINAPI WinMain(
         return 1;
     }
 
-    // ÉEÉBÉìÉhÉEÉNÉâÉXÇìoò^Ç∑ÇÈÅB
+    // „Ç¶„Ç£„É≥„Éâ„Ç¶„ÇØ„É©„Çπ„ÇíÁôªÈå≤„Åô„Çã„ÄÇ
     WNDCLASSEX wcx = { sizeof(wcx) };
     wcx.style           = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
     wcx.lpfnWndProc     = WindowProc;
@@ -959,13 +959,13 @@ INT WINAPI WinMain(
     if (!RegisterClassEx(&wcx))
         return 1;
 
-    // ÉNÉâÉCÉAÉìÉgóÃàÊÇÃÉTÉCÉYÇ∆ÉXÉ^ÉCÉãÇå≥Ç…ÉEÉBÉìÉhÉEÉTÉCÉYÇåàÇﬂÇÈÅB
+    // „ÇØ„É©„Ç§„Ç¢„É≥„ÉàÈ†òÂüü„ÅÆ„Çµ„Ç§„Ç∫„Å®„Çπ„Çø„Ç§„É´„ÇíÂÖÉ„Å´„Ç¶„Ç£„É≥„Éâ„Ç¶„Çµ„Ç§„Ç∫„ÇíÊ±∫„ÇÅ„Çã„ÄÇ
     DWORD style = WS_SYSMENU | WS_CAPTION | WS_OVERLAPPED | WS_MINIMIZEBOX;
     DWORD exstyle = 0;
     RECT rc = { 0, 0, 774, 401 };
     AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
-    // ÉEÉBÉìÉhÉEÉTÉCÉYÇ…äÓÇ√Ç¢ÇƒÉÅÉCÉìÉEÉBÉìÉhÉEÇçÏê¨Ç∑ÇÈÅB
+    // „Ç¶„Ç£„É≥„Éâ„Ç¶„Çµ„Ç§„Ç∫„Å´Âü∫„Å•„ÅÑ„Å¶„É°„Ç§„É≥„Ç¶„Ç£„É≥„Éâ„Ç¶„Çí‰ΩúÊàê„Åô„Çã„ÄÇ
     g_hMainWnd = CreateWindowEx(exstyle, g_szClassName, LoadStringDx(1), style,
         CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top,
         NULL, NULL, hInstance, NULL);
@@ -975,11 +975,11 @@ INT WINAPI WinMain(
         return 2;
     }
 
-    // ÉEÉBÉìÉhÉEÇï\é¶Ç∑ÇÈÅB
+    // „Ç¶„Ç£„É≥„Éâ„Ç¶„ÇíË°®Á§∫„Åô„Çã„ÄÇ
     ShowWindow(g_hMainWnd, nCmdShow);
     UpdateWindow(g_hMainWnd);
 
-    // ÉÅÉbÉZÅ[ÉWÉãÅ[ÉvÅB
+    // „É°„ÉÉ„Çª„Éº„Ç∏„É´„Éº„Éó„ÄÇ
     MSG msg;
     BOOL f;
     while((f = GetMessage(&msg, NULL, 0, 0)) != FALSE)
