@@ -437,6 +437,7 @@ static unsigned ThreadProcWorker(void)
                 };
                 INT dk = 100 / (step + 2);
 
+                BOOL found = FALSE;
                 if (v[i].angle0 <= v[i].angle1)
                 {
                     for (k = v[i].angle0; k < v[i].angle1; k += dk)
@@ -472,7 +473,15 @@ static unsigned ThreadProcWorker(void)
 
                         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
                         if (n == NULLREGION)
-                            break;
+                        {
+                            if (found)
+                                break;
+                        }
+                        else
+                        {
+                            found = TRUE;
+                        }
+
                         DO_SLEEP(35);
                     }
                 }
@@ -512,8 +521,17 @@ static unsigned ThreadProcWorker(void)
                         g_hbmKakijun = hbm1;
 
                         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
+
                         if (n == NULLREGION)
-                            break;
+                        {
+                            if (found)
+                                break;
+                        }
+                        else
+                        {
+                            found = TRUE;
+                        }
+
                         DO_SLEEP(35);
                     }
                 }

@@ -418,6 +418,7 @@ static unsigned ThreadProcWorker(void)
 
                 INT dk = 20;
 
+                BOOL found = FALSE;
                 CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
                 if (v[i].angle0 <= v[i].angle1)
                 {
@@ -454,7 +455,14 @@ static unsigned ThreadProcWorker(void)
 
                         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
                         if (n == NULLREGION)
-                            break;
+                        {
+                            if (found)
+                                break;
+                        }
+                        else
+                        {
+                            found = TRUE;
+                        }
                         DoSleep(35);
                     }
                 }
@@ -494,8 +502,17 @@ static unsigned ThreadProcWorker(void)
                         g_hbmKakijun = hbm1;
 
                         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
+
                         if (n == NULLREGION)
-                            break;
+                        {
+                            if (found)
+                                break;
+                        }
+                        else
+                        {
+                            found = TRUE;
+                        }
+
                         DoSleep(35);
                     }
                 }
