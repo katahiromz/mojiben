@@ -438,102 +438,56 @@ static unsigned ThreadProcWorker(void)
                 INT dk = 100 / (step + 2);
 
                 BOOL found = FALSE;
-                if (v[i].angle0 <= v[i].angle1)
+                INT sign = (v[i].angle0 <= v[i].angle1) ? +1 : -1;
+                INT k0 = v[i].angle0, k1 = v[i].angle1;
+                for (k = k0; k * sign <= k1 * sign; k += dk * sign)
                 {
-                    for (k = v[i].angle0; k < v[i].angle1; k += dk)
+                    if (!IsWindowVisible(g_hKakijunWnd))
+                        return 0;
+
+                    double theta = k * M_PI / 180.0;
+                    double theta2 = (k + dk * sign) * M_PI / 180.0;
+                    cost = cos(theta);
+                    sint = sin(theta);
+                    cost2 = cos(theta2);
+                    sint2 = sin(theta2);
+                    hbm1.Swap(hbm2);
+
+                    hbmOld = SelectObject(hdcMem, hbm1);
+
+                    apt[0].x = LONG(v[i].cx + 200 * cost);
+                    apt[0].y = LONG(v[i].cy + 200 * sint);
+                    apt[1].x = LONG(v[i].cx + 200 * cost2);
+                    apt[1].y = LONG(v[i].cy + 200 * sint2);
+                    apt[2].x = v[i].cx;
+                    apt[2].y = v[i].cy;
+
+                    BeginPath(hdcMem);
+                    Polygon(hdcMem, apt, 3);
+                    EndPath(hdcMem);
+
+                    CRgn hRgn3(::PathToRegion(hdcMem));
+                    CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
+                    INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
+                    CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
+                    FillRgn(hdcMem, hRgn5, g_hbrRed);
+
+                    SelectObject(hdcMem, hbmOld);
+
+                    g_hbmKakijun = hbm1;
+                    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+
+                    if (n == NULLREGION)
                     {
-                        if (!IsWindowVisible(g_hKakijunWnd))
-                            return 0;
-                        double theta = k * M_PI / 180.0;
-                        double theta2 = (k + dk) * M_PI / 180.0;
-                        cost = std::cos(theta);
-                        sint = std::sin(theta);
-                        cost2 = std::cos(theta2);
-                        sint2 = std::sin(theta2);
-                        hbm1.Swap(hbm2);
-
-                        hbmOld = SelectObject(hdcMem, hbm1);
-                        apt[0].x = LONG(v[i].cx + 200 * cost);
-                        apt[0].y = LONG(v[i].cy + 200 * sint);
-                        apt[1].x = LONG(v[i].cx + 200 * cost2);
-                        apt[1].y = LONG(v[i].cy + 200 * sint2);
-                        apt[2].x = v[i].cx;
-                        apt[2].y = v[i].cy;
-                        BeginPath(hdcMem);
-                        Polygon(hdcMem, apt, 3);
-                        EndPath(hdcMem);
-                        CRgn hRgn3(::PathToRegion(hdcMem));
-                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                        FillRgn(hdcMem, hRgn5, g_hbrRed);
-                        SelectObject(hdcMem, hbmOld);
-
-                        g_hbmKakijun = hbm1;
-
-                        InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-                        if (n == NULLREGION)
-                        {
-                            if (found)
-                                break;
-                        }
-                        else
-                        {
-                            found = TRUE;
-                        }
-
-                        DO_SLEEP(35);
+                        if (found)
+                            break;
                     }
-                }
-                else
-                {
-                    for (k = v[i].angle0; k > v[i].angle1; k -= dk)
+                    else
                     {
-                        if (!IsWindowVisible(g_hKakijunWnd))
-                            return 0;
-                        double theta = (k - dk) * M_PI / 180.0;
-                        double theta2 = k * M_PI / 180.0;
-                        cost = std::cos(theta);
-                        sint = std::sin(theta);
-                        cost2 = std::cos(theta2);
-                        sint2 = std::sin(theta2);
-                        hbm1.Swap(hbm2);
-
-                        hbmOld = SelectObject(hdcMem, hbm1);
-                        apt[0].x = LONG(v[i].cx + 200 * cost);
-                        apt[0].y = LONG(v[i].cy + 200 * sint);
-                        apt[1].x = LONG(v[i].cx + 200 * cost2);
-                        apt[1].y = LONG(v[i].cy + 200 * sint2);
-                        apt[2].x = v[i].cx;
-                        apt[2].y = v[i].cy;
-
-                        BeginPath(hdcMem);
-                        Polygon(hdcMem, apt, 3);
-                        EndPath(hdcMem);
-
-                        CRgn hRgn3(::PathToRegion(hdcMem));
-                        CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
-                        INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
-                        CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
-                        FillRgn(hdcMem, hRgn5, g_hbrRed);
-                        SelectObject(hdcMem, hbmOld);
-
-                        g_hbmKakijun = hbm1;
-
-                        InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-
-                        if (n == NULLREGION)
-                        {
-                            if (found)
-                                break;
-                        }
-                        else
-                        {
-                            found = TRUE;
-                        }
-
-                        DO_SLEEP(35);
+                        found = TRUE;
                     }
+
+                    DO_SLEEP(35);
                 }
             }
             break;
