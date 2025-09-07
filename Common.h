@@ -333,12 +333,12 @@ LoadGif(HINSTANCE hInst, INT res)
 }
 
 static BOOL
-MyPlaySound(HINSTANCE hInst, LPCTSTR pszName)
+MyPlaySound(LPCTSTR pszName)
 {
 #if 1
-    HRSRC hRsrc = ::FindResource(hInst, pszName, TEXT("MP3"));
-    DWORD cbData = ::SizeofResource(hInst, hRsrc);
-    HGLOBAL hGlobal = ::LoadResource(hInst, hRsrc);
+    HRSRC hRsrc = ::FindResource(g_hInstance, pszName, TEXT("MP3"));
+    DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     PVOID pvData = ::LockResource(hGlobal);
     if (!pvData)
         return FALSE;
@@ -361,7 +361,7 @@ MyPlaySound(HINSTANCE hInst, LPCTSTR pszName)
     DeleteFile(szFile);
     return TRUE;
 #else
-    return PlaySound(pszName, hInst, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
+    return PlaySound(pszName, g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
 #endif
 }
 
@@ -369,7 +369,7 @@ static inline
 unsigned __stdcall MyPlaySoundAsyncThreadProc(void *arg)
 {
     LPCTSTR pszName = (LPCTSTR)arg;
-    MyPlaySound(g_hInstance, pszName);
+    MyPlaySound(pszName);
     return 0;
 }
 
