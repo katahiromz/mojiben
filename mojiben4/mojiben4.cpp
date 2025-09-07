@@ -234,10 +234,13 @@ static unsigned ThreadProcWorker(void)
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DO_SLEEP(300);
+
+    MyPlaySound(MAKEINTRESOURCE(1000 + g_nMoji));
+    if (!IsWindowVisible(g_hKakijunWnd))
+        return 0;
+    DO_SLEEP(200);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
-    MyPlaySoundAsync(MAKEINTRESOURCE(1000 + g_nMoji));
     MyPlaySoundAsync(MAKEINTRESOURCE(100));
     for (UINT i = 0; i < v.size(); i++)
     {

@@ -288,9 +288,10 @@ static unsigned ThreadProcWorker(void)
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(5000 + g_nMoji));
-
-    DO_SLEEP(700);
+    MyPlaySound(MAKEINTRESOURCE(5000 + g_nMoji));
+    if (!IsWindowVisible(g_hKakijunWnd))
+        return 0;
+    DO_SLEEP(200);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     MyPlaySoundAsync(MAKEINTRESOURCE(400));

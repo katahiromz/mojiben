@@ -286,7 +286,11 @@ static unsigned ThreadProcWorker(void)
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DO_SLEEP(300);
+
+    MyPlaySound(MAKEINTRESOURCE(3000 + g_nMoji));
+    if (!IsWindowVisible(g_hKakijunWnd))
+        return 0;
+    DO_SLEEP(200);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     MyPlaySoundAsync(MAKEINTRESOURCE(400));
@@ -562,7 +566,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(3000 + nMoji));
     if (g_hThread != NULL)
         CloseHandle(g_hThread);
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
