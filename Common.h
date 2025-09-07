@@ -2,6 +2,8 @@
 
 #include <olectl.h>
 #include <shlwapi.h>
+#include <stdio.h>
+#include <tchar.h>
 
 #ifndef GET_SC_WPARAM
     #define GET_SC_WPARAM(wParam) ((INT)wParam & 0xFFF0)
@@ -36,6 +38,7 @@ static inline void DoSleep(DWORD dwMilliseconds)
     else
         Sleep(dwMilliseconds);
 }
+#define DO_SLEEP DoSleep
 
 STUDY_MODE getStudyMode(VOID);
 STUDY_MODE getStudyModeDefault(VOID);
@@ -299,7 +302,7 @@ smartDrawText(HDC hDC, LPCTSTR text, LPRECT prc, INT maxWidth)
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
 HRGN DeserializeRegion(const WORD *pw, size_t size);
 
-static inline HBITMAP
+static HBITMAP
 LoadGif(HINSTANCE hInst, INT res)
 {
     HRSRC hRsrc = ::FindResource(hInst, MAKEINTRESOURCE(res), TEXT("GIF"));
@@ -327,4 +330,53 @@ LoadGif(HINSTANCE hInst, INT res)
     pPicture->Release();
     pStream->Release();
     return hBitmap;
+}
+
+static BOOL
+MyPlaySound(HINSTANCE hInst, LPCTSTR pszName)
+{
+#if 1
+    HRSRC hRsrc = ::FindResource(hInst, pszName, TEXT("MP3"));
+    DWORD cbData = ::SizeofResource(hInst, hRsrc);
+    HGLOBAL hGlobal = ::LoadResource(hInst, hRsrc);
+    PVOID pvData = ::LockResource(hGlobal);
+    if (!pvData)
+        return FALSE;
+
+    TCHAR szTempPath[MAX_PATH], szFile[MAX_PATH];
+    GetTempPath(_countof(szTempPath), szTempPath);
+    GetTempFileName(szTempPath, TEXT("MJB"), 0, szFile);
+
+    FILE *fout = _tfopen(szFile, TEXT("wb"));
+    if (!fout)
+        return FALSE;
+    fwrite(pvData, cbData, 1, fout);
+    fclose(fout);
+
+    TCHAR szCommand[MAX_PATH + 64];
+    wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), szFile);
+    mciSendString(szCommand, NULL, 0, 0);
+    mciSendString(TEXT("play myaudio wait"), NULL, 0, 0);
+    mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+    DeleteFile(szFile);
+    return TRUE;
+#else
+    return PlaySound(pszName, hInst, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
+#endif
+}
+
+static inline
+unsigned __stdcall MyPlaySoundAsyncThreadProc(void *arg)
+{
+    LPCTSTR pszName = (LPCTSTR)arg;
+    MyPlaySound(g_hInstance, pszName);
+    return 0;
+}
+
+static inline BOOL
+MyPlaySoundAsync(LPCTSTR pszName)
+{
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyPlaySoundAsyncThreadProc, (void *)pszName, 0, NULL);
+    CloseHandle(hThread);
+    return hThread != NULL;
 }

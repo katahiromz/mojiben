@@ -287,19 +287,22 @@ static unsigned ThreadProcWorker(void)
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DoSleep(700);
+
+    MyPlaySoundAsync(MAKEINTRESOURCE(5000 + g_nMoji));
+
+    DO_SLEEP(700);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
-    PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+    MyPlaySoundAsync(MAKEINTRESOURCE(400));
     for (UINT i = 0; i < v.size(); i++)
     {
         switch(v[i].type)
         {
         case WAIT:
-            DoSleep(500);
+            DO_SLEEP(500);
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
-            PlaySound(MAKEINTRESOURCE(400), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+            MyPlaySoundAsync(MAKEINTRESOURCE(400));
             break;
 
         case DOT:
@@ -327,7 +330,7 @@ static unsigned ThreadProcWorker(void)
                 SelectObject(hdcMem, hbmOld);
 
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-                DoSleep(50);
+                DO_SLEEP(50);
                 break;
             }
 
@@ -413,7 +416,7 @@ static unsigned ThreadProcWorker(void)
                     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                     if (n == NULLREGION)
                         break;
-                    DoSleep(30);
+                    DO_SLEEP(30);
                 }
                 break;
             }
@@ -492,7 +495,7 @@ static unsigned ThreadProcWorker(void)
                         InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                         if (n == NULLREGION)
                             break;
-                        DoSleep(30);
+                        DO_SLEEP(30);
                     }
                 }
                 else
@@ -537,7 +540,7 @@ static unsigned ThreadProcWorker(void)
                         InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                         if (n == NULLREGION)
                             break;
-                        DoSleep(30);
+                        DO_SLEEP(30);
                     }
                 }
                 break;
@@ -545,8 +548,8 @@ static unsigned ThreadProcWorker(void)
         }
     }
 
-    DoSleep(500);
-    PlaySound(MAKEINTRESOURCE(5000 + g_nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+    DO_SLEEP(500);
+    MyPlaySoundAsync(MAKEINTRESOURCE(5000 + g_nMoji));
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -571,7 +574,7 @@ static unsigned ThreadProcWorker(void)
     }
 
     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
-    DoSleep(500);
+    DO_SLEEP(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
@@ -631,8 +634,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     else
         g_print_uppercase_history.insert(nMoji);
 
-    PlaySound(MAKEINTRESOURCE(5000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-
     if (g_hThread)
         CloseHandle(g_hThread);
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
@@ -681,7 +682,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         g_fLowerCase = FALSE;
-        PlaySound(MAKEINTRESOURCE(300), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        MyPlaySoundAsync(MAKEINTRESOURCE(300));
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;
@@ -694,7 +695,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         g_fLowerCase = TRUE;
-        PlaySound(MAKEINTRESOURCE(301), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        MyPlaySoundAsync(MAKEINTRESOURCE(301));
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;

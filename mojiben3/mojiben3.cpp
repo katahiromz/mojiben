@@ -382,10 +382,10 @@ static unsigned ThreadProcWorker(void)
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DoSleep(800);
+    DO_SLEEP(800);
 
-    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
-    PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+    MyPlaySoundAsync(MAKEINTRESOURCE(1000 + g_nMoji));
+    MyPlaySoundAsync(MAKEINTRESOURCE(100));
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -399,7 +399,7 @@ static unsigned ThreadProcWorker(void)
         SelectObject(hdcMem, hbmOld);
     }
 
-    DoSleep(800);
+    DO_SLEEP(800);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
     g_hbmKakijun = NULL;
@@ -445,7 +445,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
 
-    PlaySound(MAKEINTRESOURCE(3000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+    MyPlaySoundAsync(MAKEINTRESOURCE(3000 + nMoji));
     if (g_hThread)
         CloseHandle(g_hThread);
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
