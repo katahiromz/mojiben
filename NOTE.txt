@@ -1,0 +1,9 @@
+﻿# 備忘録
+
+音声生成はNoahさんのWindows用フリーウェア「Text To Wav」の「Microsoft Ichiro - Japanese」を使用する。
+
+音声編集はCoderiumさんの「Sound Engine」を使用する。
+
+MP3エンコード・デコードは海猫さんの「午後のこ～だ」を使用する。
+
+フォント「モトヤ教科書3」は、栃木の「栃」を間違えている（ウソ字）。
