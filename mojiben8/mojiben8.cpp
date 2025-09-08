@@ -567,8 +567,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, FALSE);
 
-    PlaySound(MAKEINTRESOURCE(3000 + nMoji), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
-
     if (g_hThread)
         CloseHandle(g_hThread);
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
