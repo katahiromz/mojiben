@@ -34,7 +34,7 @@ static inline LPTSTR LoadStringDx(INT ids)
 static inline void DoSleep(DWORD dwMilliseconds)
 {
     if (g_bHighSpeed)
-        Sleep(dwMilliseconds / 10);
+        Sleep(dwMilliseconds / 5);
     else
         Sleep(dwMilliseconds);
 }
