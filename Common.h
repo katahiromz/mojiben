@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <olectl.h>
 #include <shlwapi.h>
@@ -332,29 +332,47 @@ LoadGif(HINSTANCE hInst, INT res)
     return hBitmap;
 }
 
+// スレッドの優先度を変更する。
+class AutoPriority
+{
+public:
+    AutoPriority()
+    {
+        ::SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+    }
+    ~AutoPriority()
+    {
+        ::SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
+    }
+};
+
 static BOOL
 MyPlaySound(LPCTSTR pszName)
 {
 #if 1
-    HRSRC hRsrc = ::FindResource(g_hInstance, pszName, TEXT("MP3"));
-    DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
-    HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
-    PVOID pvData = ::LockResource(hGlobal);
-    if (!pvData)
-        return FALSE;
+    TCHAR szFile[MAX_PATH], szCommand[MAX_PATH + 64];
+    {
+        AutoPriority auto_priority;
+        HRSRC hRsrc = ::FindResource(g_hInstance, pszName, TEXT("MP3"));
+        DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
+        HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
+        PVOID pvData = ::LockResource(hGlobal);
+        if (!pvData)
+            return FALSE;
 
-    TCHAR szTempPath[MAX_PATH], szFile[MAX_PATH];
-    GetTempPath(_countof(szTempPath), szTempPath);
-    GetTempFileName(szTempPath, TEXT("MJB"), 0, szFile);
+        TCHAR szTempPath[MAX_PATH];
+        GetTempPath(_countof(szTempPath), szTempPath);
+        GetTempFileName(szTempPath, TEXT("MJB"), 0, szFile);
 
-    FILE *fout = _tfopen(szFile, TEXT("wb"));
-    if (!fout)
-        return FALSE;
-    fwrite(pvData, cbData, 1, fout);
-    fclose(fout);
+        FILE *fout = _tfopen(szFile, TEXT("wb"));
+        if (!fout)
+            return FALSE;
+        fwrite(pvData, cbData, 1, fout);
+        fclose(fout);
 
-    TCHAR szCommand[MAX_PATH + 64];
-    wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), szFile);
+        wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), szFile);
+    }
+
     mciSendString(szCommand, NULL, 0, 0);
     mciSendString(TEXT("play myaudio wait"), NULL, 0, 0);
     mciSendString(TEXT("close myaudio"), NULL, 0, 0);
