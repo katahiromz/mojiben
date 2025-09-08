@@ -292,10 +292,13 @@ static unsigned ThreadProcWorker(void)
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
 
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
-    DO_SLEEP(300);
 
-    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
-    PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+    MyPlaySound(MAKEINTRESOURCE(1000 + g_nMoji));
+    if (!IsWindowVisible(g_hKakijunWnd))
+        return 0;
+    DO_SLEEP(200);
+
+    MyPlaySoundAsync(MAKEINTRESOURCE(100));
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); ++i)
@@ -309,7 +312,7 @@ static unsigned ThreadProcWorker(void)
                 return 0;
 
             // ポンと音を鳴らす。
-            PlaySound(MAKEINTRESOURCE(100), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+            MyPlaySoundAsync(MAKEINTRESOURCE(100));
             break;
 
         case LINEAR:
@@ -497,7 +500,7 @@ static unsigned ThreadProcWorker(void)
         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     }
 
-    PlaySound(MAKEINTRESOURCE(1000 + g_nMoji), g_hInstance, SND_SYNC | SND_RESOURCE | SND_NODEFAULT);
+    MyPlaySoundAsync(MAKEINTRESOURCE(1000 + g_nMoji));
     DO_SLEEP(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
@@ -596,7 +599,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         if (PtInRect(&rc, pt))
         {
-            PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+            MyPlaySoundAsync(MAKEINTRESOURCE(101));
             g_eDisplayPage = (float)g_iPage;
             g_eGoalPage = (float)(g_iPage - 1);
             SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
@@ -608,7 +611,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     {
         if (PtInRect(&rc, pt))
         {
-            PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+            MyPlaySoundAsync(MAKEINTRESOURCE(101));
             g_eDisplayPage = (float)g_iPage;
             g_eGoalPage = (float)(g_iPage + 1);
             SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
@@ -1019,7 +1022,7 @@ void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
     if (eDelta == -1 && g_iPage - 1 >= 0)
     {
-        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        MyPlaySoundAsync(MAKEINTRESOURCE(101));
         g_eDisplayPage = (float)g_iPage;
         g_eGoalPage = (float)(g_iPage - 1);
         SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
@@ -1028,7 +1031,7 @@ void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
     if (eDelta == +1 && g_iPage + 1 < GetNumPage())
     {
-        PlaySound(MAKEINTRESOURCE(101), g_hInstance, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
+        MyPlaySoundAsync(MAKEINTRESOURCE(101));
         g_eDisplayPage = (float)g_iPage;
         g_eGoalPage = (float)(g_iPage + 1);
         SetTimer(hwnd, SLIDE_TIMER, 50, NULL);

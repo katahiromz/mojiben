@@ -18,7 +18,7 @@ int main(void)
     HGDIOBJ hbmOld;
     COLORREF clr;
     RECT rc;
-    char sz[] = "ˆ¤ˆÄˆÈˆßˆÊˆïˆó‰p‰h•Q‰–‰ª‰­‰Á‰Ê‰Ý‰Û‰è‰ê‰üŠBŠQŠXŠeŠoŠƒŠ®Š¯ŠÇŠÖŠÏŠèŠòŠó‹GŠøŠí‹@‹c‹‹ƒ‹‹‹“‹™‹¤‹¦‹¾‹£‹ÉŒFŒPŒRŒSŒQŒaŒiŒ|Œ‡Œ‹ŒšŒ’Œ±ŒÅŒ÷DŒóN²·ØÅéÞèðŽDüŽ@ŽQŽYŽUŽcŽŽiŽŽŽ™Ž¡Ž Ž«Ž­Ž¸ŽØŽíŽüj‡‰¼Î¥ÄÆé“êbMˆä¬È´ÃÈÏÜßàóí‘I‘R‘ˆ‘q‘ƒ‘©‘¤‘±‘²‘·‘Ñ‘à’B’P’u’‡‰«’›’á’ê“I“T“`“k“w“”“­“Á“¿“È“Þ—œ”M”O”s”~”Žã”Ñ”ò•K•[•W•s•v•t•{•Œ•x•›•º•Ê•Ó•Ï•Ö•ï–@–]–q–––ž–¢–¯–³–ñ—E—v—{——˜—¤—Ç—¿—Ê—Ö—Þ—ß—â—á˜A˜V˜J˜^";
+    char sz[] = "ˆ³ˆÍˆÚˆö‰i‰c‰qˆÕ‰v‰t‰‰‰ž‰÷‰Â‰¼‰¿‰Í‰ß‰õ‰ðŠiŠmŠzŠ§Š²ŠµŠá‹IŠîŠñ‹KŠì‹Z‹`‹t‹v‹Œ‹~‹‹–‹«‹Ï‹Ö‹åŒ^ŒoŒ‰ŒŒ¯ŒŸŒÀŒ»Œ¸ŒÌŒÂŒìŒøŒúkqz\‹»u¬¸ÄÐÈÌÛÝàßŽEŽGŽ_Ž^ŽmŽxŽjŽuŽ}ŽtŽ‘Ž”Ž¦Ž—Ž¯Ž¿ŽÉŽÓŽöCqp€˜µØÛÜðóíîDE§«­¨¸»ÅÓÑÚÝâ‘c‘f‘‘¢‘œ‘‘¥‘ª‘®—¦‘¹‘Ý‘Ô’c’f’z’™’£’â’ñ’ö“K““°“º“±“¾“Å“Æ”C”R”\”j”Æ”»”Å”ä”ì”ñ”ï”õ•]•n•z•w••œ•¡•§•²•Ò•Ù•Û•æ•ñ–L–h–f–\–¬–±–²–À–È—A—]—e—ª—¯—Ì—ð";
     char sz3[64];
     char sz4[64];
     char *pch;
