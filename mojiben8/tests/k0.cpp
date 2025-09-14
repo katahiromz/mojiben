@@ -25,7 +25,7 @@ int main(void)
     INT i, j = 0;
 
 #if 1
-    j = 88;
+    j = 89;
 #else
     for (pch = sz; *pch; pch += 2)
 #endif
