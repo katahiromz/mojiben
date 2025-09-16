@@ -251,8 +251,7 @@ static unsigned ThreadProcWorker(void)
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld;
     INT k;
-    POINT apt[4];
-    double cost, sint, cost2, sint2;
+    POINT apt[5];
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -332,8 +331,8 @@ static unsigned ThreadProcWorker(void)
 
                 CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
 
-                cost = std::cos(v[i].angle0 * M_PI / 180);
-                sint = std::sin(v[i].angle0 * M_PI / 180);
+                double cost1 = std::cos(v[i].angle0 * M_PI / 180);
+                double sint1 = std::sin(v[i].angle0 * M_PI / 180);
 
                 // NULLREGIONでない場所を探す。
 #define LEN (KAKIJUN_CENTER_X * 1414 / 1000) // 半径 * √2
@@ -342,14 +341,14 @@ static unsigned ThreadProcWorker(void)
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
 
-                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
-                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
-                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
-                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
-                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost - LEN * sint);
-                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint + LEN * cost);
-                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost + LEN * sint);
-                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost1 + LEN * sint1);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint1 - LEN * cost1);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost1 - LEN * sint1);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint1 + LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 - LEN * cost1);
 
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
@@ -371,14 +370,14 @@ static unsigned ThreadProcWorker(void)
                     hbm1.Swap(hbm2);
 
                     hbmOld = SelectObject(hdcMem, hbm1);
-                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost + LEN * sint);
-                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint - LEN * cost);
-                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost - LEN * sint);
-                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint + LEN * cost);
-                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost - LEN * sint);
-                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint + LEN * cost);
-                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost + LEN * sint);
-                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint - LEN * cost);
+                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost1 + LEN * sint1);
+                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint1 - LEN * cost1);
+                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost1 - LEN * sint1);
+                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint1 + LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 - LEN * cost1);
 
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
@@ -433,23 +432,31 @@ static unsigned ThreadProcWorker(void)
 
                     double theta = k * M_PI / 180.0;
                     double theta2 = (k + dk * sign) * M_PI / 180.0;
-                    cost = cos(theta);
-                    sint = sin(theta);
-                    cost2 = cos(theta2);
-                    sint2 = sin(theta2);
+                    double cost1 = cos(theta);
+                    double sint1 = sin(theta);
+                    double cost2 = cos(theta2);
+                    double sint2 = sin(theta2);
+                    double cost3 = cos((2 * theta + 1 * theta2) / 3);
+                    double sint3 = sin((2 * theta + 1 * theta2) / 3);
+                    double cost4 = cos((1 * theta + 2 * theta2) / 3);
+                    double sint4 = sin((1 * theta + 2 * theta2) / 3);
                     hbm1.Swap(hbm2);
 
                     hbmOld = SelectObject(hdcMem, hbm1);
 
-                    apt[0].x = LONG(v[i].cx + LEN * cost * 2);
-                    apt[0].y = LONG(v[i].cy + LEN * sint * 2);
-                    apt[1].x = LONG(v[i].cx + LEN * cost2 * 2);
-                    apt[1].y = LONG(v[i].cy + LEN * sint2 * 2);
-                    apt[2].x = v[i].cx;
-                    apt[2].y = v[i].cy;
+                    apt[0].x = LONG(v[i].cx + LEN * cost1);
+                    apt[0].y = LONG(v[i].cy + LEN * sint1);
+                    apt[1].x = LONG(v[i].cx + LEN * cost3);
+                    apt[1].y = LONG(v[i].cy + LEN * sint3);
+                    apt[2].x = LONG(v[i].cx + LEN * cost4);
+                    apt[2].y = LONG(v[i].cy + LEN * sint4);
+                    apt[3].x = LONG(v[i].cx + LEN * cost2);
+                    apt[3].y = LONG(v[i].cy + LEN * sint2);
+                    apt[4].x = v[i].cx;
+                    apt[4].y = v[i].cy;
 
                     BeginPath(hdcMem);
-                    Polygon(hdcMem, apt, 3);
+                    Polygon(hdcMem, apt, 5);
                     EndPath(hdcMem);
 
                     CRgn hRgn3(::PathToRegion(hdcMem));
