@@ -418,7 +418,7 @@ static unsigned ThreadProcWorker(void)
                     if (CombineRgn(hRgn8, hRgn2, hRgn9, RGN_AND) != NULLREGION)
                         break;
                 };
-                INT dk = 100 / (step + 2);
+                INT dk = 50 / (step + 2);
 
                 BOOL found = FALSE;
                 INT sign = (v[i].angle0 <= v[i].angle1) ? +1 : -1;

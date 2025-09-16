@@ -418,9 +418,17 @@ static unsigned ThreadProcWorker(void)
 
                 g_hbmKakijun = hbm1;
 
-                INT dk = 20;
-
                 CRgn hRgn2(::ExtCreateRegion(NULL, v[i].cb, (RGNDATA *)v[i].pb));
+
+                INT step = 0;
+                for (; step < 300 / 20; ++step)
+                {
+                    CRgn hRgn8(::CreateRectRgn(0, 0, 0, 0));
+                    CRgn hRgn9(::CreateEllipticRgn(v[i].cx - 20 * step, v[i].cy - 20 * step, v[i].cx + 20 * step, v[i].cy + 20 * step));
+                    if (CombineRgn(hRgn8, hRgn2, hRgn9, RGN_AND) != NULLREGION)
+                        break;
+                };
+                INT dk = 50 / (step + 2);
 
                 BOOL found = FALSE;
                 INT sign = (v[i].angle0 <= v[i].angle1) ? +1 : -1;
