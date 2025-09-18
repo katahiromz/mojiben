@@ -374,14 +374,14 @@ static unsigned ThreadProcWorker(void)
 
                     hbmOld = SelectObject(hdcMem, hbm1);
 
-                    apt[0].x = LONG(v[i].cx + LEN * cost1);
-                    apt[0].y = LONG(v[i].cy + LEN * sint1);
-                    apt[1].x = LONG(v[i].cx + LEN * cost3);
-                    apt[1].y = LONG(v[i].cy + LEN * sint3);
-                    apt[2].x = LONG(v[i].cx + LEN * cost4);
-                    apt[2].y = LONG(v[i].cy + LEN * sint4);
-                    apt[3].x = LONG(v[i].cx + LEN * cost2);
-                    apt[3].y = LONG(v[i].cy + LEN * sint2);
+                    apt[0].x = LONG(v[i].cx + 2 * LEN * cost1);
+                    apt[0].y = LONG(v[i].cy + 2 * LEN * sint1);
+                    apt[1].x = LONG(v[i].cx + 2 * LEN * cost3);
+                    apt[1].y = LONG(v[i].cy + 2 * LEN * sint3);
+                    apt[2].x = LONG(v[i].cx + 2 * LEN * cost4);
+                    apt[2].y = LONG(v[i].cy + 2 * LEN * sint4);
+                    apt[3].x = LONG(v[i].cx + 2 * LEN * cost2);
+                    apt[3].y = LONG(v[i].cy + 2 * LEN * sint2);
                     apt[4].x = v[i].cx;
                     apt[4].y = v[i].cy;
 
