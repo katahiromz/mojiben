@@ -62,7 +62,6 @@ HBITMAP g_hbmRight = NULL;
 
 HBITMAP g_hbmKakijun;
 INT g_nMoji;
-INT g_nMoji2;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 INT g_iPage = 0;
@@ -193,7 +192,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         for (j = 0; j < _countof(g_ahbmKanji5); ++j)
         {
             GetMojiRect(j, &rc);
-            hbmOld = SelectObject(hdcMem, g_ahbmKanji5[g_map[j]]);
+            hbmOld = SelectObject(hdcMem, g_ahbmKanji5[j]);
             if (g_kanji5_history.find(j) != g_kanji5_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
@@ -539,8 +538,7 @@ unsigned __stdcall ThreadProc(void *)
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
     RECT rc, rc2;
-    g_nMoji2 = nMoji;
-    g_nMoji = g_map[nMoji];
+    g_nMoji = nMoji;
 
     if (fRight)
     {
@@ -924,7 +922,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
 
-    g_kanji5_history.insert(g_nMoji2);
+    g_kanji5_history.insert(g_nMoji);
     if (g_hbmClient)
     {
         DeleteObject(g_hbmClient);

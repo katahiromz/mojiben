@@ -12,7 +12,6 @@
 
 // Kakijun region data
 KAKIJUN g_kanji4_kakijun;
-INT g_map[202];
 
 #define ADD_LINEAR(angle, data) do { \
     ga.type     = LINEAR; \
@@ -4859,9 +4858,4 @@ VOID InitKanji4(VOID)
     ADD_LINEAR(45, kanji_201_17);
 
     NEXT_MOJI();
-
-    for (size_t i = 0; i < _countof(g_map); ++i)
-    {
-        g_map[i] = i;
-    }
 }

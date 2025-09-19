@@ -23,7 +23,6 @@ struct STROKE
 typedef std::vector<STROKE> KAKIJUN[200];
 
 extern KAKIJUN g_kanji4_kakijun;
-extern INT g_map[202];
 
 VOID InitKanji4(VOID);
 
