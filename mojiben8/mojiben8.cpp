@@ -88,7 +88,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ZeroMemory(g_ahbmKanji5, sizeof(g_ahbmKanji5));
     for (UINT j = 0; j < _countof(g_ahbmKanji5); ++j)
     {
-        g_ahbmKanji5[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
+        g_ahbmKanji5[j] = LoadGif(g_hInstance, 1000 + j);
         if (g_ahbmKanji5[j] == NULL)
             return FALSE;
     }
