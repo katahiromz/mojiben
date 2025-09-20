@@ -42,6 +42,7 @@ Source: "build\Release\mojiben4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben5.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben6.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben7.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben8.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -59,6 +60,7 @@ Name: "{group}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe"
 Name: "{group}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"
 Name: "{group}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"
 Name: "{group}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"
+Name: "{group}\(8) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"
 Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
@@ -67,6 +69,7 @@ Name: "{commondesktop}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe";
 Name: "{commondesktop}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(7) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"; Tasks: desktopicon
 
 [CustomMessages]
 ja.AppName=もじのべんきょう
@@ -93,6 +96,8 @@ ja.Kanji3rdGrader=小学校三年生でならうかん字
 en.Kanji3rdGrader=3rd-Grader's Kanji
 ja.Kanji4thGrader=小学校四年生でならうかん字
 en.Kanji4thGrader=4th-Grader's Kanji
+ja.Kanji5thGrader=小学校五年生でならうかん字
+en.Kanji5thGrader=5th-Grader's Kanji
 ja.Uninstall=アンインストール
 en.Uninstall=Uninstall
 ja.MojiBen=もじべん
