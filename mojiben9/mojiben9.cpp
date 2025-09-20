@@ -1,4 +1,4 @@
-﻿// Moji No Benkyou (8)
+﻿// Moji No Benkyou (9)
 // Copyright (C) 2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: MIT
 
@@ -42,9 +42,9 @@
 
 #define SLIDE_TIMER 999
 
-static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (8)");
-static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (8) Kakijun");
-static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (8) Caption");
+static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (9)");
+static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (9) Kakijun");
+static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (9) Caption");
 
 HINSTANCE g_hInstance;
 HWND g_hMainWnd;
@@ -55,7 +55,7 @@ HFONT g_hFont;
 HFONT g_hFontSmall;
 POINT g_ptDragging;
 
-HBITMAP g_ahbmKanji5[193];
+HBITMAP g_ahbmKanji6[191];
 HBITMAP g_hbmClient = NULL;
 HBITMAP g_hbmLeft = NULL;
 HBITMAP g_hbmRight = NULL;
@@ -68,11 +68,11 @@ INT g_iPage = 0;
 float g_eGoalPage = 0;
 float g_eDisplayPage = 0;
 
-std::set<INT> g_kanji5_history;
+std::set<INT> g_kanji6_history;
 
 BOOL g_bHighSpeed = FALSE;
 
-extern "C" extern const LPCWSTR g_aszMojiReadings[];
+extern "C" extern const LPCWSTR g_aszMojiReadings[191];
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
@@ -85,11 +85,11 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     updateSystemMenu(hwnd);
 
-    ZeroMemory(g_ahbmKanji5, sizeof(g_ahbmKanji5));
-    for (UINT j = 0; j < _countof(g_ahbmKanji5); ++j)
+    ZeroMemory(g_ahbmKanji6, sizeof(g_ahbmKanji6));
+    for (UINT j = 0; j < _countof(g_ahbmKanji6); ++j)
     {
-        g_ahbmKanji5[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
-        if (g_ahbmKanji5[j] == NULL)
+        g_ahbmKanji6[j] = LoadGif(g_hInstance, 1000 + j);
+        if (g_ahbmKanji6[j] == NULL)
             return FALSE;
     }
 
@@ -97,7 +97,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     try
     {
-        InitKanji5();
+        InitKanji6();
     }
     catch (std::bad_alloc)
     {
@@ -148,7 +148,7 @@ VOID GetMojiRect(INT j, LPRECT prc)
 
 INT GetNumPage(VOID)
 {
-    return (_countof(g_ahbmKanji5) + COLUMNS * ROWS - 1) / (COLUMNS * ROWS);
+    return (_countof(g_ahbmKanji6) + COLUMNS * ROWS - 1) / (COLUMNS * ROWS);
 }
 
 BOOL GetLeftArrowRect(HWND hwnd, LPRECT prc)
@@ -189,11 +189,11 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < _countof(g_ahbmKanji5); ++j)
+        for (j = 0; j < _countof(g_ahbmKanji6); ++j)
         {
             GetMojiRect(j, &rc);
-            hbmOld = SelectObject(hdcMem, g_ahbmKanji5[j]);
-            if (g_kanji5_history.find(j) != g_kanji5_history.end())
+            hbmOld = SelectObject(hdcMem, g_ahbmKanji6[j]);
+            if (g_kanji6_history.find(j) != g_kanji6_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
                 FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -256,7 +256,7 @@ static unsigned ThreadProcWorker(void)
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
-    const std::vector<STROKE>& v = g_kanji5_kakijun[g_nMoji];
+    const std::vector<STROKE>& v = g_kanji6_kakijun[g_nMoji];
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
@@ -576,7 +576,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption2, (pch + 1));
 
-    g_kanji5_history.insert(nMoji);
+    g_kanji6_history.insert(nMoji);
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
@@ -632,7 +632,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         }
     }
 
-    for (j = 0; j < _countof(g_ahbmKanji5); ++j)
+    for (j = 0; j < _countof(g_ahbmKanji6); ++j)
     {
         GetMojiRect(j, &rc);
         if (PtInRect(&rc, pt))
@@ -669,7 +669,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
         return TRUE;
     }
 
-    for (UINT j = 0; j < _countof(g_ahbmKanji5); ++j)
+    for (UINT j = 0; j < _countof(g_ahbmKanji6); ++j)
     {
         GetMojiRect(j, &rc);
         if (PtInRect(&rc, pt))
@@ -846,10 +846,10 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hFontSmall);
 
     UINT i;
-    for (i = 0; i < _countof(g_ahbmKanji5); ++i)
+    for (i = 0; i < _countof(g_ahbmKanji6); ++i)
     {
-        if (g_ahbmKanji5[i])
-            DeleteObject(g_ahbmKanji5[i]);
+        if (g_ahbmKanji6[i])
+            DeleteObject(g_ahbmKanji6[i]);
     }
 
     DeleteObject(g_hbmClient);
@@ -859,7 +859,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmKakijun);
     DeleteObject(g_hbrRed);
 
-    g_kanji5_history.clear();
+    g_kanji6_history.clear();
 
     PostQuitMessage(0);
 }
@@ -922,7 +922,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
     tstring str;
 
-    g_kanji5_history.insert(g_nMoji);
+    g_kanji6_history.insert(g_nMoji);
     if (g_hbmClient)
     {
         DeleteObject(g_hbmClient);
