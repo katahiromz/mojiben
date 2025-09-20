@@ -69,7 +69,7 @@ Name: "{commondesktop}\(4) {cm:Kanji1stGrader}"; Filename: "{app}\mojiben4.exe";
 Name: "{commondesktop}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"; Tasks: desktopicon
-Name: "{commondesktop}\(7) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(8) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"; Tasks: desktopicon
 
 [CustomMessages]
 ja.AppName=もじのべんきょう
