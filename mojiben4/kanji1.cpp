@@ -26,8 +26,8 @@ INT g_map[80];
     ga.type     = POLAR; \
     ga.angle0   = a0; \
     ga.angle1   = a1; \
-    ga.cx       = center_x; \
-    ga.cy       = center_y; \
+    ga.cx       = (center_x * 254) / 300; \
+    ga.cy       = (center_y * 254) / 300; \
     ga.res      = (100 + j) * 100 + i; \
     vga.push_back(ga); \
     ++i; \
