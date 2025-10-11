@@ -600,6 +600,8 @@ int main(void)
     }
 
     static char s_buf[60000];
+    HDC hDC = CreateCompatibleDC(NULL);
+    HBITMAP hbm = CreateCompatibleBitmap(hDC, 300, 300);
     do
     {
         PRINTF("\n=== Processing: %s ===\n", find.cFileName);
@@ -624,7 +626,6 @@ int main(void)
         }
 
         HRGN hRgn4 = CreateRectRgn(0, 0, 0, 0);
-
         for(int y = 0; y < 300; y++)
         {
             for(int x = 0; x < 300; x++)
@@ -706,6 +707,8 @@ int main(void)
         }
         fclose(fp);
     } while (FindNextFileA(hFind, &find));
+    DeleteObject(hbm);
+    DeleteDC(hDC);
 
     FindClose(hFind);
     return 0;
