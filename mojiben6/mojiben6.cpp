@@ -80,8 +80,8 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
 
-    g_hbmLeft = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
-    g_hbmRight = LoadBitmap(g_hInstance, MAKEINTRESOURCE(101));
+    g_hbmLeft = LoadGif(g_hInstance, 100);
+    g_hbmRight = LoadGif(g_hInstance, 101);
 
     updateSystemMenu(hwnd);
 
