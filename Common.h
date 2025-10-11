@@ -302,6 +302,9 @@ smartDrawText(HDC hDC, LPCTSTR text, LPRECT prc, INT maxWidth)
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
 HRGN DeserializeRegion(const WORD *pw, size_t size);
 
+BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn);
+HRGN DeserializeRegion254(const BYTE *pb, size_t size);
+
 static HBITMAP
 LoadGif(HINSTANCE hInst, INT res)
 {
