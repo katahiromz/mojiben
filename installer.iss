@@ -61,6 +61,7 @@ Name: "{group}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe"
 Name: "{group}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"
 Name: "{group}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"
 Name: "{group}\(8) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"
+Name: "{group}\(9) {cm:Kanji6thGrader}"; Filename: "{app}\mojiben9.exe"
 Name: "{group}\{cm:Uninstall}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"; Tasks: desktopicon
@@ -70,6 +71,7 @@ Name: "{commondesktop}\(5) {cm:Kanji2ndGrader}"; Filename: "{app}\mojiben5.exe";
 Name: "{commondesktop}\(6) {cm:Kanji3rdGrader}"; Filename: "{app}\mojiben6.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(7) {cm:Kanji4thGrader}"; Filename: "{app}\mojiben7.exe"; Tasks: desktopicon
 Name: "{commondesktop}\(8) {cm:Kanji5thGrader}"; Filename: "{app}\mojiben8.exe"; Tasks: desktopicon
+Name: "{commondesktop}\(9) {cm:Kanji6thGrader}"; Filename: "{app}\mojiben9.exe"; Tasks: desktopicon
 
 [CustomMessages]
 ja.AppName=もじのべんきょう
@@ -98,6 +100,8 @@ ja.Kanji4thGrader=小学校四年生でならうかん字
 en.Kanji4thGrader=4th-Grader's Kanji
 ja.Kanji5thGrader=小学校五年生でならうかん字
 en.Kanji5thGrader=5th-Grader's Kanji
+ja.Kanji6thGrader=小学校六年生でならうかん字
+en.Kanji6thGrader=6th-Grader's Kanji
 ja.Uninstall=アンインストール
 en.Uninstall=Uninstall
 ja.MojiBen=もじべん
