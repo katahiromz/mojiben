@@ -1,13 +1,18 @@
-ï»¿#include <windows.h>
+#include <windows.h>
 #include <stdio.h>
 #include <vector>
 #include <string>
 #include <cstring>
 
-#define PRINTF
-//#define PRINTF printf
+//#define PRINTF
+#define PRINTF printf
 
-// ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã®å®‰å…¨ãªè¿½åŠ 
+HRGN MyCreateRegion(LPCVOID pvData, DWORD cbData)
+{
+    return ::ExtCreateRegion(NULL, cbData, (RGNDATA *)pvData);
+}
+
+// ƒ‰ƒ“ƒf[ƒ^‚ÌˆÀ‘S‚È’Ç‰Á
 inline void SerializeRun(std::vector<WORD>& out, WORD start, WORD length)
 {
     PRINTF("Run: start=%d, length=%d\n", start, length);
@@ -26,14 +31,14 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
     INT cx = rc.right - rc.left;
     INT cy = rc.bottom - rc.top;
 
-    // ã‚µã‚¤ã‚ºãŒè² ã®å ´åˆã‚„ã‚¼ãƒ­ã®å ´åˆã®ãƒã‚§ãƒƒã‚¯
+    // ƒTƒCƒY‚ª•‰‚Ìê‡‚âƒ[ƒ‚Ìê‡‚Ìƒ`ƒFƒbƒN
     if (cx <= 0 || cy <= 0)
         return FALSE;
 
     BOOL wide = (cx >= cy);
     BYTE signature = wide ? 'H' : 'V';
 
-    // ãƒ˜ãƒƒãƒ€ãƒ¼æƒ…å ±
+    // ƒwƒbƒ_[î•ñ
     out.push_back((WORD)signature);
     out.push_back((WORD)x);
     out.push_back((WORD)y);
@@ -42,10 +47,10 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
 
     if (wide)
     {
-        // æ°´å¹³ã‚¹ã‚­ãƒ£ãƒ³ï¼šå„è¡Œã‚’å‡¦ç†
+        // …•½ƒXƒLƒƒƒ“FŠes‚ğˆ—
         for (INT y0 = y; y0 < y + cy; ++y0)
         {
-            INT runStart = -1;  // ç¾åœ¨ã®ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®
+            INT runStart = -1;  // Œ»İ‚Ìƒ‰ƒ“‚ÌŠJnˆÊ’u
 
             for (INT x0 = x; x0 < x + cx; ++x0)
             {
@@ -53,14 +58,14 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
 
                 if (inside)
                 {
-                    if (runStart == -1)  // æ–°ã—ã„ãƒ©ãƒ³ã®é–‹å§‹
+                    if (runStart == -1)  // V‚µ‚¢ƒ‰ƒ“‚ÌŠJn
                     {
                         runStart = x0;
                     }
                 }
                 else
                 {
-                    if (runStart != -1)  // ãƒ©ãƒ³ã®çµ‚äº†
+                    if (runStart != -1)  // ƒ‰ƒ“‚ÌI—¹
                     {
                         SerializeRun(out, runStart - x, x0 - runStart);
                         runStart = -1;
@@ -68,22 +73,22 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
                 }
             }
 
-            // è¡Œã®çµ‚ç«¯ã§ãƒ©ãƒ³ãŒç¶šã„ã¦ã„ã‚‹å ´åˆ
+            // s‚ÌI’[‚Åƒ‰ƒ“‚ª‘±‚¢‚Ä‚¢‚éê‡
             if (runStart != -1)
             {
                 SerializeRun(out, runStart - x, (x + cx) - runStart);
             }
 
-            // è¡Œã®çµ‚ã‚ã‚Šãƒãƒ¼ã‚«ãƒ¼
+            // s‚ÌI‚í‚èƒ}[ƒJ[
             out.push_back(0xFFFF);
         }
     }
     else
     {
-        // å‚ç›´ã‚¹ã‚­ãƒ£ãƒ³ï¼šå„åˆ—ã‚’å‡¦ç†
+        // ‚’¼ƒXƒLƒƒƒ“FŠe—ñ‚ğˆ—
         for (INT x0 = x; x0 < x + cx; ++x0)
         {
-            INT runStart = -1;  // ç¾åœ¨ã®ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®
+            INT runStart = -1;  // Œ»İ‚Ìƒ‰ƒ“‚ÌŠJnˆÊ’u
 
             for (INT y0 = y; y0 < y + cy; ++y0)
             {
@@ -91,14 +96,14 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
 
                 if (inside)
                 {
-                    if (runStart == -1)  // æ–°ã—ã„ãƒ©ãƒ³ã®é–‹å§‹
+                    if (runStart == -1)  // V‚µ‚¢ƒ‰ƒ“‚ÌŠJn
                     {
                         runStart = y0;
                     }
                 }
                 else
                 {
-                    if (runStart != -1)  // ãƒ©ãƒ³ã®çµ‚äº†
+                    if (runStart != -1)  // ƒ‰ƒ“‚ÌI—¹
                     {
                         SerializeRun(out, runStart - y, y0 - runStart);
                         runStart = -1;
@@ -106,13 +111,13 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
                 }
             }
 
-            // åˆ—ã®çµ‚ç«¯ã§ãƒ©ãƒ³ãŒç¶šã„ã¦ã„ã‚‹å ´åˆ
+            // —ñ‚ÌI’[‚Åƒ‰ƒ“‚ª‘±‚¢‚Ä‚¢‚éê‡
             if (runStart != -1)
             {
                 SerializeRun(out, runStart - y, (y + cy) - runStart);
             }
 
-            // åˆ—ã®çµ‚ã‚ã‚Šãƒãƒ¼ã‚«ãƒ¼
+            // —ñ‚ÌI‚í‚èƒ}[ƒJ[
             out.push_back(0xFFFF);
         }
     }
@@ -138,7 +143,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
         return NULL;
     }
 
-    // åº§æ¨™ã¨ã‚µã‚¤ã‚ºã®èª­ã¿å–ã‚Š
+    // À•W‚ÆƒTƒCƒY‚Ì“Ç‚İæ‚è
     INT x = (INT)pw[offset];
     INT y = (INT)pw[offset + 1];
     INT cx = (INT)pw[offset + 2];
@@ -148,14 +153,14 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
     PRINTF("Deserializing: signature=%c, bounds=(%d,%d,%dx%d)\n",
            signature, x, y, cx, cy);
 
-    // ã‚µã‚¤ã‚ºã®å¦¥å½“æ€§ãƒã‚§ãƒƒã‚¯
+    // ƒTƒCƒY‚Ì‘Ã“–«ƒ`ƒFƒbƒN
     if (cx <= 0 || cy <= 0)
     {
         PRINTF("Error: Invalid region size\n");
         return NULL;
     }
 
-    // RGNDATAæ§‹é€ ä½“ã®æº–å‚™
+    // RGNDATA\‘¢‘Ì‚Ì€”õ
     RGNDATAHEADER header = { sizeof(header) };
     header.iType = RDH_RECTANGLES;
     SetRect(&header.rcBound, x, y, x + cx, y + cy);
@@ -167,19 +172,19 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
         INT yCurrent = y;
         while (offset < size && yCurrent < y + cy)
         {
-            // å„è¡Œã®ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†
+            // Šes‚Ìƒ‰ƒ“ƒf[ƒ^‚ğˆ—
             while (offset + 1 < size)
             {
                 WORD value = pw[offset];
 
-                // è¡Œçµ‚äº†ãƒãƒ¼ã‚«ãƒ¼ã®ãƒã‚§ãƒƒã‚¯
+                // sI—¹ƒ}[ƒJ[‚Ìƒ`ƒFƒbƒN
                 if (value == 0xFFFF)
                 {
                     offset++;
                     break;
                 }
 
-                // ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®ã¨ãƒ¬ãƒ³ã‚°ã‚¹ã‚’å–å¾—
+                // ƒ‰ƒ“‚ÌŠJnˆÊ’u‚ÆƒŒƒ“ƒOƒX‚ğæ“¾
                 if (offset + 1 >= size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
@@ -192,7 +197,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
 
                 PRINTF("H-Run: start=%d, length=%d at y=%d\n", runStart, runLength, yCurrent);
 
-                // å¢ƒç•Œãƒã‚§ãƒƒã‚¯
+                // ‹«ŠEƒ`ƒFƒbƒN
                 if (runStart + runLength > (DWORD)cx)
                 {
                     PRINTF("Warning: Run exceeds horizontal bounds\n");
@@ -218,19 +223,19 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
         INT xCurrent = x;
         while (offset < size && xCurrent < x + cx)
         {
-            // å„åˆ—ã®ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†
+            // Še—ñ‚Ìƒ‰ƒ“ƒf[ƒ^‚ğˆ—
             while (offset + 1 < size)
             {
                 WORD value = pw[offset];
 
-                // åˆ—çµ‚äº†ãƒãƒ¼ã‚«ãƒ¼ã®ãƒã‚§ãƒƒã‚¯
+                // —ñI—¹ƒ}[ƒJ[‚Ìƒ`ƒFƒbƒN
                 if (value == 0xFFFF)
                 {
                     offset++;
                     break;
                 }
 
-                // ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®ã¨ãƒ¬ãƒ³ã‚°ã‚¹ã‚’å–å¾—
+                // ƒ‰ƒ“‚ÌŠJnˆÊ’u‚ÆƒŒƒ“ƒOƒX‚ğæ“¾
                 if (offset + 1 >= size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
@@ -243,7 +248,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
 
                 PRINTF("V-Run: start=%d, length=%d at x=%d\n", runStart, runLength, xCurrent);
 
-                // å¢ƒç•Œãƒã‚§ãƒƒã‚¯
+                // ‹«ŠEƒ`ƒFƒbƒN
                 if (runStart + runLength > (DWORD)cy)
                 {
                     PRINTF("Warning: Run exceeds vertical bounds\n");
@@ -271,7 +276,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
         return NULL;
     }
 
-    // RECTã‚’å…ƒã«ãƒªãƒ¼ã‚¸ãƒ§ãƒ³ã‚’ä½œæˆ
+    // RECT‚ğŒ³‚ÉƒŠ[ƒWƒ‡ƒ“‚ğì¬
     header.nCount = (DWORD)rects.size();
     size_t dataSize = sizeof(RGNDATAHEADER) + rects.size() * sizeof(RECT);
     RGNDATA* rgndata = (RGNDATA*)malloc(dataSize);
@@ -292,7 +297,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
     return hRgn;
 }
 
-// ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã®å®‰å…¨ãªè¿½åŠ  (254ç‰ˆ)
+// ƒ‰ƒ“ƒf[ƒ^‚ÌˆÀ‘S‚È’Ç‰Á (254”Å)
 inline void SerializeRun254(std::vector<BYTE>& out, BYTE start, BYTE length)
 {
     PRINTF("Run: start=%d, length=%d\n", start, length);
@@ -311,7 +316,7 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
     INT cx = rc.right - rc.left;
     INT cy = rc.bottom - rc.top;
 
-    // ã‚µã‚¤ã‚ºãŒè² ã®å ´åˆã‚„ã‚¼ãƒ­ã®å ´åˆã®ãƒã‚§ãƒƒã‚¯
+    // ƒTƒCƒY‚ª•‰‚Ìê‡‚âƒ[ƒ‚Ìê‡‚Ìƒ`ƒFƒbƒN
     if (cx <= 0 || cy <= 0 || cx > 254 || cy > 254)
         return FALSE;
     if (x <= 0 || y <= 0 || x > 254 || y > 254)
@@ -320,7 +325,7 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
     BOOL wide = (cx >= cy);
     BYTE signature = wide ? 'h' : 'v';
 
-    // ãƒ˜ãƒƒãƒ€ãƒ¼æƒ…å ±
+    // ƒwƒbƒ_[î•ñ
     out.push_back((BYTE)signature);
     out.push_back((BYTE)x);
     out.push_back((BYTE)y);
@@ -329,10 +334,10 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
 
     if (wide)
     {
-        // æ°´å¹³ã‚¹ã‚­ãƒ£ãƒ³ï¼šå„è¡Œã‚’å‡¦ç†
+        // …•½ƒXƒLƒƒƒ“FŠes‚ğˆ—
         for (INT y0 = y; y0 < y + cy; ++y0)
         {
-            INT runStart = -1;  // ç¾åœ¨ã®ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®
+            INT runStart = -1;  // Œ»İ‚Ìƒ‰ƒ“‚ÌŠJnˆÊ’u
 
             for (INT x0 = x; x0 < x + cx; ++x0)
             {
@@ -340,14 +345,14 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
 
                 if (inside)
                 {
-                    if (runStart == -1)  // æ–°ã—ã„ãƒ©ãƒ³ã®é–‹å§‹
+                    if (runStart == -1)  // V‚µ‚¢ƒ‰ƒ“‚ÌŠJn
                     {
                         runStart = x0;
                     }
                 }
                 else
                 {
-                    if (runStart != -1)  // ãƒ©ãƒ³ã®çµ‚äº†
+                    if (runStart != -1)  // ƒ‰ƒ“‚ÌI—¹
                     {
                         SerializeRun254(out, runStart - x, x0 - runStart);
                         runStart = -1;
@@ -355,22 +360,22 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
                 }
             }
 
-            // è¡Œã®çµ‚ç«¯ã§ãƒ©ãƒ³ãŒç¶šã„ã¦ã„ã‚‹å ´åˆ
+            // s‚ÌI’[‚Åƒ‰ƒ“‚ª‘±‚¢‚Ä‚¢‚éê‡
             if (runStart != -1)
             {
                 SerializeRun254(out, runStart - x, (x + cx) - runStart);
             }
 
-            // è¡Œã®çµ‚ã‚ã‚Šãƒãƒ¼ã‚«ãƒ¼
+            // s‚ÌI‚í‚èƒ}[ƒJ[
             out.push_back(0xFF);
         }
     }
     else
     {
-        // å‚ç›´ã‚¹ã‚­ãƒ£ãƒ³ï¼šå„åˆ—ã‚’å‡¦ç†
+        // ‚’¼ƒXƒLƒƒƒ“FŠe—ñ‚ğˆ—
         for (INT x0 = x; x0 < x + cx; ++x0)
         {
-            INT runStart = -1;  // ç¾åœ¨ã®ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®
+            INT runStart = -1;  // Œ»İ‚Ìƒ‰ƒ“‚ÌŠJnˆÊ’u
 
             for (INT y0 = y; y0 < y + cy; ++y0)
             {
@@ -378,14 +383,14 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
 
                 if (inside)
                 {
-                    if (runStart == -1)  // æ–°ã—ã„ãƒ©ãƒ³ã®é–‹å§‹
+                    if (runStart == -1)  // V‚µ‚¢ƒ‰ƒ“‚ÌŠJn
                     {
                         runStart = y0;
                     }
                 }
                 else
                 {
-                    if (runStart != -1)  // ãƒ©ãƒ³ã®çµ‚äº†
+                    if (runStart != -1)  // ƒ‰ƒ“‚ÌI—¹
                     {
                         SerializeRun254(out, runStart - y, y0 - runStart);
                         runStart = -1;
@@ -393,13 +398,13 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
                 }
             }
 
-            // åˆ—ã®çµ‚ç«¯ã§ãƒ©ãƒ³ãŒç¶šã„ã¦ã„ã‚‹å ´åˆ
+            // —ñ‚ÌI’[‚Åƒ‰ƒ“‚ª‘±‚¢‚Ä‚¢‚éê‡
             if (runStart != -1)
             {
                 SerializeRun254(out, runStart - y, (y + cy) - runStart);
             }
 
-            // åˆ—ã®çµ‚ã‚ã‚Šãƒãƒ¼ã‚«ãƒ¼
+            // —ñ‚ÌI‚í‚èƒ}[ƒJ[
             out.push_back(0xFF);
         }
     }
@@ -425,7 +430,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
         return NULL;
     }
 
-    // åº§æ¨™ã¨ã‚µã‚¤ã‚ºã®èª­ã¿å–ã‚Š
+    // À•W‚ÆƒTƒCƒY‚Ì“Ç‚İæ‚è
     INT x = (INT)pb[offset];
     INT y = (INT)pb[offset + 1];
     INT cx = (INT)pb[offset + 2];
@@ -435,14 +440,14 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
     PRINTF("Deserializing: signature=%c, bounds=(%d,%d,%dx%d)\n",
            signature, x, y, cx, cy);
 
-    // ã‚µã‚¤ã‚ºã®å¦¥å½“æ€§ãƒã‚§ãƒƒã‚¯
+    // ƒTƒCƒY‚Ì‘Ã“–«ƒ`ƒFƒbƒN
     if (cx <= 0 || cy <= 0)
     {
         PRINTF("Error: Invalid region size\n");
         return NULL;
     }
 
-    // RGNDATAæ§‹é€ ä½“ã®æº–å‚™
+    // RGNDATA\‘¢‘Ì‚Ì€”õ
     RGNDATAHEADER header = { sizeof(header) };
     header.iType = RDH_RECTANGLES;
     SetRect(&header.rcBound, x, y, x + cx, y + cy);
@@ -454,19 +459,19 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
         INT yCurrent = y;
         while (offset < size && yCurrent < y + cy)
         {
-            // å„è¡Œã®ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†
+            // Šes‚Ìƒ‰ƒ“ƒf[ƒ^‚ğˆ—
             while (offset + 1 < size)
             {
                 BYTE value = pb[offset];
 
-                // è¡Œçµ‚äº†ãƒãƒ¼ã‚«ãƒ¼ã®ãƒã‚§ãƒƒã‚¯
+                // sI—¹ƒ}[ƒJ[‚Ìƒ`ƒFƒbƒN
                 if (value == 0xFF)
                 {
                     offset++;
                     break;
                 }
 
-                // ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®ã¨ãƒ¬ãƒ³ã‚°ã‚¹ã‚’å–å¾—
+                // ƒ‰ƒ“‚ÌŠJnˆÊ’u‚ÆƒŒƒ“ƒOƒX‚ğæ“¾
                 if (offset + 1 >= size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
@@ -479,7 +484,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
 
                 PRINTF("H-Run: start=%d, length=%d at y=%d\n", runStart, runLength, yCurrent);
 
-                // å¢ƒç•Œãƒã‚§ãƒƒã‚¯
+                // ‹«ŠEƒ`ƒFƒbƒN
                 if (runStart + runLength > (DWORD)cx)
                 {
                     PRINTF("Warning: Run exceeds horizontal bounds\n");
@@ -505,19 +510,19 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
         INT xCurrent = x;
         while (offset < size && xCurrent < x + cx)
         {
-            // å„åˆ—ã®ãƒ©ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†
+            // Še—ñ‚Ìƒ‰ƒ“ƒf[ƒ^‚ğˆ—
             while (offset + 1 < size)
             {
                 BYTE value = pb[offset];
 
-                // åˆ—çµ‚äº†ãƒãƒ¼ã‚«ãƒ¼ã®ãƒã‚§ãƒƒã‚¯
+                // —ñI—¹ƒ}[ƒJ[‚Ìƒ`ƒFƒbƒN
                 if (value == 0xFF)
                 {
                     offset++;
                     break;
                 }
 
-                // ãƒ©ãƒ³ã®é–‹å§‹ä½ç½®ã¨ãƒ¬ãƒ³ã‚°ã‚¹ã‚’å–å¾—
+                // ƒ‰ƒ“‚ÌŠJnˆÊ’u‚ÆƒŒƒ“ƒOƒX‚ğæ“¾
                 if (offset + 1 >= size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
@@ -530,7 +535,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
 
                 PRINTF("V-Run: start=%d, length=%d at x=%d\n", runStart, runLength, xCurrent);
 
-                // å¢ƒç•Œãƒã‚§ãƒƒã‚¯
+                // ‹«ŠEƒ`ƒFƒbƒN
                 if (runStart + runLength > (DWORD)cy)
                 {
                     PRINTF("Warning: Run exceeds vertical bounds\n");
@@ -558,7 +563,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
         return NULL;
     }
 
-    // RECTã‚’å…ƒã«ãƒªãƒ¼ã‚¸ãƒ§ãƒ³ã‚’ä½œæˆ
+    // RECT‚ğŒ³‚ÉƒŠ[ƒWƒ‡ƒ“‚ğì¬
     header.nCount = (DWORD)rects.size();
     size_t dataSize = sizeof(RGNDATAHEADER) + rects.size() * sizeof(RECT);
     RGNDATA* rgndata = (RGNDATA*)malloc(dataSize);
@@ -577,4 +582,131 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
 
     PRINTF("Created region with %u rectangles\n", (UINT)rects.size());
     return hRgn;
+}
+
+static inline INT Translate300to254(INT xy)
+{
+    return (xy * 254) / 300;
+}
+
+int main(void)
+{
+    WIN32_FIND_DATA find;
+    HANDLE hFind = FindFirstFileA("RCData_*.bin", &find);
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        PRINTF("No region data\n");
+        return 1;
+    }
+
+    static char s_buf[60000];
+    do
+    {
+        PRINTF("\n=== Processing: %s ===\n", find.cFileName);
+
+        FILE *fp = fopen(find.cFileName, "rb");
+        if (!fp)
+        {
+            PRINTF("Error: Cannot open file\n");
+            continue;
+        }
+
+        size_t size = fread(s_buf, 1, sizeof(s_buf), fp);
+        fclose(fp);
+
+        PRINTF("File size: %u bytes\n", (UINT)size);
+
+        HRGN hRgn1 = DeserializeRegion((const WORD *)s_buf, DWORD(size / sizeof(WORD)));
+        if (hRgn1 == NULL)
+        {
+            PRINTF("Error: Invalid region data in %s\n", find.cFileName);
+            continue;
+        }
+
+        HRGN hRgn4 = CreateRectRgn(0, 0, 0, 0);
+
+        for(int y = 0; y < 300; y++)
+        {
+            for(int x = 0; x < 300; x++)
+            {
+                if (PtInRegion(hRgn1, x, y))
+                {
+                    HRGN hRgn3 = CreateRectRgn(
+                        Translate300to254(x),
+                        Translate300to254(y),
+                        Translate300to254(x) + 1,
+                        Translate300to254(y) + 1);
+                    CombineRgn(hRgn4, hRgn4, hRgn3, RGN_OR);
+                    DeleteObject(hRgn3);
+                }
+            }
+        }
+
+        DeleteObject(hRgn1);
+
+        std::vector<BYTE> data;
+        if (!SerializeRegion254(data, hRgn4))
+        {
+            PRINTF("Error: Serialization failed for %s\n", find.cFileName);
+            DeleteObject(hRgn4);
+            continue;
+        }
+
+        PRINTF("Serialized data size: %u BYTEs\n", (UINT)data.size());
+        if (data.size() < 20)  // ¬‚³‚Èƒf[ƒ^‚Ì‚İ•\¦
+        {
+            PRINTF("Serialized data: ");
+            for (size_t iw = 0; iw < data.size(); ++iw)
+                PRINTF("%04X ", data[iw]);
+            PRINTF("\n");
+        }
+
+        HRGN hRgn2 = DeserializeRegion254(&data[0], data.size());
+        if (!hRgn2)
+        {
+            PRINTF("Error: Deserialization failed for %s\n", find.cFileName);
+            continue;
+        }
+
+        RECT rc1, rc2;
+        GetRgnBox(hRgn4, &rc1);
+        GetRgnBox(hRgn2, &rc2);
+
+        PRINTF("Original bounds: { %ld, %ld, %ld, %ld }\n",
+               rc1.left, rc1.top, rc1.right, rc1.bottom);
+        PRINTF("Restored bounds:  { %ld, %ld, %ld, %ld }\n",
+               rc2.left, rc2.top, rc2.right, rc2.bottom);
+
+        if (!EqualRect(&rc1, &rc2))
+        {
+            PRINTF("WARNING: Bounding rectangles differ!\n");
+        }
+
+        if (!EqualRgn(hRgn4, hRgn2))
+        {
+            PRINTF("ERROR: Regions are not equal: %s\n", find.cFileName);
+        }
+        else
+        {
+            PRINTF("SUCCESS: Regions match perfectly!\n");
+        }
+
+        double compressionRatio = 100.0 * data.size() * sizeof(WORD) / (double)size;
+        PRINTF("Compression ratio: %.2f%%\n", compressionRatio);
+
+        DeleteObject(hRgn4);
+        DeleteObject(hRgn2);
+
+        fp = fopen(find.cFileName, "wb");
+        if (!fp || fwrite(&data[0], sizeof(WORD), data.size(), fp) != data.size())
+        {
+            PRINTF("Error: Cannot write file\n");
+            if (fp) fclose(fp);
+            continue;
+        }
+        fclose(fp);
+    } while (FindNextFileA(hFind, &find));
+
+    FindClose(hFind);
+    return 0;
 }
