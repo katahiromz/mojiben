@@ -43,6 +43,7 @@ Source: "build\Release\mojiben5.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben6.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben7.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben8.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\mojiben9.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
