@@ -46,6 +46,7 @@ Source: "build\Release\mojiben8.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben9.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "font\Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴシック"; Flags: onlyifdoesntexist uninsneveruninstall; Tasks: japanesefont
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -53,6 +54,7 @@ Source: "font\Piza-P-Gothic.ttf"; DestDir: "{fonts}"; FontInstall: "ピザPゴ�
 [Icons]
 Name: "{group}\{cm:ReadMeENG}"; Filename: "{app}\README.txt"
 Name: "{group}\{cm:ReadMeJPN}"; Filename: "{app}\README_ja.txt"
+Name: "{group}\{cm:History}"; Filename: "{app}\HISTORY.txt"
 Name: "{group}\{cm:License}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\(1) {cm:HiraganaAndKatakana}"; Filename: "{app}\mojiben1.exe"
 Name: "{group}\(2) {cm:Alphabet}"; Filename: "{app}\mojiben2.exe"
@@ -81,6 +83,8 @@ ja.Authors=片山博文MZ
 en.Authors=katahiromz
 ja.ReadMeJPN=読んでね (日本語)
 en.ReadMeJPN=ReadMe (Japanese)
+ja.History=開発履歴
+en.History=Change Log
 ja.ReadMeENG=ReadMe (English)
 en.ReadMeENG=ReadMe (English)
 ja.License=ライセンス
