@@ -187,21 +187,26 @@ HRGN MyCreateRegion(INT res)
     return DeserializeRegion254((PBYTE)pvData, cbData);
 }
 
+void GetStrokeData(std::vector<STROKE>& v)
+{
+    v = g_kanji1_kakijun[g_nMoji];
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
     SIZE siz;
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld;
-    std::vector<STROKE> v;
     INT k;
     POINT apt[5];
+
+    std::vector<STROKE> v;
+    GetStrokeData(v);
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-
-    v = g_kanji1_kakijun[g_nMoji];
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)

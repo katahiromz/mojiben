@@ -234,6 +234,15 @@ HRGN MyCreateRegion(INT res)
     return DeserializeRegion254((PBYTE)pvData, cbData);
 }
 
+void GetStrokeData(std::vector<STROKE>& v)
+{
+    INT index = g_nMoji;
+
+    if (g_fLowerCase)
+        v = g_print_lowercase_kakijun[g_nMoji];
+    else
+        v = g_print_uppercase_kakijun[g_nMoji];
+}
 
 static unsigned ThreadProcWorker(void)
 {
@@ -241,11 +250,13 @@ static unsigned ThreadProcWorker(void)
     SIZE siz;
     CBitmap hbm1, hbm2;
     HGDIOBJ hbmOld;
-    std::vector<STROKE> v;
     INT k;
     POINT apt[5];
     LOGFONT lf;
     HGDIOBJ hPenOld;
+
+    std::vector<STROKE> v;
+    GetStrokeData(v);
 
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
@@ -257,13 +268,6 @@ static unsigned ThreadProcWorker(void)
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
-
-    INT index = g_nMoji;
-
-    if (g_fLowerCase)
-        v = g_print_lowercase_kakijun[g_nMoji];
-    else
-        v = g_print_uppercase_kakijun[g_nMoji];
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
