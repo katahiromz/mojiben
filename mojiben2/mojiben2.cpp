@@ -96,7 +96,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
     g_hKakijunWnd = CreateWindow(g_szKakijunClassName, TEXT(""),
-        WS_POPUPWINDOW, CW_USEDEFAULT, 0, 300 + cx * 2, 300 + cy * 2,
+        WS_POPUPWINDOW, CW_USEDEFAULT, 0, KAKIJUN_SIZE + cx * 2, KAKIJUN_SIZE + cy * 2,
         hwnd, NULL, g_hInstance, NULL);
     if (g_hKakijunWnd == NULL)
         return FALSE;
@@ -212,16 +212,17 @@ void OnDraw(HWND hwnd, HDC hdc)
 
 VOID DrawGuideline(HDC hdcMem, INT cx)
 {
-    MoveToEx(hdcMem, 0, 15, NULL);
-    LineTo(hdcMem, cx, 15);
-    MoveToEx(hdcMem, 0, 108, NULL);
-    LineTo(hdcMem, cx, 108);
-    MoveToEx(hdcMem, 0, 194, NULL);
-    LineTo(hdcMem, cx, 194);
-    MoveToEx(hdcMem, 0, 195, NULL);
-    LineTo(hdcMem, cx, 195);
-    MoveToEx(hdcMem, 0, 285, NULL);
-    LineTo(hdcMem, cx, 285);
+#define TRANSLATE_300_TO_254(x) (((x) * 254) / 300)
+    MoveToEx(hdcMem, 0, TRANSLATE_300_TO_254(15), NULL);
+    LineTo(hdcMem, cx, TRANSLATE_300_TO_254(15));
+    MoveToEx(hdcMem, 0, TRANSLATE_300_TO_254(108), NULL);
+    LineTo(hdcMem, cx, TRANSLATE_300_TO_254(108));
+    MoveToEx(hdcMem, 0, TRANSLATE_300_TO_254(194), NULL);
+    LineTo(hdcMem, cx, TRANSLATE_300_TO_254(194));
+    MoveToEx(hdcMem, 0, TRANSLATE_300_TO_254(195), NULL);
+    LineTo(hdcMem, cx, TRANSLATE_300_TO_254(195));
+    MoveToEx(hdcMem, 0, TRANSLATE_300_TO_254(285), NULL);
+    LineTo(hdcMem, cx, TRANSLATE_300_TO_254(285));
 }
 
 HRGN MyCreateRegion(INT res)
@@ -230,7 +231,7 @@ HRGN MyCreateRegion(INT res)
     DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
     HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     PVOID pvData = ::LockResource(hGlobal);
-    return DeserializeRegion((const WORD *)pvData, cbData / sizeof(WORD));
+    return DeserializeRegion254((PBYTE)pvData, cbData);
 }
 
 static unsigned ThreadProcWorker(void)
@@ -444,7 +445,7 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
 
                 INT step = 0;
-                for (; step < 300 / 20; ++step)
+                for (; step < KAKIJUN_SIZE / 20; ++step)
                 {
                     CRgn hRgn8(::CreateRectRgn(0, 0, 0, 0));
                     CRgn hRgn9(::CreateEllipticRgn(v[i].cx - 20 * step, v[i].cy - 20 * step, v[i].cx + 20 * step, v[i].cy + 20 * step));

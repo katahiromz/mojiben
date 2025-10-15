@@ -24,6 +24,6 @@ VOID InitPrintUpperCase(VOID);
 VOID InitPrintLowerCase(VOID);
 
 // 書き順イメージのサイズ。
-#define KAKIJUN_SIZE 300
+#define KAKIJUN_SIZE 254
 // 書き順イメージの中心点。
 #define KAKIJUN_CENTER_XY (KAKIJUN_SIZE / 2)
