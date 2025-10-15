@@ -107,7 +107,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
     g_hKakijunWnd = CreateWindow(g_szKakijunClassName, TEXT(""),
-        WS_POPUPWINDOW, CW_USEDEFAULT, 0, KAKIJUN_WIDTH + cx * 2, KAKIJUN_HEIGHT + cy * 2,
+        WS_POPUPWINDOW, CW_USEDEFAULT, 0, KAKIJUN_SIZE + cx * 2, KAKIJUN_SIZE + cy * 2,
         hwnd, NULL, g_hInstance, NULL);
     if (g_hKakijunWnd == NULL)
         return FALSE;
@@ -427,7 +427,7 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
 
                 INT step = 0;
-                for (; step < KAKIJUN_WIDTH / 20; ++step)
+                for (; step < KAKIJUN_SIZE / 20; ++step)
                 {
                     CRgn hRgn8(::CreateRectRgn(0, 0, 0, 0));
                     CRgn hRgn9(::CreateEllipticRgn(v[i].cx - 20 * step, v[i].cy - 20 * step, v[i].cx + 20 * step, v[i].cy + 20 * step));

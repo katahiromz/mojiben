@@ -28,8 +28,7 @@ extern INT g_map[80];
 VOID InitKanji1(VOID);
 
 // 書き順イメージのサイズ。
-#define KAKIJUN_WIDTH 254
-#define KAKIJUN_HEIGHT 254
+#define KAKIJUN_SIZE 254
 // 書き順イメージの中心点。
-#define KAKIJUN_CENTER_X (KAKIJUN_WIDTH / 2)
-#define KAKIJUN_CENTER_Y (KAKIJUN_HEIGHT / 2)
+#define KAKIJUN_CENTER_X (KAKIJUN_SIZE / 2)
+#define KAKIJUN_CENTER_Y (KAKIJUN_SIZE / 2)
