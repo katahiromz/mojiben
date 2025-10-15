@@ -7,7 +7,8 @@ enum TYPE
 {
     WAIT,
     LINEAR,
-    POLAR
+    POLAR,
+    DOT
 };
 
 // stroke info

@@ -49,7 +49,7 @@ HWND g_hKakijunWnd;
 
 HBITMAP g_ahbmDigits[42];
 HBITMAP g_hbmClient;
-HBITMAP g_hbmKakijun;
+HBITMAP g_hbmKakijun; // Week ref
 HBITMAP g_hbmKazoekata;
 HBITMAP g_hbmKukuNoUta;
 

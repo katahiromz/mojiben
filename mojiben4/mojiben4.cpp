@@ -55,7 +55,7 @@ HFONT g_hFontSmall;
 HBITMAP g_ahbmKanji1[80];
 HBITMAP g_hbmClient;
 
-HBITMAP g_hbmKakijun;
+HBITMAP g_hbmKakijun; // Week ref
 INT g_nMoji;
 INT g_nMoji2;
 HANDLE g_hThread;
@@ -245,20 +245,25 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
 
     MyPlaySound(MAKEINTRESOURCE(1000 + g_nMoji));
+
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
+
     DO_SLEEP(200);
 
-    CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     MyPlaySoundAsync(MAKEINTRESOURCE(100));
-    for (UINT i = 0; i < v.size(); i++)
+
+    CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
+    for (UINT i = 0; i < v.size(); ++i)
     {
         switch (v[i].type)
         {
         case WAIT:
             DO_SLEEP(500);
+
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
+
             MyPlaySoundAsync(MAKEINTRESOURCE(100));
             break;
 
@@ -268,9 +273,9 @@ static unsigned ThreadProcWorker(void)
                 CDC hdcMem(hdc);
                 hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
+
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
+                rc.left = rc.top = 0;
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -284,8 +289,8 @@ static unsigned ThreadProcWorker(void)
 
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                 DO_SLEEP(50);
-                break;
             }
+            break;
 
         case LINEAR:
             {
@@ -293,9 +298,9 @@ static unsigned ThreadProcWorker(void)
                 CDC hdcMem(hdc);
                 hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
+
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
+                rc.left = rc.top = 0;
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -304,13 +309,17 @@ static unsigned ThreadProcWorker(void)
                 SelectObject(hdcMem, hbmOld);
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
+
                 double cost1 = std::cos(v[i].angle0 * M_PI / 180);
                 double sint1 = std::sin(v[i].angle0 * M_PI / 180);
+
+                // NULLREGIONでない場所を探す。
 #define LEN (KAKIJUN_CENTER_XY * 1414 / 1000) // 半径 * √2
                 for (k = -LEN; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
+
                     apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
                     apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
                     apt[1].x = LONG(KAKIJUN_CENTER_XY + k * cost1 - LEN * sint1);
@@ -319,21 +328,27 @@ static unsigned ThreadProcWorker(void)
                     apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
                     apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
                     apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
+
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
+
                     CRgn hRgn3(::PathToRegion(hdcMem));
                     CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
                     INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
                     if (n != NULLREGION)
                         break;
                 }
+
+                // NULLREGIONでない位置から赤い画を描画する。
                 for ( ; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
+
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
+
                     hbmOld = SelectObject(hdcMem, hbm1);
                     apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
                     apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
@@ -343,33 +358,38 @@ static unsigned ThreadProcWorker(void)
                     apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
                     apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
                     apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
+
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
+
                     CRgn hRgn3(::PathToRegion(hdcMem));
                     CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
                     INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
                     CombineRgn(hRgn5, hRgn5, hRgn4, RGN_OR);
                     FillRgn(hdcMem, hRgn5, g_hbrRed);
+
                     SelectObject(hdcMem, hbmOld);
 
                     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
                     if (n == NULLREGION)
                         break;
+
                     DO_SLEEP(35);
                 }
-                break;
             }
+            break;
 
         case POLAR:
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
+
                 hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
+
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
+                rc.left = rc.top = 0;
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -408,6 +428,7 @@ static unsigned ThreadProcWorker(void)
                     double cost4 = std::cos((1 * theta + 2 * theta2) / 3);
                     double sint4 = std::sin((1 * theta + 2 * theta2) / 3);
                     hbm1.Swap(hbm2);
+                    g_hbmKakijun = hbm1;
 
                     hbmOld = SelectObject(hdcMem, hbm1);
 
@@ -434,7 +455,6 @@ static unsigned ThreadProcWorker(void)
 
                     SelectObject(hdcMem, hbmOld);
 
-                    g_hbmKakijun = hbm1;
                     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
 
                     if (n == NULLREGION)
@@ -449,8 +469,8 @@ static unsigned ThreadProcWorker(void)
 
                     DO_SLEEP(35);
                 }
-                break;
             }
+            break;
         }
     }
 
@@ -460,20 +480,22 @@ static unsigned ThreadProcWorker(void)
     {
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
+
         hbm1.Swap(hbm2);
         g_hbmKakijun = hbm1;
+
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = 0;
-        rc.top = 0;
+        rc.left = rc.top = 0;
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
         PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
+
+        InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     }
 
-    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     DO_SLEEP(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);

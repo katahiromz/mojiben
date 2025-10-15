@@ -60,7 +60,7 @@ HBITMAP g_hbmClient = NULL;
 HBITMAP g_hbmLeft = NULL;
 HBITMAP g_hbmRight = NULL;
 
-HBITMAP g_hbmKakijun;
+HBITMAP g_hbmKakijun; // Week ref
 INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
@@ -305,16 +305,17 @@ static unsigned ThreadProcWorker(void)
         SelectObject(hdcMem, hbmOld);
     }
 
-    if (g_hbmKakijun)
-        ::DeleteObject(g_hbmKakijun);
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
-
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
+
     MyPlaySound(MAKEINTRESOURCE(1000 + g_nMoji));
+
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
+
     DO_SLEEP(200);
+
     MyPlaySoundAsync(MAKEINTRESOURCE(100));
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
@@ -328,8 +329,32 @@ static unsigned ThreadProcWorker(void)
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
 
-            // ポンと音を鳴らす。
             MyPlaySoundAsync(MAKEINTRESOURCE(100));
+            break;
+
+        case DOT:
+            {
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
+                hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
+
+                hbmOld = SelectObject(hdcMem, hbm1);
+                rc.left = rc.top = 0;
+                rc.right = siz.cx;
+                rc.bottom = siz.cy;
+                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
+                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
+                FillRgn(hdcMem, hRgn5, g_hbrRed);
+                SelectObject(hdcMem, hbmOld);
+
+                InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                DO_SLEEP(50);
+            }
             break;
 
         case LINEAR:
@@ -387,6 +412,7 @@ static unsigned ThreadProcWorker(void)
                         return 0;
 
                     hbm1.Swap(hbm2);
+                    g_hbmKakijun = hbm1;
 
                     hbmOld = SelectObject(hdcMem, hbm1);
                     apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
@@ -410,7 +436,6 @@ static unsigned ThreadProcWorker(void)
 
                     SelectObject(hdcMem, hbmOld);
 
-                    g_hbmKakijun = hbm1;
                     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
                     if (n == NULLREGION)
                         break;
@@ -424,19 +449,18 @@ static unsigned ThreadProcWorker(void)
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
+
                 hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
 
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = 0;
-                rc.top = 0;
+                rc.left = rc.top = 0;
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
                 PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
-
-                g_hbmKakijun = hbm1;
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
 
@@ -468,7 +492,9 @@ static unsigned ThreadProcWorker(void)
                     double sint3 = std::sin((2 * theta + 1 * theta2) / 3);
                     double cost4 = std::cos((1 * theta + 2 * theta2) / 3);
                     double sint4 = std::sin((1 * theta + 2 * theta2) / 3);
+
                     hbm1.Swap(hbm2);
+                    g_hbmKakijun = hbm1;
 
                     hbmOld = SelectObject(hdcMem, hbm1);
 
@@ -495,7 +521,6 @@ static unsigned ThreadProcWorker(void)
 
                     SelectObject(hdcMem, hbmOld);
 
-                    g_hbmKakijun = hbm1;
                     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
 
                     if (n == NULLREGION)
@@ -516,15 +541,17 @@ static unsigned ThreadProcWorker(void)
     }
 
     DO_SLEEP(500);
+    MyPlaySoundAsync(MAKEINTRESOURCE(1000 + g_nMoji));
 
     {
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
+
         hbm1.Swap(hbm2);
+        g_hbmKakijun = hbm1;
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = 0;
-        rc.top = 0;
+        rc.left = rc.top = 0;
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -532,11 +559,9 @@ static unsigned ThreadProcWorker(void)
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
 
-        g_hbmKakijun = hbm1;
         InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     }
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(1000 + g_nMoji));
     DO_SLEEP(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
