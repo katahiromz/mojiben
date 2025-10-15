@@ -330,19 +330,19 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
                 double cost1 = cos(v[i].angle0 * M_PI / 180);
                 double sint1 = sin(v[i].angle0 * M_PI / 180);
-#define LEN (KAKIJUN_CENTER_X * 1414 / 1000) // 半径 * √2
+#define LEN (KAKIJUN_CENTER_XY * 1414 / 1000) // 半径 * √2
                 for (k = -LEN; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
-                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost1 + LEN * sint1);
-                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint1 - LEN * cost1);
-                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost1 - LEN * sint1);
-                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint1 + LEN * cost1);
-                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 - LEN * sint1);
-                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 + LEN * cost1);
-                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 + LEN * sint1);
-                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 - LEN * cost1);
+                    apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
+                    apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
+                    apt[1].x = LONG(KAKIJUN_CENTER_XY + k * cost1 - LEN * sint1);
+                    apt[1].y = LONG(KAKIJUN_CENTER_XY + k * sint1 + LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -359,14 +359,14 @@ static unsigned ThreadProcWorker(void)
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
-                    apt[0].x = LONG(KAKIJUN_CENTER_X + k * cost1 + LEN * sint1);
-                    apt[0].y = LONG(KAKIJUN_CENTER_Y + k * sint1 - LEN * cost1);
-                    apt[1].x = LONG(KAKIJUN_CENTER_X + k * cost1 - LEN * sint1);
-                    apt[1].y = LONG(KAKIJUN_CENTER_Y + k * sint1 + LEN * cost1);
-                    apt[2].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 - LEN * sint1);
-                    apt[2].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 + LEN * cost1);
-                    apt[3].x = LONG(KAKIJUN_CENTER_X + (k + 20) * cost1 + LEN * sint1);
-                    apt[3].y = LONG(KAKIJUN_CENTER_Y + (k + 20) * sint1 - LEN * cost1);
+                    apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
+                    apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
+                    apt[1].x = LONG(KAKIJUN_CENTER_XY + k * cost1 - LEN * sint1);
+                    apt[1].y = LONG(KAKIJUN_CENTER_XY + k * sint1 + LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
