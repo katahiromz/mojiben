@@ -305,6 +305,15 @@ HRGN DeserializeRegion(const WORD *pw, size_t size);
 BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn);
 HRGN DeserializeRegion254(const BYTE *pb, size_t size);
 
+HBITMAP LoadBitmapFromFile(LPCTSTR pszFileName);
+BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm);
+HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size);
+HBITMAP CreateBitmapFromRegion(HRGN hRgn);
+HBITMAP CreateBitmapFromRegion254(HRGN hRgn);
+HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size);
+HRGN CreateRegionFromBitmap(HBITMAP hbm);
+HRGN CreateRegionFromBitmap254(HBITMAP hbm);
+
 static HBITMAP
 LoadGif(HINSTANCE hInst, INT res)
 {

@@ -585,12 +585,12 @@ typedef struct tagBITMAPINFOEX
     RGBQUAD          bmiColors[256];
 } BITMAPINFOEX, FAR * LPBITMAPINFOEX;
 
-static inline HBITMAP LoadBitmapFromFile(LPCTSTR pszFileName)
+HBITMAP LoadBitmapFromFile(LPCTSTR pszFileName)
 {
     return (HBITMAP)LoadImage(NULL, pszFileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 }
 
-static BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
+BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
 {
     BOOL f;
     DWORD dwError;
@@ -672,7 +672,7 @@ static BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
     return f;
 }
 
-static HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size)
+HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size)
 {
     HDC hdc = CreateCompatibleDC(NULL);
     BITMAPINFO bmi;
@@ -692,17 +692,17 @@ static HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size)
     return hbm;
 }
 
-static inline HBITMAP CreateBitmapFromRegion(HRGN hRgn)
+HBITMAP CreateBitmapFromRegion(HRGN hRgn)
 {
     return CreateBitmapFromRegionGeneric(hRgn, 300);
 }
 
-static inline HBITMAP CreateBitmapFromRegion254(HRGN hRgn)
+HBITMAP CreateBitmapFromRegion254(HRGN hRgn)
 {
     return CreateBitmapFromRegionGeneric(hRgn, 254);
 }
 
-static HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size)
+HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size)
 {
     HRGN hRgn1 = CreateRectRgn(0, 0, 0, 0);
     HDC hdc = CreateCompatibleDC(NULL);
@@ -724,12 +724,12 @@ static HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size)
     return hRgn1;
 }
 
-static inline HRGN CreateRegionFromBitmap(HBITMAP hbm)
+HRGN CreateRegionFromBitmap(HBITMAP hbm)
 {
     return CreateRegionFromBitmapGeneric(hbm, 300);
 }
 
-static inline HRGN CreateRegionFromBitmap254(HBITMAP hbm)
+HRGN CreateRegionFromBitmap254(HBITMAP hbm)
 {
     return CreateRegionFromBitmapGeneric(hbm, 254);
 }
