@@ -300,17 +300,19 @@ smartDrawText(HDC hDC, LPCTSTR text, LPRECT prc, INT maxWidth)
 }
 
 BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn);
-HRGN DeserializeRegion(const WORD *pw, size_t size);
+HRGN DeserializeRegion(const WORD *pw, size_t data_size);
 
 BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn);
-HRGN DeserializeRegion254(const BYTE *pb, size_t size);
+HRGN DeserializeRegion254(const BYTE *pb, size_t data_size);
 
 HBITMAP LoadBitmapFromFile(LPCTSTR pszFileName);
 BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm);
-HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size);
+
+HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT cxy);
 HBITMAP CreateBitmapFromRegion(HRGN hRgn);
 HBITMAP CreateBitmapFromRegion254(HRGN hRgn);
-HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size);
+
+HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT cxy);
 HRGN CreateRegionFromBitmap(HBITMAP hbm);
 HRGN CreateRegionFromBitmap254(HBITMAP hbm);
 

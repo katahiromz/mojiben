@@ -21,13 +21,12 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
     if (GetRgnBox(hRgn, &rc) == NULLREGION)
         return FALSE;
 
-    INT x = rc.left;
-    INT y = rc.top;
-    INT cx = rc.right - rc.left;
-    INT cy = rc.bottom - rc.top;
+    INT x = rc.left, y = rc.top;
+    INT cx = rc.right - rc.left, cy = rc.bottom - rc.top;
 
-    // サイズが負の場合やゼロの場合のチェック
-    if (cx <= 0 || cy <= 0)
+    if (cx <= 0 || cy <= 0 || cx > 300 || cy > 300)
+        return FALSE;
+    if (x < 0 || y < 0 || x >= 300 || y >= 300)
         return FALSE;
 
     BOOL wide = (cx >= cy);
@@ -120,11 +119,11 @@ BOOL SerializeRegion(std::vector<WORD>& out, HRGN hRgn)
     return TRUE;
 }
 
-HRGN DeserializeRegion(const WORD *pw, size_t size)
+HRGN DeserializeRegion(const WORD *pw, size_t data_size)
 {
-    if (size < 5)
+    if (data_size < 5)
     {
-        PRINTF("Error: Insufficient data size\n");
+        PRINTF("Error: Insufficient data data_size\n");
         return NULL;
     }
 
@@ -139,19 +138,21 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
     }
 
     // 座標とサイズの読み取り
-    INT x = (INT)pw[offset];
-    INT y = (INT)pw[offset + 1];
-    INT cx = (INT)pw[offset + 2];
-    INT cy = (INT)pw[offset + 3];
+    INT x = pw[offset], y = pw[offset + 1];
+    INT cx = pw[offset + 2], cy = pw[offset + 3];
     offset += 4;
 
     PRINTF("Deserializing: signature=%c, bounds=(%d,%d,%dx%d)\n",
            signature, x, y, cx, cy);
 
-    // サイズの妥当性チェック
-    if (cx <= 0 || cy <= 0)
+    if (cx <= 0 || cy <= 0 || cx > 300 || cy > 300)
     {
         PRINTF("Error: Invalid region size\n");
+        return NULL;
+    }
+    if (x < 0 || y < 0 || x >= 300 || y >= 300)
+    {
+        PRINTF("Error: Invalid region\n");
         return NULL;
     }
 
@@ -165,10 +166,10 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
     if (isHorizontal)
     {
         INT yCurrent = y;
-        while (offset < size && yCurrent < y + cy)
+        while (offset < data_size && yCurrent < y + cy)
         {
             // 各行のランデータを処理
-            while (offset + 1 < size)
+            while (offset + 1 < data_size)
             {
                 WORD value = pw[offset];
 
@@ -180,7 +181,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
                 }
 
                 // ランの開始位置とレングスを取得
-                if (offset + 1 >= size)
+                if (offset + 1 >= data_size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
                     return NULL;
@@ -216,10 +217,10 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
     else
     {
         INT xCurrent = x;
-        while (offset < size && xCurrent < x + cx)
+        while (offset < data_size && xCurrent < x + cx)
         {
             // 各列のランデータを処理
-            while (offset + 1 < size)
+            while (offset + 1 < data_size)
             {
                 WORD value = pw[offset];
 
@@ -231,7 +232,7 @@ HRGN DeserializeRegion(const WORD *pw, size_t size)
                 }
 
                 // ランの開始位置とレングスを取得
-                if (offset + 1 >= size)
+                if (offset + 1 >= data_size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
                     return NULL;
@@ -306,15 +307,12 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
     if (GetRgnBox(hRgn, &rc) == NULLREGION)
         return FALSE;
 
-    INT x = rc.left;
-    INT y = rc.top;
-    INT cx = rc.right - rc.left;
-    INT cy = rc.bottom - rc.top;
+    INT x = rc.left, y = rc.top;
+    INT cx = rc.right - rc.left, cy = rc.bottom - rc.top;
 
-    // サイズが負の場合やゼロの場合のチェック
     if (cx <= 0 || cy <= 0 || cx > 254 || cy > 254)
         return FALSE;
-    if (x <= 0 || y <= 0 || x > 254 || y > 254)
+    if (x < 0 || y < 0 || x >= 254 || y >= 254)
         return FALSE;
 
     BOOL wide = (cx >= cy);
@@ -407,9 +405,9 @@ BOOL SerializeRegion254(std::vector<BYTE>& out, HRGN hRgn)
     return TRUE;
 }
 
-HRGN DeserializeRegion254(const BYTE *pb, size_t size)
+HRGN DeserializeRegion254(const BYTE *pb, size_t data_size)
 {
-    if (size < 5)
+    if (data_size < 5)
     {
         PRINTF("Error: Insufficient data size\n");
         return NULL;
@@ -426,19 +424,21 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
     }
 
     // 座標とサイズの読み取り
-    INT x = (INT)pb[offset];
-    INT y = (INT)pb[offset + 1];
-    INT cx = (INT)pb[offset + 2];
-    INT cy = (INT)pb[offset + 3];
+    INT x = pb[offset], y = pb[offset + 1];
+    INT cx = pb[offset + 2], cy = pb[offset + 3];
     offset += 4;
 
     PRINTF("Deserializing: signature=%c, bounds=(%d,%d,%dx%d)\n",
            signature, x, y, cx, cy);
 
-    // サイズの妥当性チェック
-    if (cx <= 0 || cy <= 0)
+    if (cx <= 0 || cy <= 0 || cx > 254 || cy > 254)
     {
         PRINTF("Error: Invalid region size\n");
+        return NULL;
+    }
+    if (x < 0 || y < 0 || x >= 254 || y >= 254)
+    {
+        PRINTF("Error: Invalid region\n");
         return NULL;
     }
 
@@ -452,10 +452,10 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
     if (isHorizontal)
     {
         INT yCurrent = y;
-        while (offset < size && yCurrent < y + cy)
+        while (offset < data_size && yCurrent < y + cy)
         {
             // 各行のランデータを処理
-            while (offset + 1 < size)
+            while (offset + 1 < data_size)
             {
                 BYTE value = pb[offset];
 
@@ -467,7 +467,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
                 }
 
                 // ランの開始位置とレングスを取得
-                if (offset + 1 >= size)
+                if (offset + 1 >= data_size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
                     return NULL;
@@ -503,10 +503,10 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
     else
     {
         INT xCurrent = x;
-        while (offset < size && xCurrent < x + cx)
+        while (offset < data_size && xCurrent < x + cx)
         {
             // 各列のランデータを処理
-            while (offset + 1 < size)
+            while (offset + 1 < data_size)
             {
                 BYTE value = pb[offset];
 
@@ -518,7 +518,7 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
                 }
 
                 // ランの開始位置とレングスを取得
-                if (offset + 1 >= size)
+                if (offset + 1 >= data_size)
                 {
                     PRINTF("Error: Unexpected end of data\n");
                     return NULL;
@@ -672,19 +672,19 @@ BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
     return f;
 }
 
-HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size)
+HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT cxy)
 {
     HDC hdc = CreateCompatibleDC(NULL);
     BITMAPINFO bmi;
     ZeroMemory(&bmi, sizeof(bmi));
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biWidth = size;
-    bmi.bmiHeader.biHeight = size;
+    bmi.bmiHeader.biWidth = cxy;
+    bmi.bmiHeader.biHeight = cxy;
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = 24;
     HBITMAP hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0);
     HGDIOBJ hbmOld = SelectObject(hdc, hbm);
-    RECT rc = { 0, 0, size, size };
+    RECT rc = { 0, 0, cxy, cxy };
     FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
     FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
     SelectObject(hdc, hbmOld);
@@ -702,14 +702,14 @@ HBITMAP CreateBitmapFromRegion254(HRGN hRgn)
     return CreateBitmapFromRegionGeneric(hRgn, 254);
 }
 
-HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size)
+HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT cxy)
 {
     HRGN hRgn1 = CreateRectRgn(0, 0, 0, 0);
     HDC hdc = CreateCompatibleDC(NULL);
     HGDIOBJ hbmOld = SelectObject(hdc, hbm);
-    for (INT y = 0; y < size; y++)
+    for (INT y = 0; y < cxy; y++)
     {
-        for (INT x = 0; x < size; x++)
+        for (INT x = 0; x < cxy; x++)
         {
             if (!GetPixel(hdc, x, y))
             {
