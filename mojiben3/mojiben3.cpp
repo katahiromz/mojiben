@@ -354,6 +354,11 @@ void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
     SelectObject(hdcMem, hFontOld);
 }
 
+void PreDraw(HDC hdc, RECT& rc)
+{
+    DrawCaptionText(hdc, &rc, g_nMoji);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -375,7 +380,7 @@ static unsigned ThreadProcWorker(void)
 
         hbmOld = SelectObject(hdcMem, hbm1);
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        DrawCaptionText(hdcMem, &rc, g_nMoji);
+        PreDraw(hdcMem, rc);
         SelectObject(hdcMem, hbmOld);
     }
 
@@ -398,7 +403,7 @@ static unsigned ThreadProcWorker(void)
 
         hbmOld = SelectObject(hdcMem, hbm1);
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        DrawCaptionText(hdcMem, &rc, g_nMoji);
+        PreDraw(hdcMem, rc);
         SelectObject(hdcMem, hbmOld);
     }
 

@@ -257,6 +257,11 @@ void GetStrokeData(std::vector<STROKE>& v)
     v = g_kanji3_kakijun[g_nMoji];
 }
 
+void PreDraw(HDC hdc, RECT& rc)
+{
+    // reserved
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -295,6 +300,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
     }
@@ -338,6 +344,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -425,6 +432,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -520,6 +528,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
 

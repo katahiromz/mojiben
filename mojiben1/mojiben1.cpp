@@ -50,6 +50,7 @@ HBITMAP g_hbmKakijun = NULL;
 INT g_nMoji;
 HANDLE g_hThread = NULL;
 HBRUSH g_hbrRed = NULL;
+HFONT g_hFont = NULL;
 
 std::set<INT> g_katakana_history;
 std::set<INT> g_hiragana_history;
@@ -96,6 +97,14 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKatakana = LoadGif(g_hInstance, 200);
     g_hbmKatakana2 = LoadGif(g_hInstance, 250);
     g_fKatakana = FALSE;
+
+    LOGFONT lf;
+    ZeroMemory(&lf, sizeof(lf));
+    lf.lfHeight = -20;
+    lf.lfCharSet = ANSI_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
+    lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
+    g_hFont = ::CreateFontIndirect(&lf);
 
     updateSystemMenu(hwnd);
 
@@ -229,6 +238,16 @@ void GetStrokeData(std::vector<STROKE>& v)
     g_romaji = g_moji_data[index].romaji;
 }
 
+void PreDraw(HDC hdc, RECT& rc)
+{
+    HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
+    SetTextColor(hdc, RGB(0, 0, 0));
+    SetBkColor(hdc, RGB(255, 255, 255));
+    SetBkMode(hdc, OPAQUE);
+    DrawTextA(hdc, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
+    SelectObject(hdc, hFontOld);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -237,18 +256,9 @@ static unsigned ThreadProcWorker(void)
     HGDIOBJ hbmOld;
     INT k;
     POINT apt[5];
-    HGDIOBJ hFontOld;
-    LOGFONT lf;
 
     std::vector<STROKE> v;
     GetStrokeData(v);
-
-    ZeroMemory(&lf, sizeof(lf));
-    lf.lfHeight = -20;
-    lf.lfCharSet = ANSI_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
-    lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
-    CFont hFont(::CreateFontIndirect(&lf));
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -276,15 +286,8 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-        {
-            hFontOld = SelectObject(hdcMem, hFont);
-            SetTextColor(hdcMem, RGB(0, 0, 0));
-            SetBkColor(hdcMem, RGB(255, 255, 255));
-            SetBkMode(hdcMem, OPAQUE);
-            DrawTextA(hdcMem, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-            SelectObject(hdcMem, hFontOld);
-        }
         SelectObject(hdcMem, hbmOld);
     }
 
@@ -322,15 +325,8 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                {
-                    hFontOld = SelectObject(hdcMem, hFont);
-                    SetTextColor(hdcMem, RGB(0, 0, 0));
-                    SetBkColor(hdcMem, RGB(255, 255, 255));
-                    SetBkMode(hdcMem, OPAQUE);
-                    DrawTextA(hdcMem, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-                    SelectObject(hdcMem, hFontOld);
-                }
                 SelectObject(hdcMem, hbmOld);
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
@@ -403,15 +399,8 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-                {
-                    hFontOld = SelectObject(hdcMem, hFont);
-                    SetTextColor(hdcMem, RGB(0, 0, 0));
-                    SetBkColor(hdcMem, RGB(255, 255, 255));
-                    SetBkMode(hdcMem, OPAQUE);
-                    DrawTextA(hdcMem, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-                    SelectObject(hdcMem, hFontOld);
-                }
                 SelectObject(hdcMem, hbmOld);
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
@@ -505,15 +494,8 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-        {
-            hFontOld = SelectObject(hdcMem, hFont);
-            SetTextColor(hdcMem, RGB(0, 0, 0));
-            SetBkColor(hdcMem, RGB(255, 255, 255));
-            SetBkMode(hdcMem, OPAQUE);
-            DrawTextA(hdcMem, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-            SelectObject(hdcMem, hFontOld);
-        }
         SelectObject(hdcMem, hbmOld);
     }
 
@@ -820,6 +802,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmClient);
     DeleteObject(g_hbmKakijun);
 
+    DeleteObject(g_hFont);
     DeleteObject(g_hbrRed);
     DeleteObject(g_hbmHiragana);
     DeleteObject(g_hbmHiragana2);

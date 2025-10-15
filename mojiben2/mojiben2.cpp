@@ -244,6 +244,13 @@ void GetStrokeData(std::vector<STROKE>& v)
         v = g_print_uppercase_kakijun[g_nMoji];
 }
 
+void PreDraw(HDC hdc, RECT& rc)
+{
+    HGDIOBJ hPenOld = SelectObject(hdc, g_hPenBlue);
+    DrawGuideline(hdc, rc.right);
+    SelectObject(hdc, hPenOld);
+}
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
@@ -252,18 +259,9 @@ static unsigned ThreadProcWorker(void)
     HGDIOBJ hbmOld;
     INT k;
     POINT apt[5];
-    LOGFONT lf;
-    HGDIOBJ hPenOld;
 
     std::vector<STROKE> v;
     GetStrokeData(v);
-
-    ZeroMemory(&lf, sizeof(lf));
-    lf.lfHeight = -20;
-    lf.lfCharSet = ANSI_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
-    lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
-    CFont hFont(::CreateFontIndirect(&lf));
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -291,11 +289,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-        hPenOld = SelectObject(hdcMem, g_hPenBlue);
-        DrawGuideline(hdcMem, siz.cx);
-        SelectObject(hdcMem, hPenOld);
-
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
         SelectObject(hdcMem, hbmOld);
@@ -335,11 +329,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-                hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                DrawGuideline(hdcMem, siz.cx);
-                SelectObject(hdcMem, hPenOld);
-
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
@@ -364,11 +354,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-                hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                DrawGuideline(hdcMem, siz.cx);
-                SelectObject(hdcMem, hPenOld);
-
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -443,11 +429,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-                hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                DrawGuideline(hdcMem, siz.cx);
-                SelectObject(hdcMem, hPenOld);
-
+                PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -542,11 +524,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-        hPenOld = SelectObject(hdcMem, g_hPenBlue);
-        DrawGuideline(hdcMem, siz.cx);
-        SelectObject(hdcMem, hPenOld);
-
+        PreDraw(hdcMem, rc);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
         SelectObject(hdcMem, hbmOld);
