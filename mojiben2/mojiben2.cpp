@@ -58,10 +58,10 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
     g_hPenBlue = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 
-    g_hbmUpperCase = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
-    g_hbmLowerCase = LoadBitmap(g_hInstance, MAKEINTRESOURCE(150));
-    g_hbmUpperCase2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(300));
-    g_hbmLowerCase2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(350));
+    g_hbmUpperCase = LoadGif(g_hInstance, 100);
+    g_hbmLowerCase = LoadGif(g_hInstance, 150);
+    g_hbmUpperCase2 = LoadGif(g_hInstance, 300);
+    g_hbmLowerCase2 = LoadGif(g_hInstance, 350);
 
     g_fLowerCase = FALSE;
 

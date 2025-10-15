@@ -192,8 +192,8 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
-    g_hbmKazoekata = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
-    g_hbmKukuNoUta = LoadBitmap(g_hInstance, MAKEINTRESOURCE(101));
+    g_hbmKazoekata = LoadGif(g_hInstance, 100);
+    g_hbmKukuNoUta = LoadGif(g_hInstance, 101);
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
@@ -213,7 +213,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ZeroMemory(g_ahbmDigits, sizeof(g_ahbmDigits));
     for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
     {
-        g_ahbmDigits[j] = LoadBitmap(g_hInstance, MAKEINTRESOURCE(1000 + j));
+        g_ahbmDigits[j] = LoadGif(g_hInstance, 1000 + j);
         if (g_ahbmDigits[j] == NULL)
             return FALSE;
     }
