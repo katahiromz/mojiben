@@ -16,7 +16,7 @@
 - Ver.3.4: 小4の漢字を追加。BMPをGIFに変換してバイナリサイズを削減。
 - Ver.3.5: 小5の漢字を追加。Polarストロークの表示を修正。
 - Ver.3.6: 小6の漢字を追加。漢字の書き順ウィンドウのサイズを300×300から254×254に縮小。漢字の日本語の説明を修正。
-- Ver.3.7: 漢字の書き順のリージョンデータをリマスタリング。
+- Ver.3.7: 漢字の書き順のリージョンデータをリマスタリング。カナとアルファベットの書き順ウィンドウを254x254に縮小。
 
 # Change log of "Moji No Benkyou"
 
@@ -31,4 +31,4 @@
 - Ver.3.4: Added kanji for 4th grade. Converted BMP to GIF to reduce binary size.
 - Ver.3.5: Added kanji for 5th grade. Fixed Polar strokes display.
 - Ver.3.6: Added kanji for sixth grade. Reduced the size of the kanji stroke order window from 300×300 to 254×254. Fixed the Japanese explanations for kanji.
-- Ver.3.7: Remastered regional data for kanji stroke order.
+- Ver.3.7: Remastered regional data for kanji stroke order. The kana and alphabet stroke order window has been reduced to 254x254.
