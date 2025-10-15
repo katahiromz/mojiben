@@ -578,3 +578,158 @@ HRGN DeserializeRegion254(const BYTE *pb, size_t size)
     PRINTF("Created region with %u rectangles\n", (UINT)rects.size());
     return hRgn;
 }
+
+typedef struct tagBITMAPINFOEX
+{
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD          bmiColors[256];
+} BITMAPINFOEX, FAR * LPBITMAPINFOEX;
+
+static HBITMAP LoadBitmapFromFile(LPCTSTR pszFileName)
+{
+    return (HBITMAP)LoadImage(NULL, pszFileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+}
+
+static BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
+{
+    BOOL f;
+    DWORD dwError;
+    BITMAPFILEHEADER bf;
+    BITMAPINFOEX bi;
+    BITMAPINFOHEADER *pbmih;
+    DWORD cb;
+    DWORD cColors, cbColors;
+    HDC hDC;
+    HANDLE hFile;
+    LPVOID pBits;
+    BITMAP bm;
+
+    if (!GetObject(hbm, sizeof(BITMAP), &bm))
+        return FALSE;
+
+    pbmih = &bi.bmiHeader;
+    ZeroMemory(pbmih, sizeof(BITMAPINFOHEADER));
+    pbmih->biSize             = sizeof(BITMAPINFOHEADER);
+    pbmih->biWidth            = bm.bmWidth;
+    pbmih->biHeight           = bm.bmHeight;
+    pbmih->biPlanes           = 1;
+    pbmih->biBitCount         = bm.bmBitsPixel;
+    pbmih->biCompression      = BI_RGB;
+    pbmih->biSizeImage        = bm.bmWidthBytes * bm.bmHeight;
+
+    if (bm.bmBitsPixel < 16)
+        cColors = 1 << bm.bmBitsPixel;
+    else
+        cColors = 0;
+    cbColors = cColors * sizeof(RGBQUAD);
+
+    bf.bfType = 0x4d42;
+    bf.bfReserved1 = 0;
+    bf.bfReserved2 = 0;
+    cb = sizeof(BITMAPFILEHEADER) + pbmih->biSize + cbColors;
+    bf.bfOffBits = cb;
+    bf.bfSize = cb + pbmih->biSizeImage;
+
+    pBits = HeapAlloc(GetProcessHeap(), 0, pbmih->biSizeImage);
+    if (pBits == NULL)
+        return FALSE;
+
+    f = FALSE;
+    hDC = GetDC(NULL);
+    if (hDC != NULL)
+    {
+        if (GetDIBits(hDC, hbm, 0, bm.bmHeight, pBits, (BITMAPINFO*)&bi,
+            DIB_RGB_COLORS))
+        {
+            hFile = CreateFile(pszFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL,
+                               CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL |
+                               FILE_FLAG_WRITE_THROUGH, NULL);
+            if (hFile != INVALID_HANDLE_VALUE)
+            {
+                f = WriteFile(hFile, &bf, sizeof(BITMAPFILEHEADER), &cb, NULL) &&
+                    WriteFile(hFile, &bi, sizeof(BITMAPINFOHEADER), &cb, NULL) &&
+                    WriteFile(hFile, bi.bmiColors, cbColors, &cb, NULL) &&
+                    WriteFile(hFile, pBits, pbmih->biSizeImage, &cb, NULL);
+                if (!f)
+                    dwError = GetLastError();
+                CloseHandle(hFile);
+
+                if (!f)
+                    DeleteFile(pszFileName);
+            }
+            else
+                dwError = GetLastError();
+        }
+        else
+            dwError = GetLastError();
+        ReleaseDC(NULL, hDC);
+    }
+    else
+        dwError = GetLastError();
+
+    HeapFree(GetProcessHeap(), 0, pBits);
+    SetLastError(dwError);
+    return f;
+}
+
+static HBITMAP CreateBitmapFromRegionGeneric(HRGN hRgn, INT size)
+{
+    HDC hdc = CreateCompatibleDC(NULL);
+    BITMAPINFO bmi;
+    ZeroMemory(&bmi, sizeof(bmi));
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = size;
+    bmi.bmiHeader.biHeight = size;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 24;
+    HBITMAP hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0);
+    HGDIOBJ hbmOld = SelectObject(hdc, hbm);
+    RECT rc = { 0, 0, size, size };
+    FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+    FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    SelectObject(hdc, hbmOld);
+    DeleteDC(hdc);
+    return hbm;
+}
+
+static HBITMAP CreateBitmapFromRegion(HRGN hRgn)
+{
+    return CreateBitmapFromRegionGeneric(hRgn, 300);
+}
+
+static HBITMAP CreateBitmapFromRegion254(HRGN hRgn)
+{
+    return CreateBitmapFromRegionGeneric(hRgn, 254);
+}
+
+static HRGN CreateRegionFromBitmapGeneric(HBITMAP hbm, INT size)
+{
+    HRGN hRgn1 = CreateRectRgn(0, 0, 0, 0);
+    HDC hdc = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hdc, hbm);
+    for (INT y = 0; y < size; y++)
+    {
+        for (INT x = 0; x < size; x++)
+        {
+            if (!GetPixel(hdc, x, y))
+            {
+                HRGN hRgn2 = CreateRectRgn(x, y, x + 1, y + 1);
+                CombineRgn(hRgn1, hRgn1, hRgn2, RGN_OR);
+                DeleteObject(hRgn2);
+            }
+        }
+    }
+    SelectObject(hdc, hbmOld);
+    DeleteDC(hdc);
+    return hRgn1;
+}
+
+static HRGN CreateRegionFromBitmap(HBITMAP hbm)
+{
+    return CreateRegionFromBitmapGeneric(hbm, 300);
+}
+
+static HRGN CreateRegionFromBitmap254(HBITMAP hbm)
+{
+    return CreateRegionFromBitmapGeneric(hbm, 254);
+}
