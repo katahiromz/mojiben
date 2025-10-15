@@ -234,19 +234,31 @@ HRGN MyCreateRegion(INT res)
     return DeserializeRegion254((PBYTE)pvData, cbData);
 }
 
+
 static unsigned ThreadProcWorker(void)
 {
     RECT rc;
     SIZE siz;
     CBitmap hbm1, hbm2;
-    HGDIOBJ hbmOld, hPenOld;
+    HGDIOBJ hbmOld;
     std::vector<STROKE> v;
     INT k;
     POINT apt[5];
+    LOGFONT lf;
+    HGDIOBJ hPenOld;
+
+    ZeroMemory(&lf, sizeof(lf));
+    lf.lfHeight = -20;
+    lf.lfCharSet = ANSI_CHARSET;
+    lf.lfQuality = ANTIALIASED_QUALITY;
+    lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
+    CFont hFont(::CreateFontIndirect(&lf));
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
+
+    INT index = g_nMoji;
 
     if (g_fLowerCase)
         v = g_print_lowercase_kakijun[g_nMoji];
@@ -254,7 +266,7 @@ static unsigned ThreadProcWorker(void)
         v = g_print_uppercase_kakijun[g_nMoji];
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
-    for(UINT i = 0; i < v.size(); i++)
+    for (UINT i = 0; i < v.size(); i++)
     {
         if (v[i].type != WAIT)
         {
@@ -268,6 +280,7 @@ static unsigned ThreadProcWorker(void)
         CDC hdcMem(hdc);
         hbm1 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
         hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+
         hbmOld = SelectObject(hdcMem, hbm1);
         rc.left = 0;
         rc.top = 0;
@@ -280,15 +293,15 @@ static unsigned ThreadProcWorker(void)
         SelectObject(hdcMem, hPenOld);
 
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
         SelectObject(hdcMem, hbmOld);
     }
 
     g_hbmKakijun = hbm1;
-
-    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
 
-    MyPlaySound(MAKEINTRESOURCE(5000 + g_nMoji));
+    MyPlaySound(MAKEINTRESOURCE(3000 + g_nMoji));
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
     DO_SLEEP(200);
@@ -297,7 +310,7 @@ static unsigned ThreadProcWorker(void)
     MyPlaySoundAsync(MAKEINTRESOURCE(400));
     for (UINT i = 0; i < v.size(); i++)
     {
-        switch(v[i].type)
+        switch (v[i].type)
         {
         case WAIT:
             DO_SLEEP(500);
@@ -342,7 +355,6 @@ static unsigned ThreadProcWorker(void)
                 hbm1.Swap(hbm2);
                 g_hbmKakijun = hbm1;
                 hbmOld = SelectObject(hdcMem, hbm1);
-
                 rc.left = 0;
                 rc.top = 0;
                 rc.right = siz.cx;
@@ -368,10 +380,10 @@ static unsigned ThreadProcWorker(void)
                     apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
                     apt[1].x = LONG(KAKIJUN_CENTER_XY + k * cost1 - LEN * sint1);
                     apt[1].y = LONG(KAKIJUN_CENTER_XY + k * sint1 + LEN * cost1);
-                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 30) * cost1 - LEN * sint1);
-                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 30) * sint1 + LEN * cost1);
-                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 30) * cost1 + LEN * sint1);
-                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 30) * sint1 - LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -381,28 +393,21 @@ static unsigned ThreadProcWorker(void)
                     if (n != NULLREGION)
                         break;
                 }
-                for( ; k < LEN; k += 30)
+                for ( ; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         break;
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
-
-                    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                    DrawGuideline(hdcMem, siz.cx);
-                    SelectObject(hdcMem, hPenOld);
-
-                    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-
                     apt[0].x = LONG(KAKIJUN_CENTER_XY + k * cost1 + LEN * sint1);
                     apt[0].y = LONG(KAKIJUN_CENTER_XY + k * sint1 - LEN * cost1);
                     apt[1].x = LONG(KAKIJUN_CENTER_XY + k * cost1 - LEN * sint1);
                     apt[1].y = LONG(KAKIJUN_CENTER_XY + k * sint1 + LEN * cost1);
-                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 30) * cost1 - LEN * sint1);
-                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 30) * sint1 + LEN * cost1);
-                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 30) * cost1 + LEN * sint1);
-                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 30) * sint1 - LEN * cost1);
+                    apt[2].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 - LEN * sint1);
+                    apt[2].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 + LEN * cost1);
+                    apt[3].x = LONG(KAKIJUN_CENTER_XY + (k + 20) * cost1 + LEN * sint1);
+                    apt[3].y = LONG(KAKIJUN_CENTER_XY + (k + 20) * sint1 - LEN * cost1);
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 4);
                     EndPath(hdcMem);
@@ -414,10 +419,10 @@ static unsigned ThreadProcWorker(void)
 
                     SelectObject(hdcMem, hbmOld);
 
-                    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
                     if (n == NULLREGION)
                         break;
-                    DO_SLEEP(30);
+                    DO_SLEEP(35);
                 }
                 break;
             }
@@ -452,7 +457,7 @@ static unsigned ThreadProcWorker(void)
                     if (CombineRgn(hRgn8, hRgn2, hRgn9, RGN_AND) != NULLREGION)
                         break;
                 };
-                INT dk = 100 / (step + 2);
+                INT dk = 50 / (step + 2);
 
                 BOOL found = FALSE;
                 INT sign = (v[i].angle0 <= v[i].angle1) ? +1 : -1;
@@ -461,6 +466,7 @@ static unsigned ThreadProcWorker(void)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
                         return 0;
+
                     double theta = k * M_PI / 180.0;
                     double theta2 = (k + dk * sign) * M_PI / 180.0;
                     double cost1 = cos(theta);
@@ -472,14 +478,8 @@ static unsigned ThreadProcWorker(void)
                     double cost4 = cos((1 * theta + 2 * theta2) / 3);
                     double sint4 = sin((1 * theta + 2 * theta2) / 3);
                     hbm1.Swap(hbm2);
-                    g_hbmKakijun = hbm1;
+
                     hbmOld = SelectObject(hdcMem, hbm1);
-
-                    hPenOld = SelectObject(hdcMem, g_hPenBlue);
-                    DrawGuideline(hdcMem, siz.cx);
-                    SelectObject(hdcMem, hPenOld);
-
-                    FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
                     apt[0].x = LONG(v[i].cx + 2 * LEN * cost1);
                     apt[0].y = LONG(v[i].cy + 2 * LEN * sint1);
@@ -495,6 +495,7 @@ static unsigned ThreadProcWorker(void)
                     BeginPath(hdcMem);
                     Polygon(hdcMem, apt, 5);
                     EndPath(hdcMem);
+
                     CRgn hRgn3(::PathToRegion(hdcMem));
                     CRgn hRgn4(::CreateRectRgn(0, 0, 0, 0));
                     INT n = CombineRgn(hRgn4, hRgn2, hRgn3, RGN_AND);
@@ -503,7 +504,9 @@ static unsigned ThreadProcWorker(void)
 
                     SelectObject(hdcMem, hbmOld);
 
+                    g_hbmKakijun = hbm1;
                     InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+
                     if (n == NULLREGION)
                     {
                         if (found)
@@ -513,7 +516,8 @@ static unsigned ThreadProcWorker(void)
                     {
                         found = TRUE;
                     }
-                    DO_SLEEP(30);
+
+                    DO_SLEEP(35);
                 }
                 break;
             }
@@ -521,12 +525,11 @@ static unsigned ThreadProcWorker(void)
     }
 
     DO_SLEEP(500);
-    MyPlaySoundAsync(MAKEINTRESOURCE(5000 + g_nMoji));
+    MyPlaySoundAsync(MAKEINTRESOURCE(3000 + g_nMoji));
 
     {
         CDC hdc(g_hKakijunWnd);
         CDC hdcMem(hdc);
-
         hbm1.Swap(hbm2);
         g_hbmKakijun = hbm1;
         hbmOld = SelectObject(hdcMem, hbm1);
@@ -545,7 +548,7 @@ static unsigned ThreadProcWorker(void)
         SelectObject(hdcMem, hbmOld);
     }
 
-    InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+    InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     DO_SLEEP(500);
 
     ShowWindow(g_hKakijunWnd, SW_HIDE);
