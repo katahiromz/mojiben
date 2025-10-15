@@ -91,10 +91,10 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
-    g_hbmHiragana = LoadBitmap(g_hInstance, MAKEINTRESOURCE(100));
-    g_hbmHiragana2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(150));
-    g_hbmKatakana = LoadBitmap(g_hInstance, MAKEINTRESOURCE(200));
-    g_hbmKatakana2 = LoadBitmap(g_hInstance, MAKEINTRESOURCE(250));
+    g_hbmHiragana = LoadGif(g_hInstance, 100);
+    g_hbmHiragana2 = LoadGif(g_hInstance, 150);
+    g_hbmKatakana = LoadGif(g_hInstance, 200);
+    g_hbmKatakana2 = LoadGif(g_hInstance, 250);
     g_fKatakana = FALSE;
 
     updateSystemMenu(hwnd);
