@@ -429,7 +429,7 @@ static unsigned ThreadProcWorker(void)
                 CRgn hRgn2(MyCreateRegion(v[i].res));
 
                 INT step = 0;
-                for (; step < KAKIJUN_HEIGHT / 20; ++step)
+                for (; step < KAKIJUN_SIZE / 20; ++step)
                 {
                     CRgn hRgn8(::CreateRectRgn(0, 0, 0, 0));
                     CRgn hRgn9(::CreateEllipticRgn(v[i].cx - 20 * step, v[i].cy - 20 * step, v[i].cx + 20 * step, v[i].cy + 20 * step));
