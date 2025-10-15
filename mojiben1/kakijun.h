@@ -3,7 +3,7 @@
 // This file is public domain software.
 
 // stroke type
-enum TYPE
+enum STROKE_TYPE
 {
     WAIT,
     LINEAR,
@@ -14,7 +14,7 @@ enum TYPE
 // stroke info
 struct STROKE
 {
-    TYPE type;
+    STROKE_TYPE type;
     INT angle0;
     INT angle1;
     INT cx;     // width

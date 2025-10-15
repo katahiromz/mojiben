@@ -1,4 +1,4 @@
-﻿enum TYPE
+﻿enum STROKE_TYPE
 {
     WAIT,
     LINEAR,
