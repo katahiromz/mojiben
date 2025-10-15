@@ -18,8 +18,8 @@ VOID OnPaint(HWND hWnd, HDC hdc)
 {
     double cost, sint;
     POINT apt[4];
-    cost = cos(theta);
-    sint = sin(theta);
+    cost = std::cos(theta);
+    sint = std::sin(theta);
     apt[0].x = 150 + g_k * cost + 150 * sint;
     apt[0].y = 150 + g_k * sint - 150 * cost;
     apt[1].x = 150 + g_k * cost - 150 * sint;

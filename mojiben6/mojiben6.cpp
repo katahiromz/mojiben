@@ -460,14 +460,14 @@ static unsigned ThreadProcWorker(void)
 
                     double theta = k * M_PI / 180.0;
                     double theta2 = (k + dk * sign) * M_PI / 180.0;
-                    double cost1 = cos(theta);
-                    double sint1 = sin(theta);
-                    double cost2 = cos(theta2);
-                    double sint2 = sin(theta2);
-                    double cost3 = cos((2 * theta + 1 * theta2) / 3);
-                    double sint3 = sin((2 * theta + 1 * theta2) / 3);
-                    double cost4 = cos((1 * theta + 2 * theta2) / 3);
-                    double sint4 = sin((1 * theta + 2 * theta2) / 3);
+                    double cost1 = std::cos(theta);
+                    double sint1 = std::sin(theta);
+                    double cost2 = std::cos(theta2);
+                    double sint2 = std::sin(theta2);
+                    double cost3 = std::cos((2 * theta + 1 * theta2) / 3);
+                    double sint3 = std::sin((2 * theta + 1 * theta2) / 3);
+                    double cost4 = std::cos((1 * theta + 2 * theta2) / 3);
+                    double sint4 = std::sin((1 * theta + 2 * theta2) / 3);
                     hbm1.Swap(hbm2);
 
                     hbmOld = SelectObject(hdcMem, hbm1);

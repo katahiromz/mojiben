@@ -313,6 +313,31 @@ static unsigned ThreadProcWorker(void)
             MyPlaySoundAsync(MAKEINTRESOURCE(400));
             break;
 
+        case DOT:
+            {
+                CDC hdc(g_hKakijunWnd);
+                CDC hdcMem(hdc);
+                hbm1.Swap(hbm2);
+                g_hbmKakijun = hbm1;
+                hbmOld = SelectObject(hdcMem, hbm1);
+                rc.left = 0;
+                rc.top = 0;
+                rc.right = siz.cx;
+                rc.bottom = siz.cy;
+                FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                PreDraw(hdcMem, rc);
+                FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
+                FillRgn(hdcMem, hRgn5, g_hbrRed);
+                SelectObject(hdcMem, hbmOld);
+
+                InvalidateRect(g_hKakijunWnd, NULL, TRUE);
+                DO_SLEEP(50);
+                break;
+            }
+
         case LINEAR:
             {
                 CDC hdc(g_hKakijunWnd);
@@ -330,8 +355,8 @@ static unsigned ThreadProcWorker(void)
                 SelectObject(hdcMem, hbmOld);
 
                 CRgn hRgn2(MyCreateRegion(v[i].res));
-                double cost1 = cos(v[i].angle0 * M_PI / 180);
-                double sint1 = sin(v[i].angle0 * M_PI / 180);
+                double cost1 = std::cos(v[i].angle0 * M_PI / 180);
+                double sint1 = std::sin(v[i].angle0 * M_PI / 180);
 #define LEN (KAKIJUN_CENTER_XY * 1414 / 1000) // 半径 * √2
                 for (k = -LEN; k < LEN; k += 20)
                 {
@@ -357,7 +382,7 @@ static unsigned ThreadProcWorker(void)
                 for ( ; k < LEN; k += 20)
                 {
                     if (!IsWindowVisible(g_hKakijunWnd))
-                        break;
+                        return 0;
                     hbm1.Swap(hbm2);
                     g_hbmKakijun = hbm1;
                     hbmOld = SelectObject(hdcMem, hbm1);
@@ -425,14 +450,14 @@ static unsigned ThreadProcWorker(void)
 
                     double theta = k * M_PI / 180.0;
                     double theta2 = (k + dk * sign) * M_PI / 180.0;
-                    double cost1 = cos(theta);
-                    double sint1 = sin(theta);
-                    double cost2 = cos(theta2);
-                    double sint2 = sin(theta2);
-                    double cost3 = cos((2 * theta + 1 * theta2) / 3);
-                    double sint3 = sin((2 * theta + 1 * theta2) / 3);
-                    double cost4 = cos((1 * theta + 2 * theta2) / 3);
-                    double sint4 = sin((1 * theta + 2 * theta2) / 3);
+                    double cost1 = std::cos(theta);
+                    double sint1 = std::sin(theta);
+                    double cost2 = std::cos(theta2);
+                    double sint2 = std::sin(theta2);
+                    double cost3 = std::cos((2 * theta + 1 * theta2) / 3);
+                    double sint3 = std::sin((2 * theta + 1 * theta2) / 3);
+                    double cost4 = std::cos((1 * theta + 2 * theta2) / 3);
+                    double sint4 = std::sin((1 * theta + 2 * theta2) / 3);
                     hbm1.Swap(hbm2);
 
                     hbmOld = SelectObject(hdcMem, hbm1);

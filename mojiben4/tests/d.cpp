@@ -19,10 +19,10 @@ VOID OnPaint(HWND hWnd, HDC hdc)
     POINT apt[3];
     double theta = g_k * M_PI / 180.0;
     double theta2 = (g_k + 20) * M_PI / 180.0;
-    cost = cos(theta);
-    sint = sin(theta);
-    cost2 = cos(theta2);
-    sint2 = sin(theta2);
+    cost = std::cos(theta);
+    sint = std::sin(theta);
+    cost2 = std::cos(theta2);
+    sint2 = std::sin(theta2);
     apt[0].x = 150 + 200 * cost;
     apt[0].y = 150 + 200 * sint;
     apt[1].x = 150 + 200 * cost2;
