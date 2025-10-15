@@ -319,6 +319,7 @@ static unsigned ThreadProcWorker(void)
             break;
 
         case DOT:
+#if 0 // Optimized
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
@@ -341,6 +342,7 @@ static unsigned ThreadProcWorker(void)
                 InvalidateRect(g_hKakijunWnd, NULL, TRUE);
                 DO_SLEEP(50);
             }
+#endif
             break;
 
         case LINEAR:
