@@ -1,0 +1,3 @@
+[submodule "FuriganaCtl"]
+	path = FuriganaCtl
+	url = https://github.com/katahiromz/FuriganaCtl

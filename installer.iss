@@ -35,6 +35,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "japanesefont"; Description: "{cm:InstallJapaneseFont}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
+Source: "build\Release\FuriganaCtl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben1.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben2.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\mojiben3.exe"; DestDir: "{app}"; Flags: ignoreversion

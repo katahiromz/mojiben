@@ -56,5 +56,6 @@ target_link_libraries(mojiben4 comctl32 winmm shlwapi)
 if(MSVC)
     target_link_options(mojiben4 PRIVATE /MANIFEST:NO)
 endif()
+add_dependencies(mojiben4 FuriganaCtl)
 
 ##############################################################################

@@ -1172,6 +1172,13 @@ INT WINAPI WinMain(
         return 1;
     }
 
+    // フリガナコントロールを読み込む。
+    HINSTANCE hinstDll = LoadLibraryW(L"FuriganaCtl.dll");
+    if (!hinstDll) {
+        MessageBox(NULL, LoadStringDx(6), NULL, MB_ICONERROR);
+        return 2;
+    }
+
     // ウィンドウクラスを登録する。
     WNDCLASSEX wcx = { sizeof(wcx) };
     wcx.style           = 0;
