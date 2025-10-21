@@ -45,7 +45,6 @@
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (5)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (5) Kakijun");
-static const TCHAR g_szCaptionClassName[] = TEXT("Moji No Benkyou (5) Caption");
 
 HINSTANCE g_hInstance;
 HWND g_hMainWnd;
@@ -105,14 +104,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     }
 
-    INT cx = GetSystemMetrics(SM_CXBORDER);
-    INT cy = GetSystemMetrics(SM_CYBORDER);
-    g_hKakijunWnd = CreateWindow(g_szKakijunClassName, TEXT(""),
-        WS_POPUPWINDOW, CW_USEDEFAULT, 0, KAKIJUN_SIZE + cx * 2, KAKIJUN_SIZE + cy * 2,
-        hwnd, NULL, g_hInstance, NULL);
-    if (g_hKakijunWnd == NULL)
-        return FALSE;
-
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
     lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
@@ -124,6 +115,14 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     lf.lfHeight = -15;
     g_hFontSmall = CreateFontIndirect(&lf);
+
+    INT cx = GetSystemMetrics(SM_CXBORDER);
+    INT cy = GetSystemMetrics(SM_CYBORDER);
+    g_hKakijunWnd = CreateWindow(g_szKakijunClassName, TEXT(""),
+        WS_POPUPWINDOW, CW_USEDEFAULT, 0, KAKIJUN_SIZE + cx * 2, KAKIJUN_SIZE + cy * 2,
+        hwnd, NULL, g_hInstance, NULL);
+    if (g_hKakijunWnd == NULL)
+        return FALSE;
 
     return TRUE;
 }
@@ -751,50 +750,36 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     }
 }
 
-void Caption_OnPaint(HWND hwnd)
-{
-    TCHAR szText[256];
-    GetWindowText(hwnd, szText, 256);
-
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-
-    PAINTSTRUCT ps;
-    if (HDC hdc = BeginPaint(hwnd, &ps))
-    {
-        SetBkMode(hdc, TRANSPARENT);
-        SetTextColor(hdc, RGB(0, 0, 0));
-
-        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-        smartDrawText(hdc, szText, &rc, 550);
-        SelectObject(hdc, hFontOld);
-        EndPaint(hwnd, &ps);
-    }
-}
-
-LRESULT CALLBACK
-CaptionWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_PAINT, Caption_OnPaint);
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
-    return 0;
-}
-
 BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    g_hwndCaption1 = CreateWindowEx(WS_EX_CLIENTEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
-        g_szCaptionClassName, NULL,
-        WS_POPUP | WS_BORDER, 0, 0, 0, 0,
+    // キャプションウィンドウの作成
+    DWORD style = WS_POPUP | WS_BORDER | ES_CENTER | ES_MULTILINE | ES_AUTOVSCROLL;
+    DWORD exstyle = WS_EX_CLIENTEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
+    g_hwndCaption1 = CreateWindowEx(exstyle, L"FuriganaCtl", NULL,
+        style, 0, 0, 550, 400,
+        GetParent(hwnd), NULL, g_hInstance, NULL);
+    g_hwndCaption2 = CreateWindowEx(exstyle, L"FuriganaCtl", NULL,
+        style, 0, 0, 550, 400,
         GetParent(hwnd), NULL, g_hInstance, NULL);
 
-    g_hwndCaption2 = CreateWindowEx(WS_EX_CLIENTEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
-        g_szCaptionClassName, NULL,
-        WS_POPUP | WS_BORDER, 0, 0, 0, 0,
-        GetParent(hwnd), NULL, g_hInstance, NULL);
+    // キャプションウィンドウの設定
+    ::SendMessageW(g_hwndCaption1, WM_SETFONT, (WPARAM)g_hFont, TRUE);
+    ::SendMessageW(g_hwndCaption2, WM_SETFONT, (WPARAM)g_hFont, TRUE);
+
+    ::SendMessageW(g_hwndCaption1, FC_SETRUBYRATIO, 3, 5);
+    ::SendMessageW(g_hwndCaption2, FC_SETRUBYRATIO, 3, 5);
+
+    RECT rc = { 6, 6, 6, 6 };
+    ::SendMessageW(g_hwndCaption1, FC_SETMARGIN, 0, (LPARAM)&rc);
+    ::SendMessageW(g_hwndCaption2, FC_SETMARGIN, 0, (LPARAM)&rc);
+
+    ::SendMessageW(g_hwndCaption1, FC_SETCOLOR, 0, RGB(0, 0, 0));
+    ::SendMessageW(g_hwndCaption2, FC_SETCOLOR, 0, RGB(0, 0, 0));
+    ::SendMessageW(g_hwndCaption1, FC_SETCOLOR, 1, RGB(255, 255, 92));
+    ::SendMessageW(g_hwndCaption2, FC_SETCOLOR, 1, RGB(255, 255, 92));
+
+    ::SendMessageW(g_hwndCaption1, FC_SETLINEGAP, 6, 0);
+    ::SendMessageW(g_hwndCaption2, FC_SETLINEGAP, 6, 0);
 
     return TRUE;
 }
@@ -802,20 +787,17 @@ BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
 {
     RECT rc;
-    GetWindowRect(hwnd, &rc);
+    ::GetWindowRect(hwnd, &rc);
 
-    TCHAR szText[256];
-    GetWindowText(hwndCaption, szText, 256);
+    DWORD style = (DWORD)GetWindowLongPtrW(hwndCaption, GWL_STYLE);
+    style &= ~(WS_HSCROLL | WS_VSCROLL);
+    SetWindowLongPtrW(hwndCaption, GWL_STYLE, style);
 
-    BOOL multiline = FALSE;
-    SIZE siz;
-    if (HDC hdc = GetDC(hwndCaption))
-    {
-        HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
-        multiline = smartGetTextExtent(hdc, szText, 550, &siz);
-        SelectObject(hdc, hFontOld);
-        ReleaseDC(hwndCaption, hdc);
-    }
+    RECT rcIdeal = { 0, 0, 550, 50 };
+    ::SendMessageW(hwndCaption, FC_GETIDEALSIZE, 0, (LPARAM)&rcIdeal);
+    SIZE siz = { rcIdeal.right - rcIdeal.left, rcIdeal.bottom - rcIdeal.top };
+
+    siz.cx = 550 + 1;
 
     RECT rcNew;
     rcNew.left = (rc.left + rc.right - siz.cx) / 2;
@@ -823,10 +805,13 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
     rcNew.right = rcNew.left + siz.cx;
     rcNew.bottom = rcNew.top + siz.cy;
 
-    DWORD style = GetWindowStyle(hwndCaption);
-    DWORD exstyle = GetWindowExStyle(hwndCaption);
-    AdjustWindowRectEx(&rcNew, style, FALSE, exstyle);
-    MoveWindow(hwndCaption, rcNew.left, rcNew.top, rcNew.right - rcNew.left, rcNew.bottom - rcNew.top, TRUE);
+    ::MoveWindow(hwndCaption, rcNew.left, rcNew.top, rcNew.right - rcNew.left, rcNew.bottom - rcNew.top, FALSE);
+
+    ::SendMessageW(hwndCaption, WM_HSCROLL, SB_LEFT, 0);
+    ::SendMessageW(hwndCaption, WM_VSCROLL, SB_TOP, 0);
+    ::SendMessageW(hwndCaption, FC_SETSEL, -1, 0);
+
+    ::InvalidateRect(hwndCaption, NULL, TRUE);
 }
 
 void Kakijun_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
@@ -1202,14 +1187,6 @@ INT WINAPI WinMain(
     wcx.hIcon           = NULL;
     wcx.hbrBackground   = (HBRUSH)GetStockObject(NULL_BRUSH);
     wcx.lpszClassName   = g_szKakijunClassName;
-    wcx.hIconSm         = NULL;
-    if (!RegisterClassEx(&wcx))
-        return 1;
-    wcx.style           = CS_NOCLOSE | CS_HREDRAW | CS_VREDRAW;
-    wcx.lpfnWndProc     = CaptionWndProc;
-    wcx.hIcon           = NULL;
-    wcx.hbrBackground   = CreateSolidBrush(RGB(255, 255, 64));
-    wcx.lpszClassName   = g_szCaptionClassName;
     wcx.hIconSm         = NULL;
     if (!RegisterClassEx(&wcx))
         return 1;
