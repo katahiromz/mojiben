@@ -98,7 +98,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
-    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
+    lstrcpyn(lf.lfFaceName, TEXT("ピザPゴシック"), _countof(lf.lfFaceName));
     lf.lfHeight = -35;
     lf.lfWeight = FW_BOLD;
     lf.lfCharSet = SHIFTJIS_CHARSET;

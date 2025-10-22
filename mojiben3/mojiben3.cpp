@@ -205,7 +205,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     lf.lfHeight = -30;
     lf.lfWeight = FW_BOLD;
-    lstrcpyn(lf.lfFaceName, TEXT("Piza P Gothic"), _countof(lf.lfFaceName));
+    lstrcpyn(lf.lfFaceName, TEXT("ピザPゴシック"), _countof(lf.lfFaceName));
     g_hSmallFont = CreateFontIndirect(&lf);
 
     updateSystemMenu(hwnd);
