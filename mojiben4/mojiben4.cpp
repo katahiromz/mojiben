@@ -697,15 +697,17 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
     RECT rc;
     ::GetWindowRect(hwnd, &rc);
 
+    ::SendMessageW(hwndCaption, FC_SETSEL, -1, 0);
+    ::SendMessageW(hwndCaption, WM_HSCROLL, SB_LEFT, 0);
+    ::SendMessageW(hwndCaption, WM_VSCROLL, SB_TOP, 0);
+
     DWORD style = (DWORD)GetWindowLongPtrW(hwndCaption, GWL_STYLE);
     style &= ~(WS_HSCROLL | WS_VSCROLL);
     SetWindowLongPtrW(hwndCaption, GWL_STYLE, style);
 
     RECT rcIdeal = { 0, 0, 550, 50 };
     ::SendMessageW(hwndCaption, FC_GETIDEALSIZE, 0, (LPARAM)&rcIdeal);
-    SIZE siz = { rcIdeal.right - rcIdeal.left, rcIdeal.bottom - rcIdeal.top };
-
-    siz.cx = 550 + 1;
+    SIZE siz = { 550 + 2, rcIdeal.bottom - rcIdeal.top };
 
     RECT rcNew;
     rcNew.left = (rc.left + rc.right - siz.cx) / 2;
@@ -714,10 +716,6 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
     rcNew.bottom = rcNew.top + siz.cy;
 
     ::MoveWindow(hwndCaption, rcNew.left, rcNew.top, rcNew.right - rcNew.left, rcNew.bottom - rcNew.top, FALSE);
-
-    ::SendMessageW(hwndCaption, WM_HSCROLL, SB_LEFT, 0);
-    ::SendMessageW(hwndCaption, WM_VSCROLL, SB_TOP, 0);
-    ::SendMessageW(hwndCaption, FC_SETSEL, -1, 0);
 
     ::InvalidateRect(hwndCaption, NULL, TRUE);
 }
