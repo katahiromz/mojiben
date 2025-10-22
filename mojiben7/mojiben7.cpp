@@ -799,7 +799,7 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
 
     RECT rcIdeal = { 0, 0, 550, 50 };
     ::SendMessageW(hwndCaption, FC_GETIDEALSIZE, 0, (LPARAM)&rcIdeal);
-    SIZE siz = { 550 + 2, rcIdeal.bottom - rcIdeal.top };
+    SIZE siz = { rcIdeal.right - rcIdeal.left, rcIdeal.bottom - rcIdeal.top };
 
     RECT rcNew;
     rcNew.left = (rc.left + rc.right - siz.cx) / 2;
