@@ -25,6 +25,7 @@ OutputBaseFilename=mojiben-3.7-ALL-setup
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=auto
+SetupIconFile=mojiben1\res\Icon_1.ico
 
 [Languages]
 Name: en; MessagesFile: "compiler:Default.isl"
