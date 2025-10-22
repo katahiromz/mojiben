@@ -775,8 +775,8 @@ BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     ::SendMessageW(g_hwndCaption1, FC_SETCOLOR, 0, RGB(0, 0, 0));
     ::SendMessageW(g_hwndCaption2, FC_SETCOLOR, 0, RGB(0, 0, 0));
-    ::SendMessageW(g_hwndCaption1, FC_SETCOLOR, 1, RGB(255, 255, 92));
-    ::SendMessageW(g_hwndCaption2, FC_SETCOLOR, 1, RGB(255, 255, 92));
+    ::SendMessageW(g_hwndCaption1, FC_SETCOLOR, 1, RGB(255, 255, 130));
+    ::SendMessageW(g_hwndCaption2, FC_SETCOLOR, 1, RGB(255, 255, 130));
 
     ::SendMessageW(g_hwndCaption1, FC_SETLINEGAP, 6, 0);
     ::SendMessageW(g_hwndCaption2, FC_SETLINEGAP, 6, 0);
