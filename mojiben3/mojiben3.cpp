@@ -199,7 +199,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -90;
     lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfQuality = PROOF_QUALITY;
     lstrcpyn(lf.lfFaceName, TEXT("Tahoma"), _countof(lf.lfFaceName));
     g_hFont = CreateFontIndirect(&lf);
 

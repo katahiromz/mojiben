@@ -110,7 +110,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     lf.lfHeight = -35;
     lf.lfWeight = FW_BOLD;
     lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfQuality = PROOF_QUALITY;
     g_hFont = CreateFontIndirect(&lf);
 
     lf.lfHeight = -15;

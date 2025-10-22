@@ -118,7 +118,7 @@ int main(void)
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -SIZE;
     lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfQuality = PROOF_QUALITY;
     lstrcpy(lf.lfFaceName, "NTÉÇÉgÉÑã≥â»èë3ìôïù");
     hFont = CreateFontIndirect(&lf);
     hdc = CreateCompatibleDC(NULL);

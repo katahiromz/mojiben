@@ -167,7 +167,7 @@ int main(void)
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -HEIGHT;
     lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfQuality = PROOF_QUALITY;
     lf.lfWeight = FW_BOLD;
     lstrcpy(lf.lfFaceName, "ÉÇÉgÉÑã≥â»èë3ìôïù");
     hFont = CreateFontIndirect(&lf);

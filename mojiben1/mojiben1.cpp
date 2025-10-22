@@ -102,7 +102,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
     lf.lfCharSet = ANSI_CHARSET;
-    lf.lfQuality = ANTIALIASED_QUALITY;
+    lf.lfQuality = PROOF_QUALITY;
     lstrcpy(lf.lfFaceName, TEXT("Tahoma"));
     g_hFont = ::CreateFontIndirect(&lf);
 
