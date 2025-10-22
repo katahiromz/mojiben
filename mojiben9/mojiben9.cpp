@@ -753,7 +753,7 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
 BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     // キャプションウィンドウの作成
-    DWORD style = WS_POPUP | WS_BORDER | ES_CENTER | ES_MULTILINE | ES_AUTOVSCROLL;
+    DWORD style = WS_POPUP | WS_BORDER | ES_CENTER | ES_MULTILINE | ES_AUTOVSCROLL | FCS_NOSCROLL;
     DWORD exstyle = WS_EX_CLIENTEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
     g_hwndCaption1 = CreateWindowEx(exstyle, L"FuriganaCtl", NULL,
         style, 0, 0, 550, 400,
