@@ -855,6 +855,8 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
+#include "KanjiDataDlg.h"
+
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
@@ -907,6 +909,28 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             LPTSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
             CopyText(hwnd, szText);
+        }
+        break;
+    case 1007:
+        {
+            // 漢字
+            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
+            LPTSTR pch = _tcschr(szText, TEXT(':'));
+            *pch = 0;
+            std::wstring text = szText;
+
+            // 読み
+            std::wstring reading = _tcschr(g_aszMojiReadings[g_nMoji], L':') + 1;
+
+            // 意味。
+            LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
+            std::wstring meaning = _tcschr(szText, TEXT(':')) + 1;
+
+            KanjiDataDlg dlg;
+            dlg.m_text = text;
+            dlg.m_reading = reading;
+            dlg.m_meaning = meaning;
+            dlg.dialog_box(g_hInstance, hwnd);
         }
         break;
     }
