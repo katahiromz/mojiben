@@ -50,8 +50,7 @@ Hiragana and katakana represent sounds. Kanji can have more than one sound and m
 Furthermore, when multiple kanji are combined, they form a kanji idiom, which can have different meanings.
 You can say you have mastered a character only once you can read, write, pronounce, and understand it.
 
-Correct stroke order trains you to write neatly and get things done efficiently.
-Stroke order is also used as a sanity check in job hunting. Don't underestimate stroke order.
+Correct stroke order trains you to write neatly and get things done efficiently. Don't underestimate stroke order.
 
 Kanji can be read in two ways: on-yomi and kun-yomi.
 Onyomi is a reading style introduced from ancient China. Kunyomi is a reading style unique to Japan.
