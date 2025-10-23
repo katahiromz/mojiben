@@ -19,7 +19,7 @@ public:
         LOGFONT lf;
         ZeroMemory(&lf, sizeof(lf));
         lstrcpyn(lf.lfFaceName, TEXT("ピザPゴシック"), _countof(lf.lfFaceName));
-        lf.lfHeight = -28;
+        lf.lfHeight = -26;
         lf.lfWeight = FW_NORMAL;
         lf.lfCharSet = SHIFTJIS_CHARSET;
         lf.lfQuality = PROOF_QUALITY;
@@ -31,6 +31,9 @@ public:
         SetDlgItemTextW(hwnd, edt1, m_text.c_str());
         SetDlgItemTextW(hwnd, edt2, m_reading.c_str());
         SetDlgItemTextW(hwnd, edt3, m_meaning.c_str());
+
+        SendDlgItemMessageW(hwnd, edt3, FC_SETRUBYRATIO, 4, 6);
+        SendDlgItemMessageW(hwnd, edt4, FC_SETRUBYRATIO, 4, 6);
 
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hBigFont, TRUE);
         SendDlgItemMessageW(hwnd, edt2, WM_SETFONT, (WPARAM)m_hNormalFont, TRUE);
