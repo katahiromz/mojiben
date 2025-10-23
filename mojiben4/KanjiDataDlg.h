@@ -14,6 +14,8 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        center_window(hwnd);
+
         LOGFONT lf;
         ZeroMemory(&lf, sizeof(lf));
         lstrcpyn(lf.lfFaceName, TEXT("ピザPゴシック"), _countof(lf.lfFaceName));

@@ -412,3 +412,80 @@ MyPlaySoundAsync(LPCTSTR pszName)
     CloseHandle(hThread);
     return hThread != NULL;
 }
+
+static RECT workarea_from_window(HWND hwnd)
+{
+#if (WINVER >= 0x0500)
+    MONITORINFO mi;
+    mi.cbSize = sizeof(mi);
+    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    if (GetMonitorInfo(hMonitor, &mi))
+    {
+        return mi.rcWork;
+    }
+#endif
+    RECT rc;
+    ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+    return rc;
+}
+
+static void reposition_point(LPPOINT ppt, SIZE siz, LPCRECT prc)
+{
+    if (ppt->x + siz.cx > prc->right)
+        ppt->x = prc->right - siz.cx;
+    if (ppt->y + siz.cy > prc->bottom)
+        ppt->y = prc->bottom - siz.cy;
+    if (ppt->x < prc->left)
+        ppt->x = prc->left;
+    if (ppt->y < prc->top)
+        ppt->y = prc->top;
+}
+
+static void center_window(HWND hwnd)
+{
+    assert(IsWindow(hwnd));
+
+    BOOL bChild = !!(GetWindowStyle(hwnd) & WS_CHILD);
+
+    HWND hwndParent;
+    if (bChild)
+        hwndParent = ::GetParent(hwnd);
+    else
+        hwndParent = ::GetWindow(hwnd, GW_OWNER);
+
+    RECT rcWorkArea = workarea_from_window(hwnd);
+
+    RECT rcParent;
+    if (hwndParent)
+        ::GetWindowRect(hwndParent, &rcParent);
+    else
+        rcParent = rcWorkArea;
+
+    SIZE sizParent = { 
+        rcParent.right - rcParent.left, 
+        rcParent.bottom - rcParent.top
+    };
+
+    RECT rc;
+    ::GetWindowRect(hwnd, &rc);
+    SIZE siz = { rc.right - rc.left, rc.bottom - rc.top };
+
+    POINT pt;
+    pt.x = rcParent.left + (sizParent.cx - siz.cx) / 2;
+    pt.y = rcParent.top + (sizParent.cy - siz.cy) / 2;
+
+    if (bChild && hwndParent)
+    {
+        ::GetClientRect(hwndParent, &rcParent);
+        ::MapWindowPoints(hwndParent, NULL, (LPPOINT)&rcParent, 2);
+        reposition_point(&pt, siz, &rcParent);
+
+        ::ScreenToClient(hwndParent, &pt);
+    }
+    else
+    {
+        reposition_point(&pt, siz, &rcWorkArea);
+    }
+
+    ::SetWindowPos(hwnd, NULL, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
