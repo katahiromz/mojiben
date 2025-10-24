@@ -71,7 +71,7 @@ public:
             if (lstrcmpiW(cls, L"EDIT") == 0 ||
                 lstrcmpiW(cls, L"FuriganaCtl") == 0)
             {
-                return GetStockBrush(WHITE_BRUSH);
+                return GetSysColorBrush(COLOR_WINDOW);
             }
         }
         return NULL;
