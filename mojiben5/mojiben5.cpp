@@ -73,6 +73,7 @@ std::set<INT> g_kanji2_history;
 BOOL g_bHighSpeed = FALSE;
 
 extern "C" extern const LPCWSTR g_aszMojiReadings[];
+extern "C" extern const LPCWSTR g_aszMojiExamples[];
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
@@ -1020,10 +1021,14 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
             std::wstring meaning = _tcschr(szText, TEXT(':')) + 1;
 
+            // 使い方
+            std::wstring examples = _tcschr(g_aszMojiExamples[g_nMoji], L':') + 1;
+
             KanjiDataDlg dlg;
             dlg.m_text = text;
             dlg.m_reading = reading;
             dlg.m_meaning = meaning;
+            dlg.m_examples = examples;
             dlg.dialog_box(g_hInstance, hwnd);
         }
         break;

@@ -443,8 +443,6 @@ static void reposition_point(LPPOINT ppt, SIZE siz, LPCRECT prc)
 
 static void center_window(HWND hwnd)
 {
-    assert(IsWindow(hwnd));
-
     BOOL bChild = !!(GetWindowStyle(hwnd) & WS_CHILD);
 
     HWND hwndParent;

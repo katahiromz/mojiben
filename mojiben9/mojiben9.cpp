@@ -1013,6 +1013,9 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             *pch = 0;
             std::wstring text = szText;
 
+            // 使い方
+            std::wstring examples = _tcschr(g_aszMojiExamples[g_nMoji], L':') + 1;
+
             // 読み
             std::wstring reading = _tcschr(g_aszMojiReadings[g_nMoji], L':') + 1;
 
@@ -1024,6 +1027,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             dlg.m_text = text;
             dlg.m_reading = reading;
             dlg.m_meaning = meaning;
+            dlg.m_examples = examples;
             dlg.dialog_box(g_hInstance, hwnd);
         }
         break;
