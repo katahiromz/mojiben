@@ -1008,27 +1008,25 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case 1007:
         {
+            KanjiDataDlg dlg;
+
             // 漢字
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
             LPTSTR pch = _tcschr(szText, TEXT(':'));
             *pch = 0;
-            std::wstring text = szText;
+            dlg.m_text = szText;
 
             // 読み
-            std::wstring reading = _tcschr(g_aszMojiReadings[g_nMoji], L':') + 1;
+            dlg.m_reading = _tcschr(g_aszMojiReadings[g_nMoji], L':') + 1;
 
             // 意味。
             LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
-            std::wstring meaning = _tcschr(szText, TEXT(':')) + 1;
+            dlg.m_meaning = _tcschr(szText, TEXT(':')) + 1;
 
             // 使い方
-            std::wstring examples = _tcschr(g_aszMojiExamples[g_nMoji], L':') + 1;
+            dlg.m_examples = _tcschr(g_aszMojiExamples[g_nMoji], L':') + 1;
 
-            KanjiDataDlg dlg;
-            dlg.m_text = text;
-            dlg.m_reading = reading;
-            dlg.m_meaning = meaning;
-            dlg.m_examples = examples;
+            // 「漢字データ」ダイアログを開く
             dlg.dialog_box(g_hInstance, hwnd);
         }
         break;
