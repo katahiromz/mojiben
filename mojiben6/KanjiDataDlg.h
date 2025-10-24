@@ -4,6 +4,7 @@ public:
     std::wstring m_text;
     std::wstring m_reading;
     std::wstring m_meaning;
+    std::wstring m_examples;
 
     KanjiDataDlg() : m_hwnd(NULL) { }
     virtual ~KanjiDataDlg() { }
@@ -31,6 +32,7 @@ public:
         SetDlgItemTextW(hwnd, edt1, m_text.c_str());
         SetDlgItemTextW(hwnd, edt2, m_reading.c_str());
         SetDlgItemTextW(hwnd, edt3, m_meaning.c_str());
+        SetDlgItemTextW(hwnd, edt4, m_examples.c_str());
 
         SendDlgItemMessageW(hwnd, edt3, FC_SETRUBYRATIO, 4, 6);
         SendDlgItemMessageW(hwnd, edt4, FC_SETRUBYRATIO, 4, 6);
