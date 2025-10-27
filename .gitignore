@@ -33,3 +33,4 @@ x64
 a.*
 .ninja*
 *.ninja
+*-part*/
