@@ -1127,6 +1127,21 @@ void OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
     ReleaseCapture();
 }
 
+// WM_NOTIFY
+LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+{
+    switch (pnmhdr->code)
+    {
+    case FCN_LOADCONTEXTMENU:
+        break;
+    case FCN_CONTEXTMENUACTION:
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
 // ウィンドウプロシージャ。
 LRESULT CALLBACK
 WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1150,6 +1165,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
         HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
