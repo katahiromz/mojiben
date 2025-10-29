@@ -26,7 +26,7 @@ public:
         lf.lfQuality = PROOF_QUALITY;
         m_hNormalFont = CreateFontIndirect(&lf);
 
-        lf.lfHeight = -118;
+        lf.lfHeight = -122;
         m_hBigFont = CreateFontIndirect(&lf);
 
         SetDlgItemTextW(hwnd, edt1, m_text.c_str());
