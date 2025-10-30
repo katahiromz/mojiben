@@ -20,7 +20,6 @@ When you press a letter button, the sound of that letter will be played and the 
 	* Windows Server 2003
 	* Windows 10
 	* Windows 11
-	* ReactOS
 
 ## How to uninstall
 
