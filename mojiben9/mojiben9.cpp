@@ -990,6 +990,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case 1002:
     case 1003:
     case 1004:
+    case 1007:
         {
             lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
             LPTSTR pch = _tcschr(szText, TEXT(':'));
@@ -1006,7 +1007,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             CopyText(hwnd, szText);
         }
         break;
-    case 1007:
+    case 1010: // 漢字データ
         {
             KanjiDataDlg dlg;
 
@@ -1162,26 +1163,29 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
             PostMessageW(pnmhdr->hwndFrom, FC_SETSEL, 0, -1);
             break;
         case 2003: // Google検索
-            {
-                WCHAR text[512];
-                if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
-                    WCHAR szURL[512];
-                    wsprintfW(szURL, LoadStringDx(1005), text);
-                    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
-                }
-            }
-            break;
         case 2004: // Jisho.org
+        case 2005: // Yahoo! JAPAN search
             {
                 WCHAR text[512];
                 if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
                     WCHAR szURL[512];
-                    wsprintfW(szURL, LoadStringDx(1006), text);
+                    switch (notify->action_id) {
+                    case 2003:
+                        wsprintfW(szURL, LoadStringDx(1005), text);
+                        break;
+                    case 2004:
+                        wsprintfW(szURL, LoadStringDx(1006), text);
+                        break;
+                    case 2005:
+                        wsprintfW(szURL, LoadStringDx(1007), text);
+                        break;
+                    }
                     ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
                 }
             }
             break;
         }
+        return TRUE;
         return TRUE;
     default:
         break;
