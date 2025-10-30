@@ -971,6 +971,8 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
                 ::EnableMenuItem(hMenu, 2000, bNoText ? MF_GRAYED : MF_ENABLED);
                 ::EnableMenuItem(hMenu, 2001, bNoText ? MF_GRAYED : MF_ENABLED);
                 ::EnableMenuItem(hMenu, 2003, bNoText ? MF_GRAYED : MF_ENABLED);
+                ::EnableMenuItem(hMenu, 2004, bNoText ? MF_GRAYED : MF_ENABLED);
+                ::EnableMenuItem(hMenu, 2005, bNoText ? MF_GRAYED : MF_ENABLED);
             }
         }
         return (LRESULT)hMenu;
