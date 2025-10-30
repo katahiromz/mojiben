@@ -1,4 +1,4 @@
-class KanjiDataDlg
+ï»¿class KanjiDataDlg
 {
 public:
     std::wstring m_text;
@@ -19,7 +19,7 @@ public:
 
         LOGFONT lf;
         ZeroMemory(&lf, sizeof(lf));
-        lstrcpyn(lf.lfFaceName, TEXT("ƒsƒUPƒSƒVƒbƒN"), _countof(lf.lfFaceName));
+        lstrcpyn(lf.lfFaceName, TEXT("ãƒ”ã‚¶Pã‚´ã‚·ãƒƒã‚¯"), _countof(lf.lfFaceName));
         lf.lfHeight = -26;
         lf.lfWeight = FW_NORMAL;
         lf.lfCharSet = SHIFTJIS_CHARSET;
