@@ -15,6 +15,7 @@
 #include <process.h>
 #include <tchar.h>
 #include <cstring>
+#include <cassert>
 
 #include <cstdlib>
 #include <process.h>
