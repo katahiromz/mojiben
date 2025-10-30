@@ -961,7 +961,7 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
     switch (pnmhdr->code)
     {
     case FCN_LOADCONTEXTMENU:
-        hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(101));
+        hMenu = ::LoadMenuW(g_hInstance, MAKEINTRESOURCEW(101));
         if (hMenu)
         {
             WCHAR text[512];
@@ -969,6 +969,7 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
                 BOOL bNoText = (text[0] == 0);
                 ::EnableMenuItem(hMenu, 2000, bNoText ? MF_GRAYED : MF_ENABLED);
                 ::EnableMenuItem(hMenu, 2001, bNoText ? MF_GRAYED : MF_ENABLED);
+                ::EnableMenuItem(hMenu, 2003, bNoText ? MF_GRAYED : MF_ENABLED);
             }
         }
         return (LRESULT)hMenu;
@@ -982,6 +983,16 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
             break;
         case 2002: // すべて選択
             PostMessageW(pnmhdr->hwndFrom, FC_SETSEL, 0, -1);
+            break;
+        case 2003: // Google検索
+            {
+                WCHAR text[512];
+                if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
+                    WCHAR szURL[512];
+                    wsprintfW(szURL, LoadStringDx(1005), text);
+                    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
+                }
+            }
             break;
         }
         return TRUE;
