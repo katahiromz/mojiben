@@ -1181,6 +1181,9 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
                     case 2005:
                         wsprintfW(szURL, LoadStringDx(1007), text);
                         break;
+                    default:
+                        assert(0);
+                        break;
                     }
                     ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
                 }
