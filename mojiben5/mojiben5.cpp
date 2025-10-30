@@ -1171,6 +1171,16 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
                 }
             }
             break;
+        case 2004: // Jisho.org
+            {
+                WCHAR text[512];
+                if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
+                    WCHAR szURL[512];
+                    wsprintfW(szURL, LoadStringDx(1006), text);
+                    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
+                }
+            }
+            break;
         }
         return TRUE;
     default:
