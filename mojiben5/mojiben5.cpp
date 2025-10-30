@@ -1130,16 +1130,42 @@ void OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
 // WM_NOTIFY
 LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
 {
+    HMENU hMenu;
+    FURIGANA_NOTIFY *notify = (FURIGANA_NOTIFY *)pnmhdr;
+    if (idFrom != edt3 && idFrom != edt4)
+        return FALSE;
+
     switch (pnmhdr->code)
     {
     case FCN_LOADCONTEXTMENU:
-        break;
+        hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(101));
+        if (hMenu)
+        {
+            WCHAR text[512];
+            if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
+                BOOL bNoText = (text[0] == 0);
+                ::EnableMenuItem(hMenu, 2000, bNoText ? MF_GRAYED : MF_ENABLED);
+                ::EnableMenuItem(hMenu, 2001, bNoText ? MF_GRAYED : MF_ENABLED);
+            }
+        }
+        return (LRESULT)hMenu;
     case FCN_CONTEXTMENUACTION:
-        break;
+        switch (notify->action_id) {
+        case 2000: // コピー
+            PostMessageW(pnmhdr->hwndFrom, WM_COPY, 0, 0);
+            break;
+        case 2001: // コピー (フリガナ付き)
+            PostMessageW(pnmhdr->hwndFrom, WM_COPY, 1, 0);
+            break;
+        case 2002: // すべて選択
+            PostMessageW(pnmhdr->hwndFrom, FC_SETSEL, 0, -1);
+            break;
+        }
+        return TRUE;
     default:
         break;
     }
-    return 0;
+    return FALSE;
 }
 
 // ウィンドウプロシージャ。

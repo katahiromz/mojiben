@@ -77,6 +77,16 @@ public:
         return NULL;
     }
 
+    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+    {
+        LRESULT ret = FORWARD_WM_NOTIFY(::GetParent(hwnd), idFrom, pnmhdr, ::SendMessageW);
+        if (ret) {
+            SetWindowLongPtrW(hwnd, DWLP_MSGRESULT, ret);
+            return TRUE;
+        }
+        return FALSE;
+    }
+
     static INT_PTR CALLBACK
     DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -95,6 +105,7 @@ public:
         HANDLE_MSG(hwnd, WM_DESTROY, self->OnDestroy);
         HANDLE_MSG(hwnd, WM_COMMAND, self->OnCommand);
         HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, self->OnCtlColor);
+        HANDLE_MSG(hwnd, WM_NOTIFY, self->OnNotify);
         default: break;
         }
         return 0;
