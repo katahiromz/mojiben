@@ -851,11 +851,6 @@ void Kakijun_OnDestroy(HWND hwnd)
     g_hwndCaption1 = NULL;
     DestroyWindow(g_hwndCaption2);
     g_hwndCaption2 = NULL;
-
-    g_kanji2_history.clear();
-
-    for (size_t i = 0; i < _countof(g_kanji2_kakijun); ++i)
-        g_kanji2_kakijun[i].clear();
 }
 
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -906,6 +901,9 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbrRed);
 
     g_kanji2_history.clear();
+
+    for (size_t i = 0; i < _countof(g_kanji2_kakijun); ++i)
+        g_kanji2_kakijun[i].clear();
 
     PostQuitMessage(0);
 }

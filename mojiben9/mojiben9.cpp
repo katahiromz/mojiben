@@ -902,6 +902,9 @@ void OnDestroy(HWND hwnd)
 
     g_kanji6_history.clear();
 
+    for (size_t i = 0; i < _countof(g_kanji6_kakijun); ++i)
+        g_kanji6_kakijun[i].clear();
+
     PostQuitMessage(0);
 }
 
@@ -1325,6 +1328,9 @@ INT WINAPI WinMain(
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+
+    // Clean up
+    FreeLibrary(hinstDll);
 
     // Detect handle leaks
     OBJECTS_CHECK_POINT();
