@@ -772,6 +772,19 @@ void Kakijun_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
         ShowWindow(hwnd, SW_HIDE);
 }
 
+LRESULT Kakijun_OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+{
+    FURIGANA_NOTIFY *notify = (FURIGANA_NOTIFY *)pnmhdr;
+    switch (pnmhdr->code) {
+    case NM_KEYDOWN:
+        if (notify->vk == VK_ESCAPE) {
+            ShowWindow(hwnd, SW_HIDE);
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 LRESULT CALLBACK
 KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -784,6 +797,7 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_DESTROY, Kakijun_OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, Kakijun_OnKey);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, Kakijun_OnRButtonDown);
+        HANDLE_MSG(hwnd, WM_NOTIFY, Kakijun_OnNotify);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
