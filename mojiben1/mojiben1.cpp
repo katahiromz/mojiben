@@ -294,6 +294,7 @@ static unsigned ThreadProcWorker(void)
     g_hbmKakijun = hbm1;
     InvalidateRect(g_hKakijunWnd, NULL, FALSE);
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
+    SetForegroundWindow(g_hKakijunWnd);
 
     MyPlaySound(MAKEINTRESOURCE(3000 + g_nMoji));
 
