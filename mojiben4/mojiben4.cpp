@@ -1112,15 +1112,12 @@ INT WINAPI WinMain(
 
     // ウィンドウクラスを登録する。
     WNDCLASSEX wcx = { sizeof(wcx) };
-    wcx.style           = 0;
+    wcx.style           = CS_DBLCLKS;
     wcx.lpfnWndProc     = WindowProc;
-    wcx.cbClsExtra      = 0;
-    wcx.cbWndExtra      = 0;
     wcx.hInstance       = hInstance;
     wcx.hIcon           = LoadIcon(hInstance, MAKEINTRESOURCE(1));
     wcx.hCursor         = LoadCursor(NULL, IDC_ARROW);
     wcx.hbrBackground   = (HBRUSH)CreateSolidBrush(RGB(255, 255, 192));
-    wcx.lpszMenuName    = NULL;
     wcx.lpszClassName   = g_szClassName;
     wcx.hIconSm         = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(1),
         IMAGE_ICON,
