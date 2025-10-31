@@ -1,14 +1,11 @@
-﻿enum STROKE_TYPE
-{
-    WAIT,
-    LINEAR,
-    POLAR,
-    DOT
-};
-
-struct STROKE
-{
-    INT type;
+﻿struct STROKE {
+    enum TYPE {
+        WAIT,
+        LINEAR,
+        POLAR,
+        DOT
+    };
+    TYPE type;
     INT angle0;
     INT angle1;
     INT cx;

@@ -267,7 +267,7 @@ static unsigned ThreadProcWorker(void)
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); i++)
     {
-        if (v[i].type != WAIT)
+        if (v[i].type != STROKE::WAIT)
         {
             CRgn hRgn2(MyCreateRegion(v[i].res));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
@@ -309,7 +309,7 @@ static unsigned ThreadProcWorker(void)
     {
         switch (v[i].type)
         {
-        case WAIT:
+        case STROKE::WAIT:
             DO_SLEEP(500);
 
             if (!IsWindowVisible(g_hKakijunWnd))
@@ -318,7 +318,7 @@ static unsigned ThreadProcWorker(void)
             MyPlaySoundAsync(MAKEINTRESOURCE(400));
             break;
 
-        case DOT:
+        case STROKE::DOT:
 #if 0 // Optimized
             {
                 CDC hdc(g_hKakijunWnd);
@@ -345,7 +345,7 @@ static unsigned ThreadProcWorker(void)
 #endif
             break;
 
-        case LINEAR:
+        case STROKE::LINEAR:
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);
@@ -433,7 +433,7 @@ static unsigned ThreadProcWorker(void)
             }
             break;
 
-        case POLAR:
+        case STROKE::POLAR:
             {
                 CDC hdc(g_hKakijunWnd);
                 CDC hdcMem(hdc);

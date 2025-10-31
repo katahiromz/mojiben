@@ -14,7 +14,7 @@
 KAKIJUN g_digits_kakijun;
 
 #define ADD_LINEAR(angle, data) do { \
-    ga.type     = LINEAR; \
+    ga.type     = STROKE::LINEAR; \
     ga.angle0   = angle; \
     ga.cb       = sizeof(data); \
     ga.pb       = data; \
@@ -22,7 +22,7 @@ KAKIJUN g_digits_kakijun;
 } while (0)
 
 #define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
-    ga.type     = POLAR; \
+    ga.type     = STROKE::POLAR; \
     ga.angle0   = a0; \
     ga.angle1   = a1; \
     ga.cx       = center_x; \
@@ -33,7 +33,7 @@ KAKIJUN g_digits_kakijun;
 } while (0)
 
 #define ADD_WAIT() do { \
-    ga.type     = WAIT; \
+    ga.type     = STROKE::WAIT; \
     vga.push_back(ga); \
 } while (0)
 

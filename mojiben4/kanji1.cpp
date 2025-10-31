@@ -15,7 +15,7 @@ KAKIJUN g_kanji1_kakijun;
 INT g_map[80];
 
 #define ADD_LINEAR(angle, data) do { \
-    ga.type     = LINEAR; \
+    ga.type     = STROKE::LINEAR; \
     ga.angle0   = angle; \
     ga.res      = (100 + j) * 100 + i; \
     vga.push_back(ga); \
@@ -23,7 +23,7 @@ INT g_map[80];
 } while (0)
 
 #define ADD_POLAR(a0, a1, center_x, center_y, data) do { \
-    ga.type     = POLAR; \
+    ga.type     = STROKE::POLAR; \
     ga.angle0   = a0; \
     ga.angle1   = a1; \
     ga.cx       = (center_x * 254) / 300; \
@@ -34,7 +34,7 @@ INT g_map[80];
 } while (0)
 
 #define ADD_WAIT() do { \
-    ga.type     = WAIT; \
+    ga.type     = STROKE::WAIT; \
     vga.push_back(ga); \
 } while (0)
 

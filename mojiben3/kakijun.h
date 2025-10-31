@@ -2,18 +2,14 @@
 // Copyright (C) 2019-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 
-// stroke type
-enum STROKE_TYPE
-{
-    WAIT,
-    LINEAR,
-    POLAR
-};
-
 // stroke info
-struct STROKE
-{
-    STROKE_TYPE type;
+struct STROKE {
+    enum TYPE {
+        WAIT,
+        LINEAR,
+        POLAR
+    };
+    TYPE type;
     INT angle0;
     INT angle1;
     INT cx;
