@@ -86,29 +86,6 @@ retry:
     }
 }
 
-static inline INT_PTR CALLBACK
-AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_INITDIALOG:
-        return TRUE;
-
-    case WM_COMMAND:
-        switch (LOWORD(wParam))
-        {
-        case IDOK:
-            EndDialog(hDlg, IDOK);
-            break;
-
-        case IDCANCEL:
-            EndDialog(hDlg, IDCANCEL);
-            break;
-        }
-    }
-    return FALSE;
-}
-
 typedef LANGID (WINAPI *FN_GetThreadUILanguage)(VOID);
 typedef LANGID (WINAPI *FN_SetThreadUILanguage)(LANGID);
 
@@ -486,4 +463,28 @@ static void center_window(HWND hwnd)
     }
 
     ::SetWindowPos(hwnd, NULL, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+static inline INT_PTR CALLBACK
+AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_INITDIALOG:
+        center_window(hDlg);
+        return TRUE;
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            EndDialog(hDlg, IDOK);
+            break;
+
+        case IDCANCEL:
+            EndDialog(hDlg, IDCANCEL);
+            break;
+        }
+    }
+    return FALSE;
 }
