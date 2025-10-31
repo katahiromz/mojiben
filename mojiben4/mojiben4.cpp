@@ -761,6 +761,9 @@ void Kakijun_OnDestroy(HWND hwnd)
     g_hwndCaption2 = NULL;
 
     g_kanji1_history.clear();
+
+    for (size_t i = 0; i < _countof(g_kanji1_kakijun); ++i)
+        g_kanji1_kakijun[i].clear();
 }
 
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -1143,6 +1146,9 @@ INT WINAPI WinMain(
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+
+    // Clean up
+    FreeLibrary(hinstDll);
 
     // Detect handle leaks
     OBJECTS_CHECK_POINT();
