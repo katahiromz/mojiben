@@ -858,6 +858,12 @@ void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyF
     ShowWindow(hwnd, SW_HIDE);
 }
 
+void Kakijun_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
+{
+    if (vk == VK_ESCAPE)
+        ShowWindow(hwnd, SW_HIDE);
+}
+
 LRESULT CALLBACK
 KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -868,6 +874,7 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_PAINT, Kakijun_OnPaint);
         HANDLE_MSG(hwnd, WM_SHOWWINDOW, Kakijun_OnShowWindow);
         HANDLE_MSG(hwnd, WM_DESTROY, Kakijun_OnDestroy);
+        HANDLE_MSG(hwnd, WM_KEYDOWN, Kakijun_OnKey);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, Kakijun_OnRButtonDown);
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
