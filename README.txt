@@ -10,6 +10,8 @@ You can learn "Hiragana," "Katakana," "Alphabet," and "Kanji."
 
 ## Usage
 
+If the Japanese font "Piza-P-Gothic.ttf" is included, please install it beforehand.
+
 When you press a letter button, the sound of that letter will be played and the stroke order will be displayed.
 
 ## Supported platforms
