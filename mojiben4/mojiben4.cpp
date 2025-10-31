@@ -66,8 +66,8 @@ std::set<INT> g_kanji1_history;
 
 BOOL g_bHighSpeed = FALSE;
 
-extern "C" extern const LPCWSTR g_aszMojiReadings[];
-extern "C" extern const LPCWSTR g_aszMojiExamples[];
+extern "C" extern const wchar_t *g_aszMojiReadings[];
+extern "C" extern const wchar_t *g_aszMojiExamples[];
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {

@@ -1,6 +1,4 @@
-﻿#include <windows.h>
-
-extern "C" const LPCWSTR g_aszMojiExamples[191] =
+﻿extern "C" const wchar_t *g_aszMojiExamples[191] =
 {
     L"胃:胃(い)袋(ぶくろ)／胃(い)痛(つう)／胃(い)薬(ぐすり)／胃(い)腸(ちょう)／胃(い)の中(なか)",
     L"異:異(い)論(ろん)／異(い)常(じょう)／異(い)性(せい)／異(こと)なる／異(い)国(こく)／異(い)変(へん)／異(い)臭(しゅう)／異(い)例(れい)",

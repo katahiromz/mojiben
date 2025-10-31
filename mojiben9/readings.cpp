@@ -1,6 +1,4 @@
-﻿#include <windows.h>
-
-extern "C" const LPCWSTR g_aszMojiReadings[191] =
+﻿extern "C" const wchar_t *g_aszMojiReadings[191] =
 {
     L"胃:イ",
     L"異:こと-なる、こと、イ",
