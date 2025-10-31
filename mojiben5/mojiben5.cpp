@@ -851,6 +851,8 @@ void Kakijun_OnDestroy(HWND hwnd)
     g_hwndCaption1 = NULL;
     DestroyWindow(g_hwndCaption2);
     g_hwndCaption2 = NULL;
+
+    g_kanji2_history.clear();
 }
 
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
