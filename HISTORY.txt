@@ -18,6 +18,7 @@
 - Ver.3.6: 小6の漢字を追加。漢字の書き順ウィンドウのサイズを300×300から254×254に縮小。漢字の日本語の説明を修正。
 - Ver.3.7: 漢字の書き順のリージョンデータをリマスタリング。カナとアルファベットの書き順ウィンドウを254x254に縮小。フリガナを実装。
 - Ver.3.8: 「確かめる」の送り仮名を修正。つかいかたの例を書いた「漢字データ」を追加。Yahoo! JAPAN検索を追加。
+- Ver.3.9:
 
 # Change log of "Moji No Benkyou"
 
@@ -34,3 +35,4 @@
 - Ver.3.6: Added kanji for sixth grade. Reduced the size of the kanji stroke order window from 300×300 to 254×254. Fixed the Japanese explanations for kanji.
 - Ver.3.7: Remastered regional data for kanji stroke order. The kana and alphabet stroke order window has been reduced to 254x254. Furigana is implemented.
 - Ver.3.8: Corrected the trailing kana of "確かめる". Added "Kanji data" with "Usage examples". Added "Yahoo! JAPAN" search.
+- Ver.3.9:
