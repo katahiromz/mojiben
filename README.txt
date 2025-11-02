@@ -46,17 +46,20 @@ We are not responsible for any damages caused by using this program.
 
 Thank you for using this program.
 
-Some characters represent sounds and others represent meanings.
-Hiragana and katakana represent sounds. Kanji can have more than one sound and meaning.
-Furthermore, when multiple kanji are combined, they form a kanji idiom, which can have different meanings.
-You can say you have mastered a character only once you can read, write, pronounce, and understand it.
+In Japanese, some characters show sounds, and others show meanings. Hiragana and katakana are used to write sounds. They're great for beginners! Kanji are more complex; they can have more than one sound and more than one meaning.
 
-Correct stroke order trains you to write neatly and get things done efficiently. Don't underestimate stroke order.
+When you put kanji together, they can form kanji idioms. These idioms often can have special meanings that are different from each kanji alone.
 
-Kanji can be read in two ways: on-yomi and kun-yomi.
-Onyomi is a reading style introduced from ancient China. Kunyomi is a reading style unique to Japan.
+To really know a character, you should be able to read it, write it, say it, and understand what it means.
 
-It's a good idea to start by studying hiragana and katakana.
+Writing with the correct stroke order helps you write neatly and quickly. It may seem small, but stroke order is important; please don't ignore it!
+
+Kanji have two main ways to read them:
+
+- On-yomi: the reading from old Chinese
+- Kun-yomi: the reading from Japanese
+
+If you're just starting to learn Japanese, it's best to begin with hiragana and katakana. They're the foundation of everything else!
 
 ## Kanji characters
 
