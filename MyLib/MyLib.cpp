@@ -199,7 +199,6 @@ bool MyLib::play_sound(const std::wstring& temp_file) {
         err = mciSendString(szCommand, NULL, 0, 0);
         if (err) {
             assert(0);
-            DeleteFile(temp_file.c_str());
             return false;
         }
     }
@@ -207,13 +206,25 @@ bool MyLib::play_sound(const std::wstring& temp_file) {
     assert(!err);
     err = mciSendString(TEXT("close myaudio"), NULL, 0, 0);
     assert(!err);
-    DeleteFile(temp_file.c_str());
     return true;
+}
+
+bool MyLib::play_sound_and_delete(const std::wstring& temp_file) {
+    bool ret = play_sound(temp_file);
+    DeleteFile(temp_file.c_str());
+    return ret;
 }
 
 unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
     wchar_t *temp_file = (wchar_t *)arg;
     MyLib::play_sound(temp_file);
+    std::free(temp_file);
+    return 0;
+}
+
+unsigned __stdcall MyLib::_play_sound_async_and_delete_proc(void *arg) {
+    wchar_t *temp_file = (wchar_t *)arg;
+    MyLib::play_sound_and_delete(temp_file);
     std::free(temp_file);
     return 0;
 }
@@ -225,6 +236,17 @@ bool MyLib::play_sound_async(const std::wstring& temp_file) {
         return false;
     }
     HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, filename, 0, NULL);
+    CloseHandle(hThread);
+    return hThread != NULL;
+}
+
+bool MyLib::play_sound_async_and_delete(const std::wstring& temp_file) {
+    wchar_t *filename = _wcsdup(temp_file.c_str());
+    if (!filename) {
+        assert(0);
+        return false;
+    }
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_and_delete_proc, filename, 0, NULL);
     CloseHandle(hThread);
     return hThread != NULL;
 }

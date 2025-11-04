@@ -39,11 +39,14 @@ public:
     bool save_temp_file(std::wstring& path, const std::string& binary);
 
     static bool play_sound(const std::wstring& temp_file);
+    static bool play_sound_and_delete(const std::wstring& temp_file);
     static bool play_sound_async(const std::wstring& temp_file);
+    static bool play_sound_async_and_delete(const std::wstring& temp_file);
 
 protected:
     std::wstring m_data_dir;
 
     std::wstring _find_data_dir();
     static unsigned __stdcall MyLib::_play_sound_async_proc(void *arg);
+    static unsigned __stdcall MyLib::_play_sound_async_and_delete_proc(void *arg);
 };
