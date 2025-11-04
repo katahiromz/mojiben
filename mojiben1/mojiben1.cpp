@@ -41,8 +41,8 @@ HWND g_hKakijunWnd;
 
 #define NUM_MOJI 92
 
-HBITMAP g_hbmHiragana, g_hbmHiragana2;
-HBITMAP g_hbmKatakana, g_hbmKatakana2;
+HBITMAP g_hbmHiraganaON, g_hbmHiraganaOFF;
+HBITMAP g_hbmKatakanaON, g_hbmKatakanaOFF;
 std::vector<HBITMAP> g_ahbmMoji;
 HBITMAP g_hbmClient;
 BOOL g_fKatakana;
@@ -96,18 +96,18 @@ void EnumData() {
     WCHAR file[MAX_PATH];
 
     for (size_t i = 0; i < g_pMoji->size(); ++i) {
-        std::wstring moji = g_pMoji->m_pairs[i].m_key;
+        std::wstring moji = g_pMoji->key_at(i);
 
 #if 0
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(g_moji_data[i].bitmap_id), &size);
         std::string binary((char *)pres, size);
-        wsprintfW(file, L"%s\\GIF\\%s.gif", g_section.c_str(), moji.c_str());
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
 
         // Load GIF
-        wsprintfW(file, L"%s\\GIF\\%s.gif", g_section.c_str(), moji.c_str());
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
@@ -124,15 +124,6 @@ void EnumData() {
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    g_hThread = NULL;
-    g_hbmKakijun = NULL;
-    g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
-    g_hbmHiragana = LoadGif(g_hInstance, 100);
-    g_hbmHiragana2 = LoadGif(g_hInstance, 150);
-    g_hbmKatakana = LoadGif(g_hInstance, 200);
-    g_hbmKatakana2 = LoadGif(g_hInstance, 250);
-    g_fKatakana = FALSE;
-
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
@@ -158,11 +149,29 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_section = LoadStringDx(500);
     assert(g_section.size());
 
+    WCHAR file[MAX_PATH];
+
     g_pMyLib = new MyLib();
     g_pMoji = new MyLibStringTable();
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
 
     EnumData();
+
+    g_hThread = NULL;
+    g_hbmKakijun = NULL;
+    g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
+
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"00ひらがなON");
+    g_hbmHiraganaON = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"01ひらがなOFF");
+    g_hbmHiraganaOFF = g_pMyLib->load_picture(file);
+
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"02カタカナON");
+    g_hbmKatakanaON = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03カタカナOFF");
+    g_hbmKatakanaOFF = g_pMyLib->load_picture(file);
+
+    g_fKatakana = FALSE;
 
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
@@ -199,19 +208,19 @@ VOID OnDraw(HWND hwnd, HDC hdc)
 
         if (g_fKatakana)
         {
-            hbmOld = SelectObject(hdcMem, g_hbmHiragana2);
+            hbmOld = SelectObject(hdcMem, g_hbmHiraganaOFF);
             BitBlt(hdcMem2, 160, 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            hbmOld = SelectObject(hdcMem, g_hbmKatakana);
+            hbmOld = SelectObject(hdcMem, g_hbmKatakanaON);
             BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
         else
         {
-            hbmOld = SelectObject(hdcMem, g_hbmHiragana);
+            hbmOld = SelectObject(hdcMem, g_hbmHiraganaON);
             BitBlt(hdcMem2, 160, 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            hbmOld = SelectObject(hdcMem, g_hbmKatakana2);
+            hbmOld = SelectObject(hdcMem, g_hbmKatakanaOFF);
             BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
@@ -335,7 +344,7 @@ static unsigned ThreadProcWorker(void)
     SetForegroundWindow(g_hKakijunWnd);
 
     INT nIndex = MojiIndexFromMojiID(g_nMoji);
-    std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\MP3\\" + g_pMoji->key_at(nIndex) + L".mp3");
+    std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\s\\" + g_pMoji->key_at(nIndex) + L".mp3");
     g_pMyLib->play_sound(mp3_path);
 
     if (!IsWindowVisible(g_hKakijunWnd))
@@ -343,7 +352,7 @@ static unsigned ThreadProcWorker(void)
 
     DO_SLEEP(200);
 
-    std::wstring stroke_sound = g_pMyLib->find_data_file(L"00Common\\Stroke.mp3");
+    std::wstring stroke_sound = g_pMyLib->find_data_file(g_section + L"\\Stroke.mp3");
     g_pMyLib->play_sound_async(stroke_sound);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
@@ -697,7 +706,10 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (HitHiraganaRect(hwnd, &rc, pt))
     {
         g_fKatakana = FALSE;
-        MyPlaySoundAsync(MAKEINTRESOURCE(300));
+
+        std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\04ひらがな.mp3");
+        g_pMyLib->play_sound(mp3_path);
+
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;
@@ -708,7 +720,10 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (HitKatakanaRect(hwnd, &rc, pt))
     {
         g_fKatakana = TRUE;
-        MyPlaySoundAsync(MAKEINTRESOURCE(350));
+
+        std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\05カタカナ.mp3");
+        g_pMyLib->play_sound(mp3_path);
+
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;
@@ -911,10 +926,10 @@ void OnDestroy(HWND hwnd)
 
     DeleteObject(g_hFont);
     DeleteObject(g_hbrRed);
-    DeleteObject(g_hbmHiragana);
-    DeleteObject(g_hbmHiragana2);
-    DeleteObject(g_hbmKatakana);
-    DeleteObject(g_hbmKatakana2);
+    DeleteObject(g_hbmHiraganaON);
+    DeleteObject(g_hbmHiraganaOFF);
+    DeleteObject(g_hbmKatakanaON);
+    DeleteObject(g_hbmKatakanaOFF);
 
     g_katakana_history.clear();
     g_hiragana_history.clear();

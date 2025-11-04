@@ -116,7 +116,7 @@ std::wstring MyLib::find_data_dir() {
 }
 
 std::wstring MyLib::find_data_file(const std::wstring& filename) {
-    if (PathFileExistsW(filename.c_str()))
+    if (!PathIsRelativeW(filename.c_str()))
         return filename;
 
     std::wstring path = find_data_dir();
@@ -128,8 +128,7 @@ std::wstring MyLib::find_data_file(const std::wstring& filename) {
 
 bool MyLib::load_binary(std::string& binary, const std::wstring& filename) {
     std::wstring path = find_data_file(filename);
-    assert(PathFileExistsW(path.c_str()));
- 
+
     if (!read_all(binary, path.c_str())) {
         assert(0);
         return false;
@@ -173,28 +172,6 @@ bool MyLib::load_utf8_text_file(std::string& binary, const std::wstring& filenam
     return true;
 }
 
-bool MyLib::_save_temp_file(std::wstring& temp_file, const std::string& binary) {
-    temp_file.clear();
-
-    TCHAR szTempPath[MAX_PATH];
-    GetTempPath(_countof(szTempPath), szTempPath);
-
-    TCHAR szFile[MAX_PATH];
-    GetTempFileName(szTempPath, TEXT("MJB"), 0, szFile);
-
-    FILE *fout = _tfopen(szFile, TEXT("wb"));
-    if (!fout) {
-        assert(0);
-        return false;
-    }
-    if (!binary.empty())
-        fwrite(&binary[0], binary.size(), 1, fout);
-    fclose(fout);
-
-    temp_file = szFile;
-    return true;
-}
-
 bool MyLib::play_sound(const std::wstring& filename) {
     int err;
     {
@@ -214,12 +191,6 @@ bool MyLib::play_sound(const std::wstring& filename) {
     return true;
 }
 
-bool MyLib::play_sound_and_delete(const std::wstring& filename) {
-    bool ret = play_sound(filename);
-    ::DeleteFile(filename.c_str());
-    return ret;
-}
-
 unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
     wchar_t *filename = (wchar_t *)arg;
     s_pThis->play_sound(filename);
@@ -227,51 +198,14 @@ unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
     return 0;
 }
 
-unsigned __stdcall MyLib::_play_sound_async_and_delete_proc(void *arg) {
-    wchar_t *temp_file = (wchar_t *)arg;
-    s_pThis->play_sound_and_delete(temp_file);
-    std::free(temp_file);
-    return 0;
-}
-
 bool MyLib::play_sound_async(const std::wstring& filename) {
-    std::string binary;
-    if (!load_binary(binary, filename)) {
+    wchar_t *file_ref = _wcsdup(filename.c_str());
+    if (!file_ref) {
         assert(0);
         return false;
     }
 
-    std::wstring temp_path;
-    _save_temp_file(temp_path, binary);
-
-    wchar_t *temp_file = _wcsdup(temp_path.c_str());
-    if (!temp_file) {
-        assert(0);
-        return false;
-    }
-
-    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, temp_file, 0, NULL);
-    CloseHandle(hThread);
-    return hThread != NULL;
-}
-
-bool MyLib::play_sound_async_and_delete(const std::wstring& filename) {
-    std::string binary;
-    if (!load_binary(binary, filename)) {
-        assert(0);
-        return false;
-    }
-
-    std::wstring temp_path;
-    _save_temp_file(temp_path, binary);
-
-    wchar_t *temp_file = _wcsdup(temp_path.c_str());
-    if (!temp_file) {
-        assert(0);
-        return false;
-    }
-
-    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_and_delete_proc, temp_file, 0, NULL);
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, file_ref, 0, NULL);
     CloseHandle(hThread);
     return hThread != NULL;
 }
