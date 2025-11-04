@@ -111,11 +111,13 @@ std::wstring MyLib::find_data_file(const wchar_t *filename, const wchar_t *secti
     path += L"\\";
     path += filename;
 
-    if (!PathFileExistsW(path.c_str()))
-        return path;
+    if (!PathFileExistsW(path.c_str())) {
+        path = section;
+        path += L"\\";
+        path += filename;
+    }
 
-    assert(0);
-    return filename;
+    return path;
 }
 
 bool MyLib::load_binary(std::string& binary, const wchar_t *filename, const wchar_t *section) {
