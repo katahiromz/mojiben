@@ -93,6 +93,8 @@ INT MojiIndexFromMojiID(INT moji_id)
 }
 
 void EnumData() {
+    WCHAR file[MAX_PATH];
+
     for (size_t i = 0; i < g_pMoji->size(); ++i) {
         std::wstring moji = g_pMoji->m_pairs[i].m_key;
 
@@ -100,16 +102,23 @@ void EnumData() {
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(g_moji_data[i].bitmap_id), &size);
         std::string binary((char *)pres, size);
-        WCHAR file[MAX_PATH];
-        wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), moji.c_str());
+        wsprintfW(file, L"%s\\GIF\\%s.gif", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
 
-        WCHAR file[MAX_PATH];
-        wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), moji.c_str());
+        // Load GIF
+        wsprintfW(file, L"%s\\GIF\\%s.gif", g_section.c_str(), moji.c_str());
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
+
+#if 0
+        DWORD size;
+        PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(3000 + g_moji_data[i].moji_id), &size);
+        std::string binary((char *)pres, size);
+        wsprintfW(file, L"%s\\MP3\\%s.mp3", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
     }
 }
 
@@ -325,14 +334,17 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     SetForegroundWindow(g_hKakijunWnd);
 
-    MyPlaySound(MAKEINTRESOURCE(3000 + g_nMoji));
+    INT nIndex = MojiIndexFromMojiID(g_nMoji);
+    std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\MP3\\" + g_pMoji->key_at(nIndex) + L".mp3");
+    g_pMyLib->play_sound(mp3_path);
 
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
 
     DO_SLEEP(200);
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(400));
+    std::wstring stroke_sound = g_pMyLib->find_data_file(L"00Common\\Stroke.mp3");
+    g_pMyLib->play_sound_async(stroke_sound);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); ++i)
@@ -345,7 +357,7 @@ static unsigned ThreadProcWorker(void)
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
 
-            MyPlaySoundAsync(MAKEINTRESOURCE(400));
+            g_pMyLib->play_sound_async(stroke_sound);
             break;
 
         case STROKE::DOT:
@@ -559,7 +571,8 @@ static unsigned ThreadProcWorker(void)
     }
 
     DO_SLEEP(500);
-    MyPlaySoundAsync(MAKEINTRESOURCE(3000 + g_nMoji));
+
+    g_pMyLib->play_sound_async(mp3_path);
 
     {
         CDC hdc(g_hKakijunWnd);

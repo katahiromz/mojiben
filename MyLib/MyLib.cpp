@@ -73,8 +73,10 @@ void MyLibStringTable::set_text(std::wstring& text) {
 ////////////////////////////////////////////////////////////////////////////
 
 static HRESULT s_hrOleInit;
+MyLib *MyLib::s_pThis = NULL;
 
 MyLib::MyLib() {
+    s_pThis = this;
     s_hrOleInit = ::OleInitialize(NULL);
 }
 
@@ -114,6 +116,9 @@ std::wstring MyLib::find_data_dir() {
 }
 
 std::wstring MyLib::find_data_file(const std::wstring& filename) {
+    if (PathFileExistsW(filename.c_str()))
+        return filename;
+
     std::wstring path = find_data_dir();
     path += L"\\";
     path += filename;
@@ -168,7 +173,7 @@ bool MyLib::load_utf8_text_file(std::string& binary, const std::wstring& filenam
     return true;
 }
 
-bool MyLib::save_temp_file(std::wstring& temp_file, const std::string& binary) {
+bool MyLib::_save_temp_file(std::wstring& temp_file, const std::string& binary) {
     temp_file.clear();
 
     TCHAR szTempPath[MAX_PATH];
@@ -190,12 +195,12 @@ bool MyLib::save_temp_file(std::wstring& temp_file, const std::string& binary) {
     return true;
 }
 
-bool MyLib::play_sound(const std::wstring& temp_file) {
+bool MyLib::play_sound(const std::wstring& filename) {
     int err;
     {
         AutoPriority high_priority;
         TCHAR szCommand[MAX_PATH + 64];
-        wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), temp_file);
+        wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), filename.c_str());
         err = mciSendString(szCommand, NULL, 0, 0);
         if (err) {
             assert(0);
@@ -209,44 +214,64 @@ bool MyLib::play_sound(const std::wstring& temp_file) {
     return true;
 }
 
-bool MyLib::play_sound_and_delete(const std::wstring& temp_file) {
-    bool ret = play_sound(temp_file);
-    DeleteFile(temp_file.c_str());
+bool MyLib::play_sound_and_delete(const std::wstring& filename) {
+    bool ret = play_sound(filename);
+    ::DeleteFile(filename.c_str());
     return ret;
 }
 
 unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
-    wchar_t *temp_file = (wchar_t *)arg;
-    MyLib::play_sound(temp_file);
-    std::free(temp_file);
+    wchar_t *filename = (wchar_t *)arg;
+    s_pThis->play_sound(filename);
+    std::free(filename);
     return 0;
 }
 
 unsigned __stdcall MyLib::_play_sound_async_and_delete_proc(void *arg) {
     wchar_t *temp_file = (wchar_t *)arg;
-    MyLib::play_sound_and_delete(temp_file);
+    s_pThis->play_sound_and_delete(temp_file);
     std::free(temp_file);
     return 0;
 }
 
-bool MyLib::play_sound_async(const std::wstring& temp_file) {
-    wchar_t *filename = _wcsdup(temp_file.c_str());
-    if (!filename) {
+bool MyLib::play_sound_async(const std::wstring& filename) {
+    std::string binary;
+    if (!load_binary(binary, filename)) {
         assert(0);
         return false;
     }
-    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, filename, 0, NULL);
+
+    std::wstring temp_path;
+    _save_temp_file(temp_path, binary);
+
+    wchar_t *temp_file = _wcsdup(temp_path.c_str());
+    if (!temp_file) {
+        assert(0);
+        return false;
+    }
+
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, temp_file, 0, NULL);
     CloseHandle(hThread);
     return hThread != NULL;
 }
 
-bool MyLib::play_sound_async_and_delete(const std::wstring& temp_file) {
-    wchar_t *filename = _wcsdup(temp_file.c_str());
-    if (!filename) {
+bool MyLib::play_sound_async_and_delete(const std::wstring& filename) {
+    std::string binary;
+    if (!load_binary(binary, filename)) {
         assert(0);
         return false;
     }
-    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_and_delete_proc, filename, 0, NULL);
+
+    std::wstring temp_path;
+    _save_temp_file(temp_path, binary);
+
+    wchar_t *temp_file = _wcsdup(temp_path.c_str());
+    if (!temp_file) {
+        assert(0);
+        return false;
+    }
+
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_and_delete_proc, temp_file, 0, NULL);
     CloseHandle(hThread);
     return hThread != NULL;
 }
