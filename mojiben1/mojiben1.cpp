@@ -130,6 +130,16 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (!g_pMyLib)
         return FALSE;
 
+    // セクション名を読み込む
+    g_section = LoadStringDx(500);
+    assert(g_section.size());
+
+    // 文字データを取り込む
+    g_pMoji = new(std::nothrow) MyLibStringTable();
+    if (!g_pMoji)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
@@ -152,17 +162,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     }
 
-    g_section = LoadStringDx(500);
-    assert(g_section.size());
-
     WCHAR file[MAX_PATH];
-
-    g_pMoji = new(std::nothrow) MyLibStringTable();
-    if (!g_pMoji)
-        return FALSE;
-
-    assert(g_pMyLib);
-    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
 
     EnumData();
 

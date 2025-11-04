@@ -25,6 +25,7 @@
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
+#include "../MyLib/MyLib.h"
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (2)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (2) Kakijun");
@@ -33,10 +34,8 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
-HBITMAP g_hbmUpperCase, g_hbmLowerCase;
-HBITMAP g_hbmUpperCase2, g_hbmLowerCase2;
-HBITMAP g_ahbmPrintUpperCase[26];
-HBITMAP g_ahbmPrintLowerCase[26];
+HBITMAP g_hbmUppercaseON, g_hbmLowercaseON;
+HBITMAP g_hbmUppercaseOFF, g_hbmLowercaseOFF;
 HBITMAP g_hbmClient;
 BOOL g_fLowerCase;
 
@@ -51,35 +50,82 @@ std::set<INT> g_print_lowercase_history;
 
 BOOL g_bHighSpeed = FALSE;
 
+std::wstring g_section;
+MyLib *g_pMyLib = NULL;
+MyLibStringTable *g_pMoji = NULL;
+std::vector<HBITMAP> g_ahbmMoji;
+
+void EnumData() {
+    WCHAR file[MAX_PATH];
+
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->key_at(i);
+
+#if 0
+        DWORD size;
+        PVOID pres;
+        if (i < 26)
+            pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(1000 + i % 26), &size);
+        else
+            pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(2000 + i % 26), &size);
+        std::string binary((char *)pres, size);
+        if (i < 26)
+            wsprintfW(file, L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
+        else
+            wsprintfW(file, L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
+
+        // Load GIF
+        if (i < 26)
+            wsprintfW(file, L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
+        else
+            wsprintfW(file, L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
+        HBITMAP hbm = g_pMyLib->load_picture(file);
+        assert(hbm);
+        g_ahbmMoji.push_back(hbm);
+    }
+}
+
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+    // メディアライブラリを作成
+    g_pMyLib = new(std::nothrow) MyLib();
+    if (!g_pMyLib)
+        return FALSE;
+
+    // セクション名を読み込む
+    g_section = LoadStringDx(500);
+    assert(g_section.size());
+
+    // 文字データを取り込む
+    g_pMoji = new(std::nothrow) MyLibStringTable();
+    if (!g_pMoji)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
+    EnumData();
+
+    WCHAR file[MAX_PATH];
+
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"00UppercaseON");
+    g_hbmUppercaseON = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"01LowercaseON");
+    g_hbmLowercaseON = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"02UppercaseOFF");
+    g_hbmUppercaseOFF = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03LowercaseOFF");
+    g_hbmLowercaseOFF = g_pMyLib->load_picture(file);
+
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
     g_hPenBlue = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 
-    g_hbmUpperCase = LoadGif(g_hInstance, 100);
-    g_hbmLowerCase = LoadGif(g_hInstance, 150);
-    g_hbmUpperCase2 = LoadGif(g_hInstance, 300);
-    g_hbmLowerCase2 = LoadGif(g_hInstance, 350);
-
     g_fLowerCase = FALSE;
 
     updateSystemMenu(hwnd);
-
-    INT i;
-    for(i = 0; i < 'Z' - 'A' + 1; i++)
-    {
-        g_ahbmPrintUpperCase[i] = LoadGif(g_hInstance, 1000 + i);
-        if (g_ahbmPrintUpperCase[i] == NULL)
-            return FALSE;
-    }
-    for(i = 0; i < 'Z' - 'A' + 1; i++)
-    {
-        g_ahbmPrintLowerCase[i] = LoadGif(g_hInstance, 2000 + i);
-        if (g_ahbmPrintLowerCase[i] == NULL)
-            return FALSE;
-    }
 
     g_hbmClient = NULL;
 
@@ -102,6 +148,45 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     return TRUE;
+}
+
+void OnDestroy(HWND hwnd)
+{
+    if (g_hThread)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        CloseHandle(g_hThread);
+    }
+
+    DeleteObject(g_hbmUppercaseON);
+    DeleteObject(g_hbmLowercaseON);
+    DeleteObject(g_hbmUppercaseOFF);
+    DeleteObject(g_hbmLowercaseOFF);
+
+    UINT i;
+    for (i = 0; i < g_ahbmMoji.size(); ++i)
+    {
+        if (g_ahbmMoji[i])
+            DeleteObject(g_ahbmMoji[i]);
+    }
+    g_ahbmMoji.clear();
+
+    DeleteObject(g_hbmClient);
+
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hPenBlue);
+
+    g_print_uppercase_history.clear();
+    g_print_lowercase_history.clear();
+
+    delete g_pMoji;
+    g_pMoji = NULL;
+
+    delete g_pMyLib;
+    g_pMyLib = NULL;
+
+    PostQuitMessage(0);
 }
 
 // 文字ボタンの位置。
@@ -129,6 +214,30 @@ BOOL GetMojiRect(HWND hwnd, LPRECT prc, INT i)
     return TRUE;
 }
 
+// 「UPPERCASE」ボタンの位置。
+BOOL GetUppercaseRect(HWND hwnd, LPRECT prc)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    BITMAP bm;
+    GetObjectW(g_hbmUppercaseON, sizeof(bm), &bm);
+    INT x = rc.right / 2 - bm.bmWidth - 30;
+    SetRect(prc, x, 60, x + bm.bmWidth, 60 + bm.bmHeight);
+    return TRUE;
+}
+
+// 「lowercase」ボタンの位置。
+BOOL GetLowercaseRect(HWND hwnd, LPRECT prc)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    BITMAP bm;
+    GetObjectW(g_hbmUppercaseON, sizeof(bm), &bm);
+    INT x = rc.right / 2 + 30;
+    SetRect(prc, x, 60, x + bm.bmWidth, 60 + bm.bmHeight);
+    return TRUE;
+}
+
 void OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -151,36 +260,44 @@ void OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        HBITMAP *bitmaps;
+        RECT rcU, rcL;
+        GetUppercaseRect(hwnd, &rcU);
+        GetLowercaseRect(hwnd, &rcL);
+
         if (g_fLowerCase)
         {
-            hbmOld = SelectObject(hdcMem, g_hbmUpperCase2);
-            BitBlt(hdcMem2, 160, 60, 200, 63, hdcMem, 0, 0, SRCCOPY);
+            hbmOld = SelectObject(hdcMem, g_hbmUppercaseOFF);
+            BitBlt(hdcMem2, rcU.left, rcU.top, rcU.right - rcU.left, rcU.bottom - rcU.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            hbmOld = SelectObject(hdcMem, g_hbmLowerCase);
-            BitBlt(hdcMem2, siz.cx - (160 + 200), 60, 200, 63, hdcMem, 0, 0, SRCCOPY);
+            hbmOld = SelectObject(hdcMem, g_hbmLowercaseON);
+            BitBlt(hdcMem2, rcL.left, rcL.top, rcL.right - rcL.left, rcL.bottom - rcL.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            bitmaps = g_ahbmPrintLowerCase;
         }
         else
         {
-            hbmOld = SelectObject(hdcMem, g_hbmUpperCase);
-            BitBlt(hdcMem2, 160, 60, 200, 63, hdcMem, 0, 0, SRCCOPY);
+            hbmOld = SelectObject(hdcMem, g_hbmUppercaseON);
+            BitBlt(hdcMem2, rcU.left, rcU.top, rcU.right - rcU.left, rcU.bottom - rcU.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            hbmOld = SelectObject(hdcMem, g_hbmLowerCase2);
-            BitBlt(hdcMem2, siz.cx - (160 + 200), 60, 200, 63, hdcMem, 0, 0, SRCCOPY);
+            hbmOld = SelectObject(hdcMem, g_hbmLowercaseOFF);
+            BitBlt(hdcMem2, rcL.left, rcL.top, rcL.right - rcL.left, rcL.bottom - rcL.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
-            bitmaps = g_ahbmPrintUpperCase;
         }
 
-        for (INT i = 0; i < 'Z' - 'A' + 1; i++)
-        {
-            GetMojiRect(hwnd, &rc, i);
+        for (UINT i = 0; i < g_ahbmMoji.size(); i++) {
+            if (!g_fLowerCase) {
+                if (i >= 26)
+                    continue;
+            } else {
+                if (i < 26)
+                    continue;
+            }
+
+            GetMojiRect(hwnd, &rc, i % 26);
 
             InflateRect(&rc, +2, +2);
             OffsetRect(&rc, +1, +1);
 
-            hbmOld = SelectObject(hdcMem, bitmaps[i]);
+            hbmOld = SelectObject(hdcMem, g_ahbmMoji[i]);
             if (g_fLowerCase)
             {
                 if (g_print_lowercase_history.find(i) != g_print_lowercase_history.end())
@@ -239,9 +356,9 @@ void GetStrokeData(std::vector<STROKE>& v)
     INT index = g_nMoji;
 
     if (g_fLowerCase)
-        v = g_print_lowercase_kakijun[g_nMoji];
+        v = g_print_lowercase_kakijun[g_nMoji % 26];
     else
-        v = g_print_uppercase_kakijun[g_nMoji];
+        v = g_print_uppercase_kakijun[g_nMoji % 26];
 }
 
 void PreDraw(HDC hdc, RECT& rc)
@@ -617,25 +734,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadProc, NULL, 0, NULL);
 }
 
-// 「UPPERCASE」ボタンの位置。
-BOOL GetUppercaseRect(HWND hwnd, LPRECT prc)
-{
-    SetRect(prc, 160, 60, 160 + 200, 60 + 63);
-    return TRUE;
-}
-
-// 「lowercase」ボタンの位置。
-BOOL GetLowercaseRect(HWND hwnd, LPRECT prc)
-{
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-    prc->left = rc.right - (160 + 200);
-    prc->top = 60;
-    prc->right = prc->left + 200;
-    prc->bottom = prc->top + 63;
-    return TRUE;
-}
-
 VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 {
     POINT pt;
@@ -687,7 +785,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         GetMojiRect(hwnd, &rc, i);
         if (PtInRect(&rc, pt))
         {
-            MojiOnClick(hwnd, i, fRight);
+            MojiOnClick(hwnd, i + g_fLowerCase * 26, fRight);
             return;
         }
     }
@@ -845,44 +943,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     }
 
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
-}
-
-void OnDestroy(HWND hwnd)
-{
-    if (g_hThread)
-    {
-        ShowWindow(g_hKakijunWnd, SW_HIDE);
-        CloseHandle(g_hThread);
-    }
-
-    DeleteObject(g_hbmUpperCase);
-    DeleteObject(g_hbmLowerCase);
-    DeleteObject(g_hbmUpperCase2);
-    DeleteObject(g_hbmLowerCase2);
-
-    UINT i;
-
-    for (i = 0; i < _countof(g_ahbmPrintUpperCase); ++i)
-    {
-        if (g_ahbmPrintUpperCase[i])
-            DeleteObject(g_ahbmPrintUpperCase[i]);
-    }
-    for (i = 0; i < _countof(g_ahbmPrintLowerCase); ++i)
-    {
-        if (g_ahbmPrintLowerCase[i])
-            DeleteObject(g_ahbmPrintLowerCase[i]);
-    }
-
-    DeleteObject(g_hbmClient);
-
-    DeleteObject(g_hbmKakijun);
-    DeleteObject(g_hbrRed);
-    DeleteObject(g_hPenBlue);
-
-    g_print_uppercase_history.clear();
-    g_print_lowercase_history.clear();
-
-    PostQuitMessage(0);
 }
 
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

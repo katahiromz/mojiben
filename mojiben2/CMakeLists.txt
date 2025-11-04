@@ -52,7 +52,7 @@ add_definitions(-DUNICODE -D_UNICODE)
 
 # mojiben2.exe
 add_executable(mojiben2 WIN32 mojiben2.cpp uppercase.cpp lowercase.cpp mojiben2_res.rc ../Region.cpp)
-target_link_libraries(mojiben2 comctl32 winmm shlwapi)
+target_link_libraries(mojiben2 comctl32 winmm shlwapi MyLib)
 if(MSVC)
     target_link_options(mojiben2 PRIVATE /MANIFEST:NO)
 endif()
