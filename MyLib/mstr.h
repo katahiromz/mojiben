@@ -76,7 +76,7 @@ mstr_split(T_STR_CONTAINER& container,
     container.push_back(str.substr(i));
 }
 
-std::wstring mstr_unescape(const std::wstring& str) {
+static std::wstring mstr_unescape(const std::wstring& str) {
     std::wstring ret;
     ret.reserve(str.size());
 
@@ -130,11 +130,32 @@ std::wstring mstr_unescape(const std::wstring& str) {
     return ret;
 }
 
+inline
 std::wstring mstr_unquote(const std::wstring& str) {
-    if (str.size() >= 2 && str.front() == L'"') {
-        if (str.back() == L'"')
+    if (str.size() >= 2 && str[0] == L'"') {
+        if (str[str.size() - 1] == L'"')
             return mstr_unescape(str.substr(1, str.size() - 2));
         return mstr_unescape(str.substr(1, str.size() - 1));
     }
     return str;
+}
+
+#include <windows.h>
+
+inline bool mstr_is_utf8(const std::string& binary) {
+    if (binary.empty())
+        return true;
+    return !!MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, binary.c_str(), (INT)binary.size(), NULL, 0);
+}
+
+inline std::wstring mstr_ansi_to_wide(UINT codepage, const std::string& utf8) {
+    std::wstring wide;
+    if (utf8.empty())
+        return wide;
+    INT len = MultiByteToWideChar(codepage, 0, utf8.c_str(), (INT)utf8.size(), NULL, 0);
+    if (!len)
+        return wide;
+    wide.resize(len);
+    MultiByteToWideChar(codepage, 0, utf8.c_str(), (INT)utf8.size(), &wide[0], len);
+    return wide;
 }

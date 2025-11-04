@@ -42,6 +42,7 @@ endif()
 
 add_definitions(-D_USE_MATH_DEFINES -D_CRT_SECURE_NO_WARNINGS)
 
+add_subdirectory(MyLib)
 add_subdirectory(FuriganaCtl)
 add_subdirectory(mojiben1)
 add_subdirectory(mojiben2)
