@@ -137,6 +137,11 @@ bool MyLib::load_utf8_text_file(std::string& binary, const wchar_t *filename, co
 
     if (binary.size() >= 3 && std::memcmp(binary.c_str(), "\xEF\xBB\xBF", 3) == 0) { // UTF-8 BOM
         binary.erase(0, 3);
+    } else if (binary.size() >= 2) {
+        if (std::memcmp(binary.c_str(), "\xFF\xFE", 2) == 0 || std::memcmp(binary.c_str(), "\xFE\xFF", 2) == 0) {
+            // UTF-16 は未対応
+            return false;
+        }
     }
 
     return true;
