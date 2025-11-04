@@ -11,7 +11,7 @@
 #include <assert.h>
 #include "MyLib.h"
 #include "read_all.h"
-#include "mstr.h"
+#include "../mstr.h"
 
 class AutoPriority {
 public:
@@ -41,6 +41,7 @@ std::wstring MyLibStringTable::operator[](int key) {
 
 void MyLibStringTable::set_text(std::wstring& text) {
     mstr_replace(text, L"\r\n", L"\n");
+    mstr_trim_right(text, L" \t\r\n　");
 
     std::vector<std::wstring> lines;
     mstr_split(lines, text, L"\n");
@@ -49,7 +50,7 @@ void MyLibStringTable::set_text(std::wstring& text) {
 
     for (size_t iLine = 0; iLine < lines.size(); ++iLine) {
         std::wstring& line = lines[iLine];
-        mstr_trim(line, L" \t\r\n");
+        mstr_trim(line, L" \t\r\n　");
 
         size_t ich = line.find(sep);
         if (ich == line.npos) {
@@ -60,8 +61,8 @@ void MyLibStringTable::set_text(std::wstring& text) {
 
         std::wstring key = line.substr(0, ich);
         std::wstring value = line.substr(ich + sep.size());
-        mstr_trim(key, L" \t\r\n");
-        mstr_trim(value, L" \t\r\n");
+        mstr_trim(key, L" \t\r\n　");
+        mstr_trim(value, L" \t\r\n　");
         MyLibStringPair pair = { key, value };
         m_pairs.push_back(pair);
     }
