@@ -17,6 +17,7 @@
 #include <process.h>
 #include <cmath>
 
+#include <new>
 #include <vector>
 #include <map>
 #include <set>
@@ -124,6 +125,11 @@ void EnumData() {
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+    // メディアライブラリを作成
+    g_pMyLib = new(std::nothrow) MyLib();
+    if (!g_pMyLib)
+        return FALSE;
+
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
@@ -151,8 +157,11 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     WCHAR file[MAX_PATH];
 
-    g_pMyLib = new MyLib();
-    g_pMoji = new MyLibStringTable();
+    g_pMoji = new(std::nothrow) MyLibStringTable();
+    if (!g_pMoji)
+        return FALSE;
+
+    assert(g_pMyLib);
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
 
     EnumData();
@@ -182,6 +191,43 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     return TRUE;
+}
+
+void OnDestroy(HWND hwnd)
+{
+    if (g_hThread)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        CloseHandle(g_hThread);
+    }
+
+    for (UINT i = 0; i < g_ahbmMoji.size(); ++i)
+    {
+        if (g_ahbmMoji[i])
+            DeleteObject(g_ahbmMoji[i]);
+    }
+    g_ahbmMoji.clear();
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+
+    DeleteObject(g_hFont);
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hbmHiraganaON);
+    DeleteObject(g_hbmHiraganaOFF);
+    DeleteObject(g_hbmKatakanaON);
+    DeleteObject(g_hbmKatakanaOFF);
+
+    g_katakana_history.clear();
+    g_hiragana_history.clear();
+
+    delete g_pMoji;
+    g_pMoji = NULL;
+
+    delete g_pMyLib;
+    g_pMyLib = NULL;
+
+    PostQuitMessage(0);
 }
 
 VOID OnDraw(HWND hwnd, HDC hdc)
@@ -708,7 +754,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         g_fKatakana = FALSE;
 
         std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\04ひらがな.mp3");
-        g_pMyLib->play_sound(mp3_path);
+        g_pMyLib->play_sound_async(mp3_path);
 
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
@@ -722,7 +768,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         g_fKatakana = TRUE;
 
         std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\05カタカナ.mp3");
-        g_pMyLib->play_sound(mp3_path);
+        g_pMyLib->play_sound_async(mp3_path);
 
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
@@ -906,40 +952,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
-void OnDestroy(HWND hwnd)
-{
-    if (g_hThread)
-    {
-        ShowWindow(g_hKakijunWnd, SW_HIDE);
-        CloseHandle(g_hThread);
-    }
-
-    for (UINT i = 0; i < g_ahbmMoji.size(); ++i)
-    {
-        if (g_ahbmMoji[i])
-            DeleteObject(g_ahbmMoji[i]);
-    }
-    g_ahbmMoji.clear();
-
-    DeleteObject(g_hbmClient);
-    DeleteObject(g_hbmKakijun);
-
-    DeleteObject(g_hFont);
-    DeleteObject(g_hbrRed);
-    DeleteObject(g_hbmHiraganaON);
-    DeleteObject(g_hbmHiraganaOFF);
-    DeleteObject(g_hbmKatakanaON);
-    DeleteObject(g_hbmKatakanaOFF);
-
-    g_katakana_history.clear();
-    g_hiragana_history.clear();
-
-    delete g_pMoji;
-    delete g_pMyLib;
-
-    PostQuitMessage(0);
-}
-
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     if (id == 0)
@@ -1066,6 +1078,7 @@ INT WINAPI WinMain(
         NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {
+        delete g_pMyLib;
         MessageBox(NULL, LoadStringDx(3), NULL, MB_ICONERROR);
         return 2;
     }
