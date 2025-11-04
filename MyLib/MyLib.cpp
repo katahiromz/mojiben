@@ -215,6 +215,11 @@ HBITMAP MyLib::load_picture(const wchar_t *filename, const wchar_t *section) {
         return NULL;
     }
 
+    if (binary.empty()) {
+        assert(0);
+        return NULL;
+    }
+
     IStream *pStream = SHCreateMemStream((PBYTE)&binary[0], (DWORD)binary.size());
     if (!pStream) {
         return NULL;
