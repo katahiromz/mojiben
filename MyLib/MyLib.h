@@ -22,7 +22,7 @@ public:
 class MyLib {
 public:
     MyLib();
-    virtual ~MyLib() { }
+    virtual ~MyLib();
 
     std::wstring find_data_dir();
     std::wstring find_data_file(const wchar_t *filename, const wchar_t *section = NULL);

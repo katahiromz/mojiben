@@ -13,15 +13,12 @@
 #include "read_all.h"
 #include "mstr.h"
 
-class AutoPriority
-{
+class AutoPriority {
 public:
-    AutoPriority()
-    {
+    AutoPriority() {
         ::SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
     }
-    ~AutoPriority()
-    {
+    ~AutoPriority() {
         ::SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
     }
 };
@@ -72,7 +69,15 @@ void MyLibStringTable::set_text(std::wstring& text) {
 
 ////////////////////////////////////////////////////////////////////////////
 
+static HRESULT s_hrOleInit;
+
 MyLib::MyLib() {
+    s_hrOleInit = ::OleInitialize(NULL);
+}
+
+MyLib::~MyLib() {
+    if (SUCCEEDED(s_hrOleInit))
+        ::OleUninitialize();
 }
 
 std::wstring MyLib::_find_data_dir() {
