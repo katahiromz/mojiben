@@ -46,11 +46,13 @@ void MyLibStringTable::set_text(std::wstring& text) {
     std::vector<std::wstring> lines;
     mstr_split(lines, text, L"\n");
 
-    const std::wstring sep = L">>";
+    const std::wstring sep = L"=";
 
     for (size_t iLine = 0; iLine < lines.size(); ++iLine) {
         std::wstring& line = lines[iLine];
         mstr_trim(line, L" \t\r\n　");
+        if (line.empty() || line[0] == L'#')
+            continue;
 
         size_t ich = line.find(sep);
         if (ich == line.npos) {
