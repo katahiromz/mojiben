@@ -21,7 +21,7 @@ public:
 
 class MyLib {
 public:
-    MyLib() { }
+    MyLib();
     virtual ~MyLib() { }
 
     std::wstring find_data_dir();
@@ -42,5 +42,5 @@ protected:
     std::wstring m_data_dir;
 
     std::wstring _find_data_dir();
-    static DWORD WINAPI _play_sound_async_proc(LPVOID arg);
+    static unsigned __stdcall MyLib::_play_sound_async_proc(void *arg);
 };

@@ -5,6 +5,8 @@
 #include <shlwapi.h>
 #include <cstdlib>
 #include <cstring>
+#include <process.h>
+#include <wchar.h>
 #include <tchar.h>
 #include <assert.h>
 #include "MyLib.h"
@@ -70,6 +72,9 @@ void MyLibStringTable::set_text(std::wstring& text) {
 
 ////////////////////////////////////////////////////////////////////////////
 
+MyLib::MyLib() {
+}
+
 std::wstring MyLib::_find_data_dir() {
     WCHAR path[MAX_PATH];
     GetModuleFileNameW(NULL, path, _countof(path));
@@ -111,12 +116,7 @@ std::wstring MyLib::find_data_file(const wchar_t *filename, const wchar_t *secti
     path += L"\\";
     path += filename;
 
-    if (!PathFileExistsW(path.c_str())) {
-        path = section;
-        path += L"\\";
-        path += filename;
-    }
-
+    assert(PathFileExistsW(path.c_str()));
     return path;
 }
 
@@ -152,8 +152,10 @@ bool MyLib::save_temp_file(std::wstring& temp_file, const std::string& binary) {
     GetTempFileName(szTempPath, TEXT("MJB"), 0, szFile);
 
     FILE *fout = _tfopen(szFile, TEXT("wb"));
-    if (!fout)
+    if (!fout) {
+        assert(0);
         return false;
+    }
     if (!binary.empty())
         fwrite(&binary[0], binary.size(), 1, fout);
     fclose(fout);
@@ -163,47 +165,59 @@ bool MyLib::save_temp_file(std::wstring& temp_file, const std::string& binary) {
 }
 
 bool MyLib::play_sound(const wchar_t *temp_file) {
+    int err;
     {
         AutoPriority high_priority;
         TCHAR szCommand[MAX_PATH + 64];
         wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), temp_file);
-        mciSendString(szCommand, NULL, 0, 0);
+        err = mciSendString(szCommand, NULL, 0, 0);
+        if (err) {
+            assert(0);
+            DeleteFile(temp_file);
+            return false;
+        }
     }
-    mciSendString(TEXT("play myaudio wait"), NULL, 0, 0);
-    mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+    err = mciSendString(TEXT("play myaudio wait"), NULL, 0, 0);
+    assert(!err);
+    err = mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+    assert(!err);
     DeleteFile(temp_file);
     return true;
 }
 
-DWORD WINAPI MyLib::_play_sound_async_proc(LPVOID arg) {
+unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
     wchar_t *temp_file = (wchar_t *)arg;
     MyLib::play_sound(temp_file);
+    std::free(temp_file);
     return 0;
 }
 
 bool MyLib::play_sound_async(const wchar_t *temp_file) {
-    HANDLE hThread = CreateThread(NULL, 0, MyLib::_play_sound_async_proc, (void *)temp_file, 0, NULL);
+    wchar_t *filename = _wcsdup(temp_file);
+    if (!filename) {
+        assert(0);
+        return false;
+    }
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, MyLib::_play_sound_async_proc, filename, 0, NULL);
     CloseHandle(hThread);
     return hThread != NULL;
 }
 
+// NOTE: OleInitialize / OleUninitialize が必要。
 HBITMAP MyLib::load_picture(const wchar_t *filename, const wchar_t *section) {
     std::string binary;
     if (!load_binary(binary, filename, section)) {
-        assert(0);
         return NULL;
     }
 
     IStream *pStream = SHCreateMemStream((PBYTE)&binary[0], (DWORD)binary.size());
     if (!pStream) {
-        assert(0);
         return NULL;
     }
 
     IPicture *pPicture;
     HRESULT hr = OleLoadPicture(pStream, 0, FALSE, IID_IPicture, (void**)&pPicture);
     if (FAILED(hr)) {
-        assert(0);
         pStream->Release();
         return NULL;
     }
@@ -221,7 +235,6 @@ bool MyLib::load_utf8_text_file_as_wide(std::wstring& text, const wchar_t *filen
 
     std::string binary;
     if (!load_utf8_text_file(binary, filename, section)) {
-        assert(0);
         return false;
     }
 
