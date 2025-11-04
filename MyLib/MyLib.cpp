@@ -1,4 +1,4 @@
-﻿// MyLib.cpp
+﻿// MyLib.cpp --- The media library
 // License: MIT
 #include <windows.h>
 #include <olectl.h>
@@ -214,8 +214,8 @@ HBITMAP MyLib::load_picture(const wchar_t *filename, const wchar_t *section) {
     return hBitmap;
 }
 
-bool MyLib::load_string_table(MyLibStringTable& table, const wchar_t *filename, const wchar_t *section) {
-    table.clear();
+bool MyLib::load_utf8_text_file_as_wide(std::wstring& text, const wchar_t *filename, const wchar_t *section) {
+    text.clear();
 
     std::string binary;
     if (!load_utf8_text_file(binary, filename, section)) {
@@ -223,7 +223,18 @@ bool MyLib::load_string_table(MyLibStringTable& table, const wchar_t *filename, 
         return false;
     }
 
-    std::wstring wide = mstr_ansi_to_wide(CP_UTF8, binary);
+    text = mstr_ansi_to_wide(CP_UTF8, binary);
+    return true;
+}
+
+bool MyLib::load_string_table(MyLibStringTable& table, const wchar_t *filename, const wchar_t *section) {
+    table.clear();
+
+    std::wstring wide;
+    if (!load_utf8_text_file_as_wide(wide, filename, section)) {
+        return false;
+    }
+
     table.set_text(wide);
     return true;
 }
