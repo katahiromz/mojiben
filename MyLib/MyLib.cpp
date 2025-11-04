@@ -122,18 +122,37 @@ std::wstring MyLib::find_data_file(const wchar_t *filename, const wchar_t *secti
     path += L"\\";
     path += filename;
 
-    assert(PathFileExistsW(path.c_str()));
     return path;
 }
 
 bool MyLib::load_binary(std::string& binary, const wchar_t *filename, const wchar_t *section) {
     std::wstring path = find_data_file(filename, section);
-
+    assert(PathFileExistsW(path.c_str()));
+ 
     if (!read_all(binary, path.c_str())) {
         assert(0);
         return false;
     }
 
+    return true;
+}
+
+bool MyLib::save_binary(const std::string& binary, const wchar_t *filename, const wchar_t *section) {
+    std::wstring path = find_data_file(filename, section);
+
+    FILE *fout = _tfopen(path.c_str(), L"wb");
+    if (!fout) {
+        assert(0);
+        return false;
+    }
+
+    if (!fwrite(binary.c_str(), binary.size(), 1, fout)) {
+        assert(0);
+        fclose(fout);
+        return false;
+    }
+
+    fclose(fout);
     return true;
 }
 

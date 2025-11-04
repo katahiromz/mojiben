@@ -28,6 +28,8 @@ public:
     std::wstring find_data_file(const wchar_t *filename, const wchar_t *section = NULL);
 
     bool load_binary(std::string& binary, const wchar_t *filename, const wchar_t *section = NULL);
+    bool save_binary(const std::string& binary, const wchar_t *filename, const wchar_t *section = NULL);
+
     bool load_utf8_text_file(std::string& binary, const wchar_t *filename, const wchar_t *section = NULL);
     bool load_utf8_text_file_as_wide(std::wstring& text, const wchar_t *filename, const wchar_t *section = NULL);
     HBITMAP load_picture(const wchar_t *filename, const wchar_t *section = NULL);
