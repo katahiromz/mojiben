@@ -35,7 +35,7 @@ std::wstring MyLibStringTable::operator[](const wchar_t *key) {
 
 std::wstring MyLibStringTable::operator[](int key) {
     wchar_t str[64];
-    wsprintfW(str, L"%08u", key);
+    wsprintfW(str, L"%04u", (WORD)key);
     return (*this)[str];
 }
 
