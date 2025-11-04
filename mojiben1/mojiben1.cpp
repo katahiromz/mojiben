@@ -26,6 +26,7 @@
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
+#include "../MyLib/MyLib.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -42,7 +43,7 @@ HWND g_hKakijunWnd;
 
 HBITMAP g_hbmHiragana, g_hbmHiragana2;
 HBITMAP g_hbmKatakana, g_hbmKatakana2;
-HBITMAP g_ahbmMoji[NUM_MOJI];
+std::vector<HBITMAP> g_ahbmMoji;
 HBITMAP g_hbmClient;
 BOOL g_fKatakana;
 
@@ -56,6 +57,10 @@ std::set<INT> g_katakana_history;
 std::set<INT> g_hiragana_history;
 
 BOOL g_bHighSpeed = FALSE;
+
+std::wstring g_section;
+MyLib *g_pMyLib = NULL;
+MyLibStringTable *g_pMoji = NULL;
 
 struct MOJI
 {
@@ -87,6 +92,27 @@ INT MojiIndexFromMojiID(INT moji_id)
     return -1;
 }
 
+void EnumData() {
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->m_pairs[i].m_key;
+
+#if 0
+        DWORD size;
+        PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(g_moji_data[i].bitmap_id), &size);
+        std::string binary((char *)pres, size);
+        WCHAR file[MAX_PATH];
+        wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
+
+        WCHAR file[MAX_PATH];
+        wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), moji.c_str());
+        HBITMAP hbm = g_pMyLib->load_picture(file);
+        assert(hbm);
+        g_ahbmMoji.push_back(hbm);
+    }
+}
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     g_hThread = NULL;
@@ -108,12 +134,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     updateSystemMenu(hwnd);
 
-    for (UINT i = 0; i < _countof(g_ahbmMoji); ++i)
-    {
-        assert(g_moji_data[i].index == i);
-        g_ahbmMoji[i] = LoadGif(g_hInstance, g_moji_data[i].bitmap_id);
-    }
-
     g_hbmClient = NULL;
 
     try
@@ -125,6 +145,15 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         return FALSE;
     }
+
+    g_section = LoadStringDx(500);
+    assert(g_section.size());
+
+    g_pMyLib = new MyLib();
+    g_pMoji = new MyLibStringTable();
+    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
+    EnumData();
 
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
@@ -178,7 +207,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             SelectObject(hdcMem, hbmOld);
         }
 
-        for (j = 0; j < _countof(g_ahbmMoji); ++j)
+        for (j = 0; j < (INT)g_pMoji->size(); ++j)
         {
             assert(g_moji_data[j].index == j);
             if (g_moji_data[j].is_katakana != g_fKatakana)
@@ -675,7 +704,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 
     // 文字ボタンの当たり判定。
-    for (UINT j = 0; j < _countof(g_ahbmMoji); ++j)
+    for (UINT j = 0; j < g_pMoji->size(); ++j)
     {
         rc.left = g_moji_data[j].x;
         rc.top = g_moji_data[j].y;
@@ -715,7 +744,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     }
 
     // 文字ボタンの当たり判定。
-    for (UINT j = 0; j < _countof(g_ahbmMoji); ++j)
+    for (UINT j = 0; j < g_pMoji->size(); ++j)
     {
         rc.left = g_moji_data[j].x;
         rc.top = g_moji_data[j].y;
@@ -857,11 +886,12 @@ void OnDestroy(HWND hwnd)
         CloseHandle(g_hThread);
     }
 
-    for (UINT i = 0; i < _countof(g_ahbmMoji); ++i)
+    for (UINT i = 0; i < g_ahbmMoji.size(); ++i)
     {
         if (g_ahbmMoji[i])
             DeleteObject(g_ahbmMoji[i]);
     }
+    g_ahbmMoji.clear();
 
     DeleteObject(g_hbmClient);
     DeleteObject(g_hbmKakijun);
@@ -875,6 +905,9 @@ void OnDestroy(HWND hwnd)
 
     g_katakana_history.clear();
     g_hiragana_history.clear();
+
+    delete g_pMoji;
+    delete g_pMyLib;
 
     PostQuitMessage(0);
 }

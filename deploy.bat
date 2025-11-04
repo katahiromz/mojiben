@@ -89,3 +89,30 @@ copy "font\Piza-P-Gothic.ttf" "%NAME6%"
 copy "font\Piza-P-Gothic.ttf" "%NAME7%"
 copy "font\Piza-P-Gothic.ttf" "%NAME8%"
 copy "font\Piza-P-Gothic.ttf" "%NAME9%"
+
+mkdir "%NAME1%\01Kana"
+copy "data\01Kana" "%NAME1%"
+
+mkdir "%NAME2%\02Alphabet"
+copy "data\02Alphabet" "%NAME2%"
+
+mkdir "%NAME3%\03Number"
+copy "data\03Number" "%NAME3%"
+
+mkdir "%NAME4%\04Kanji1"
+copy "data\04Kanji1" "%NAME4%"
+
+mkdir "%NAME5%\05Kanji2"
+copy "data\05Kanji2" "%NAME5%"
+
+mkdir "%NAME6%\06Kanji3"
+copy "data\06Kanji3" "%NAME6%"
+
+mkdir "%NAME7%\07Kanji4"
+copy "data\07Kanji4" "%NAME7%"
+
+mkdir "%NAME5%\08Kanji5"
+copy "data\08Kanji5" "%NAME8%"
+
+mkdir "%NAME9%\09Kanji6"
+copy "data\09Kanji6" "%NAME9%"

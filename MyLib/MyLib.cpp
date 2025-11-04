@@ -25,7 +25,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////
 
-std::wstring MyLibStringTable::operator[](const wchar_t *key) {
+std::wstring MyLibStringTable::operator[](const std::wstring& key) {
     for (size_t i = 0; i < m_pairs.size(); ++i) {
         if (m_pairs[i].m_key == key)
             return m_pairs[i].m_value;
@@ -113,22 +113,16 @@ std::wstring MyLib::find_data_dir() {
     return m_data_dir;
 }
 
-std::wstring MyLib::find_data_file(const wchar_t *filename, const wchar_t *section) {
+std::wstring MyLib::find_data_file(const std::wstring& filename) {
     std::wstring path = find_data_dir();
-
-    if (section) {
-        path += L"\\";
-        path += section;
-    }
-
     path += L"\\";
     path += filename;
 
     return path;
 }
 
-bool MyLib::load_binary(std::string& binary, const wchar_t *filename, const wchar_t *section) {
-    std::wstring path = find_data_file(filename, section);
+bool MyLib::load_binary(std::string& binary, const std::wstring& filename) {
+    std::wstring path = find_data_file(filename);
     assert(PathFileExistsW(path.c_str()));
  
     if (!read_all(binary, path.c_str())) {
@@ -139,8 +133,8 @@ bool MyLib::load_binary(std::string& binary, const wchar_t *filename, const wcha
     return true;
 }
 
-bool MyLib::save_binary(const std::string& binary, const wchar_t *filename, const wchar_t *section) {
-    std::wstring path = find_data_file(filename, section);
+bool MyLib::save_binary(const std::string& binary, const std::wstring& filename) {
+    std::wstring path = find_data_file(filename);
 
     FILE *fout = _tfopen(path.c_str(), L"wb");
     if (!fout) {
@@ -158,8 +152,8 @@ bool MyLib::save_binary(const std::string& binary, const wchar_t *filename, cons
     return true;
 }
 
-bool MyLib::load_utf8_text_file(std::string& binary, const wchar_t *filename, const wchar_t *section) {
-    if (!load_binary(binary, filename, section))
+bool MyLib::load_utf8_text_file(std::string& binary, const std::wstring& filename) {
+    if (!load_binary(binary, filename))
         return false;
 
     if (binary.size() >= 3 && std::memcmp(binary.c_str(), "\xEF\xBB\xBF", 3) == 0) { // UTF-8 BOM
@@ -196,7 +190,7 @@ bool MyLib::save_temp_file(std::wstring& temp_file, const std::string& binary) {
     return true;
 }
 
-bool MyLib::play_sound(const wchar_t *temp_file) {
+bool MyLib::play_sound(const std::wstring& temp_file) {
     int err;
     {
         AutoPriority high_priority;
@@ -205,7 +199,7 @@ bool MyLib::play_sound(const wchar_t *temp_file) {
         err = mciSendString(szCommand, NULL, 0, 0);
         if (err) {
             assert(0);
-            DeleteFile(temp_file);
+            DeleteFile(temp_file.c_str());
             return false;
         }
     }
@@ -213,7 +207,7 @@ bool MyLib::play_sound(const wchar_t *temp_file) {
     assert(!err);
     err = mciSendString(TEXT("close myaudio"), NULL, 0, 0);
     assert(!err);
-    DeleteFile(temp_file);
+    DeleteFile(temp_file.c_str());
     return true;
 }
 
@@ -224,8 +218,8 @@ unsigned __stdcall MyLib::_play_sound_async_proc(void *arg) {
     return 0;
 }
 
-bool MyLib::play_sound_async(const wchar_t *temp_file) {
-    wchar_t *filename = _wcsdup(temp_file);
+bool MyLib::play_sound_async(const std::wstring& temp_file) {
+    wchar_t *filename = _wcsdup(temp_file.c_str());
     if (!filename) {
         assert(0);
         return false;
@@ -236,9 +230,9 @@ bool MyLib::play_sound_async(const wchar_t *temp_file) {
 }
 
 // NOTE: OleInitialize / OleUninitialize が必要。
-HBITMAP MyLib::load_picture(const wchar_t *filename, const wchar_t *section) {
+HBITMAP MyLib::load_picture(const std::wstring& filename) {
     std::string binary;
-    if (!load_binary(binary, filename, section)) {
+    if (!load_binary(binary, filename)) {
         return NULL;
     }
 
@@ -267,11 +261,11 @@ HBITMAP MyLib::load_picture(const wchar_t *filename, const wchar_t *section) {
     return hBitmap;
 }
 
-bool MyLib::load_utf8_text_file_as_wide(std::wstring& text, const wchar_t *filename, const wchar_t *section) {
+bool MyLib::load_utf8_text_file_as_wide(std::wstring& text, const std::wstring& filename) {
     text.clear();
 
     std::string binary;
-    if (!load_utf8_text_file(binary, filename, section)) {
+    if (!load_utf8_text_file(binary, filename)) {
         return false;
     }
 
@@ -279,11 +273,11 @@ bool MyLib::load_utf8_text_file_as_wide(std::wstring& text, const wchar_t *filen
     return true;
 }
 
-bool MyLib::load_string_table(MyLibStringTable& table, const wchar_t *filename, const wchar_t *section) {
+bool MyLib::load_string_table(MyLibStringTable& table, const std::wstring& filename) {
     table.clear();
 
     std::wstring wide;
-    if (!load_utf8_text_file_as_wide(wide, filename, section)) {
+    if (!load_utf8_text_file_as_wide(wide, filename)) {
         return false;
     }
 

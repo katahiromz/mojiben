@@ -489,10 +489,10 @@ AboutDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
-static inline LPVOID MyLoadRes(LPCWSTR type, LPCWSTR name, DWORD *psize) {
-    HRSRC hRsrc = ::FindResource(g_hInstance, name, type);
+static inline LPVOID MyLoadRes(HINSTANCE hInst, LPCWSTR type, LPCWSTR name, DWORD *psize) {
+    HRSRC hRsrc = ::FindResource(hInst, name, type);
     if (psize)
-        *psize = ::SizeofResource(g_hInstance, hRsrc);
+        *psize = ::SizeofResource(hInst, hRsrc);
     HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     return ::LockResource(hGlobal);
 }
