@@ -168,7 +168,7 @@ BOOL GetKazoekataRect(HWND hwnd, LPRECT prc)
     RECT rc;
     GetClientRect(hwnd, &rc);
 
-    INT x = (rc.left + rc.right - bm.bmWidth) * 1 / 3;
+    INT x = rc.right / 2 - bm.bmWidth - 30;
     INT y = rc.bottom - bm.bmHeight - 20;
     SetRect(prc, x, y, x + bm.bmWidth, y + bm.bmHeight);
     return TRUE;
@@ -184,7 +184,7 @@ BOOL GetKukuNoUtaRect(HWND hwnd, LPRECT prc)
     RECT rc;
     GetClientRect(hwnd, &rc);
 
-    INT x = (rc.left + rc.right - bm.bmWidth) * 2 / 3;
+    INT x = rc.right / 2 + 30;
     INT y = rc.bottom - bm.bmHeight - 20;
     SetRect(prc, x, y, x + bm.bmWidth, y + bm.bmHeight);
     return TRUE;
