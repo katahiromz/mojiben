@@ -25,7 +25,6 @@
 #include <map>
 #include <set>
 
-#include "kakijun.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
@@ -272,15 +271,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     updateSystemMenu(hwnd);
 
     g_hbmClient = NULL;
-
-    try
-    {
-        InitDigits();
-    }
-    catch (std::bad_alloc)
-    {
-        return FALSE;
-    }
 
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
