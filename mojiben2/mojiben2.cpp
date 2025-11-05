@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <process.h>
 #include <cmath>
+#include <assert.h>
 
 #include <vector>
 #include <map>
