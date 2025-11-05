@@ -55,8 +55,7 @@ HANDLE g_hThread = NULL;
 HBRUSH g_hbrRed = NULL;
 HFONT g_hFont = NULL;
 
-std::set<INT> g_katakana_history;
-std::set<INT> g_hiragana_history;
+std::set<INT> g_history;
 
 BOOL g_bHighSpeed = FALSE;
 
@@ -320,8 +319,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmKatakanaON);
     DeleteObject(g_hbmKatakanaOFF);
 
-    g_katakana_history.clear();
-    g_hiragana_history.clear();
+    g_history.clear();
 
     delete g_pMoji;
     g_pMoji = NULL;
@@ -435,14 +433,14 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             InflateRect(&rc, +3, +3);
             if (g_fKatakana)
             {
-                if (g_katakana_history.find(g_moji_data[j].moji_id) != g_katakana_history.end())
+                if (g_history.find(j) != g_history.end())
                     FillRect(hdcMem2, &rc, g_hbrRed);
                 else
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
             else
             {
-                if (g_hiragana_history.find(g_moji_data[j].moji_id) != g_hiragana_history.end())
+                if (g_history.find(j) != g_history.end())
                     FillRect(hdcMem2, &rc, g_hbrRed);
                 else
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -839,6 +837,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         rc2.bottom - rc2.top,
         TRUE);
     g_nMoji = nMoji;
+    INT nIndex = MojiIndexFromMojiID(g_nMoji);
 
     if (fRight)
     {
@@ -858,10 +857,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         return;
     }
 
-    if (g_fKatakana)
-        g_katakana_history.insert(nMoji);
-    else
-        g_hiragana_history.insert(nMoji);
+    g_history.insert(nIndex);
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
@@ -1106,10 +1102,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (id == 0)
         return;
 
-    if (g_fKatakana)
-        g_katakana_history.insert(g_nMoji);
-    else
-        g_hiragana_history.insert(g_nMoji);
+    INT nIndex = MojiIndexFromMojiID(g_nMoji);
+    g_history.insert(nIndex);
 
     if (g_hbmClient)
     {
@@ -1118,11 +1112,9 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
     InvalidateRect(hwnd, NULL, TRUE);
 
-    INT index = MojiIndexFromMojiID(g_nMoji);
-
     if (id == 3000)
     {
-        std::wstring moji = g_pMoji->key_at(index);
+        std::wstring moji = g_pMoji->key_at(nIndex);
         CopyText(hwnd, moji.c_str());
         return;
     }
