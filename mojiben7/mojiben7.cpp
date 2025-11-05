@@ -1192,7 +1192,9 @@ void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
     if (eDelta == -1 && g_iPage - 1 >= 0)
     {
-        MyPlaySoundAsync(MAKEINTRESOURCE(101));
+        std::wstring slide_path = g_pMyLib->find_data_file(g_section + L"\\Slide.mp3");
+        g_pMyLib->play_sound_async(slide_path);
+
         g_eDisplayPage = (float)g_iPage;
         g_eGoalPage = (float)(g_iPage - 1);
         SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
@@ -1201,7 +1203,9 @@ void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
     if (eDelta == +1 && g_iPage + 1 < GetNumPage())
     {
-        MyPlaySoundAsync(MAKEINTRESOURCE(101));
+        std::wstring slide_path = g_pMyLib->find_data_file(g_section + L"\\Slide.mp3");
+        g_pMyLib->play_sound_async(slide_path);
+
         g_eDisplayPage = (float)g_iPage;
         g_eGoalPage = (float)(g_iPage + 1);
         SetTimer(hwnd, SLIDE_TIMER, 50, NULL);
