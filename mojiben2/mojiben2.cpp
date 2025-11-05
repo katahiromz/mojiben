@@ -25,6 +25,7 @@
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
+#include "../mstr.h"
 #include "../MyLib/MyLib.h"
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (2)");
@@ -53,7 +54,48 @@ BOOL g_bHighSpeed = FALSE;
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
+MyLibStringTable *g_pMain = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
+
+void GetMojiValues(std::vector<std::wstring>& values, INT j) {
+    values.clear();
+    std::wstring moji = g_pMoji->key_at(j);
+    std::wstring str = (*g_pMain)[moji];
+    mstr_split(values, str, L",");
+    assert(values.size() == 3);
+}
+
+// 文字ボタンの位置。
+BOOL GetMojiRect(HWND hwnd, LPRECT prc, INT i)
+{
+    INT j = 0;
+    BITMAP bm;
+    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
+#if 1
+    std::vector<std::wstring> values;
+    GetMojiValues(values, i);
+    prc->left = _wtoi(values[0].c_str());
+    prc->top = _wtoi(values[1].c_str());
+#else
+    if (i < 14)
+    {
+        prc->left = i * 54 + 10;
+        prc->top = j * 70 + 180;
+    }
+    else
+    {
+        j = 1;
+        prc->left = (i - 14) * 54 + 10;
+        prc->top = j * 70 + 180;
+    }
+#endif
+
+    prc->right = prc->left + bm.bmWidth;
+    prc->bottom = prc->top + bm.bmHeight;
+
+    return TRUE;
+}
 
 void EnumData() {
     WCHAR file[MAX_PATH];
@@ -94,6 +136,16 @@ void EnumData() {
             g_pMyLib->save_binary(binary, file);
         }
 #endif
+
+#if 0
+        {
+            RECT rc;
+            GetMojiRect(g_hMainWnd, &rc, i % 26);
+            WCHAR text[128];
+            wsprintfW(text, L"%s = (%d, %d)\n", moji.c_str(), rc.left, rc.top);
+            OutputDebugStringW(text);
+        }
+#endif
     }
 }
 
@@ -114,6 +166,11 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (!g_pMoji)
         return FALSE;
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
+    g_pMain = new(std::nothrow) MyLibStringTable();
+    if (!g_pMain)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMain, g_section + L"\\Main.txt");
 
     EnumData();
 
@@ -193,35 +250,13 @@ void OnDestroy(HWND hwnd)
     delete g_pMoji;
     g_pMoji = NULL;
 
+    delete g_pMain;
+    g_pMain = NULL;
+
     delete g_pMyLib;
     g_pMyLib = NULL;
 
     PostQuitMessage(0);
-}
-
-// 文字ボタンの位置。
-BOOL GetMojiRect(HWND hwnd, LPRECT prc, INT i)
-{
-    RECT rc;
-    INT j = 0;
-    if (i < 14)
-    {
-        rc.left = i * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 48;
-        rc.bottom = rc.top + 48;
-        *prc = rc;
-    }
-    else
-    {
-        j = 1;
-        rc.left = (i - 14) * 54 + 10;
-        rc.top = j * 70 + 180;
-        rc.right = rc.left + 48;
-        rc.bottom = rc.top + 48;
-        *prc = rc;
-    }
-    return TRUE;
 }
 
 // 「UPPERCASE」ボタンの位置。
