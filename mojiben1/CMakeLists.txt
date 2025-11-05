@@ -56,5 +56,6 @@ target_link_libraries(mojiben1 comctl32 winmm shlwapi MyLib)
 if(MSVC)
     target_link_options(mojiben1 PRIVATE /MANIFEST:NO)
 endif()
+add_dependencies(mojiben1 MyLib)
 
 ##############################################################################

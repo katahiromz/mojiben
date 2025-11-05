@@ -31,6 +31,7 @@
 #include "../CDebug.h"
 #include "../Common.h"
 #include "../FuriganaCtl/FuriganaCtl/furigana_api.h"
+#include "../MyLib/MyLib.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -53,7 +54,6 @@ HWND g_hwndCaption2 = NULL;
 HFONT g_hFont;
 HFONT g_hFontSmall;
 
-HBITMAP g_ahbmKanji1[80];
 HBITMAP g_hbmClient;
 
 HBITMAP g_hbmKakijun; // Week ref
@@ -69,25 +69,49 @@ BOOL g_bHighSpeed = FALSE;
 extern "C" extern const wchar_t *g_aszMojiReadings[];
 extern "C" extern const wchar_t *g_aszMojiExamples[];
 
+std::wstring g_section;
+MyLib *g_pMyLib = NULL;
+MyLibStringTable *g_pMoji = NULL;
+std::vector<HBITMAP> g_ahbmMoji;
+
+void EnumData() {
+    WCHAR file[MAX_PATH];
+
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->key_at(i);
+
+#if 0
+        DWORD size;
+        PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(100 + i), &size);
+        std::string binary((char *)pres, size);
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
+
+        // Load GIF
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        HBITMAP hbm = g_pMyLib->load_picture(file);
+        assert(hbm);
+        g_ahbmMoji.push_back(hbm);
+    }
+}
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    g_hThread = NULL;
-    g_hbmKakijun = NULL;
-    g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
+    // メディアライブラリを作成
+    g_pMyLib = new(std::nothrow) MyLib();
+    if (!g_pMyLib)
+        return FALSE;
 
-    updateSystemMenu(hwnd);
+    // セクション名を読み込む
+    g_section = LoadStringDx(500);
+    assert(g_section.size());
 
-    ZeroMemory(g_ahbmKanji1, sizeof(g_ahbmKanji1));
-    for (INT j = 0; j < 80; ++j)
-    {
-        int ix = j % 10;
-        int iy = j / 10;
-        g_ahbmKanji1[j] = LoadGif(g_hInstance, 100 + j);
-        if (g_ahbmKanji1[j] == NULL)
-            return FALSE;
-    }
-
-    g_hbmClient = NULL;
+    // 文字データを取り込む
+    g_pMoji = new(std::nothrow) MyLibStringTable();
+    if (!g_pMoji)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
 
     try
     {
@@ -97,6 +121,16 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         return FALSE;
     }
+
+    EnumData();
+
+    g_hThread = NULL;
+    g_hbmKakijun = NULL;
+    g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
+
+    updateSystemMenu(hwnd);
+
+    g_hbmClient = NULL;
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
@@ -121,6 +155,43 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+void OnDestroy(HWND hwnd)
+{
+    if (g_hThread)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        CloseHandle(g_hThread);
+    }
+
+    DeleteObject(g_hFont);
+    DeleteObject(g_hFontSmall);
+
+    UINT i;
+    for (i = 0; i < g_ahbmMoji.size(); ++i)
+    {
+        if (g_ahbmMoji[i])
+            DeleteObject(g_ahbmMoji[i]);
+    }
+    g_ahbmMoji.clear();
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbrRed);
+
+    g_kanji1_history.clear();
+
+    for (size_t i = 0; i < _countof(g_kanji1_kakijun); ++i)
+        g_kanji1_kakijun[i].clear();
+
+    delete g_pMoji;
+    g_pMoji = NULL;
+
+    delete g_pMyLib;
+    g_pMyLib = NULL;
+
+    PostQuitMessage(0);
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -143,11 +214,11 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < 80; ++j)
+        for (j = 0; j < (INT)g_ahbmMoji.size(); ++j)
         {
             int ix = j % 10;
             int iy = j / 10;
-            hbmOld = SelectObject(hdcMem, g_ahbmKanji1[g_map[j]]);
+            hbmOld = SelectObject(hdcMem, g_ahbmMoji[g_map[j]]);
             rc.left = ix * (50 + 10) + 5 + 25;
             rc.top = iy * (50 + 10) + 5 + 10;
             if (iy >= 4)
@@ -803,36 +874,6 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
     return 0;
-}
-
-void OnDestroy(HWND hwnd)
-{
-    if (g_hThread)
-    {
-        ShowWindow(g_hKakijunWnd, SW_HIDE);
-        CloseHandle(g_hThread);
-    }
-
-    DeleteObject(g_hFont);
-    DeleteObject(g_hFontSmall);
-
-    UINT i;
-    for (i = 0; i < _countof(g_ahbmKanji1); ++i)
-    {
-        if (g_ahbmKanji1[i])
-            DeleteObject(g_ahbmKanji1[i]);
-    }
-
-    DeleteObject(g_hbmClient);
-    DeleteObject(g_hbmKakijun);
-    DeleteObject(g_hbrRed);
-
-    g_kanji1_history.clear();
-
-    for (size_t i = 0; i < _countof(g_kanji1_kakijun); ++i)
-        g_kanji1_kakijun[i].clear();
-
-    PostQuitMessage(0);
 }
 
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
