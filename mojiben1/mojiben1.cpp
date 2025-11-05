@@ -250,6 +250,17 @@ void GetKatakanaRect(HWND hwnd, PRECT prc)
     SetRect(prc, x, 10, x + bm.bmWidth, 10 + bm.bmHeight);
 }
 
+void GetMojiRect(HWND hwnd, PRECT prc, INT j)
+{
+    BITMAP bm;
+    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
+    prc->left = g_moji_data[j].x;
+    prc->top = g_moji_data[j].y;
+    prc->right = prc->left + bm.bmWidth;
+    prc->bottom = prc->top + bm.bmHeight;
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -295,9 +306,6 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             SelectObject(hdcMem, hbmOld);
         }
 
-        BITMAP bm;
-        GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
-
         for (j = 0; j < (INT)g_pMoji->size(); ++j)
         {
             assert(g_moji_data[j].index == j);
@@ -305,10 +313,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
                 continue;
 
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[j]);
-            rc.left = g_moji_data[j].x;
-            rc.top = g_moji_data[j].y;
-            rc.right = rc.left + bm.bmWidth;
-            rc.bottom = rc.top + bm.bmHeight;
+            GetMojiRect(hwnd, &rc, j);
             InflateRect(&rc, +3, +3);
             if (g_fKatakana)
             {
@@ -325,7 +330,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
             InflateRect(&rc, -3, -3);
-            BitBlt(hdcMem2, rc.left, rc.top, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
     }
@@ -802,19 +807,11 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
-    BITMAP bm;
-    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
-
     // 文字ボタンの当たり判定。
-    for (UINT j = 0; j < g_pMoji->size(); ++j)
-    {
-        rc.left = g_moji_data[j].x;
-        rc.top = g_moji_data[j].y;
-        rc.right = rc.left + bm.bmWidth;
-        rc.bottom = rc.top + bm.bmHeight;
+    for (UINT j = 0; j < g_pMoji->size(); ++j) {
+        GetMojiRect(hwnd, &rc, j);
         InflateRect(&rc, +3, +3);
-        if (PtInRect(&rc, pt))
-        {
+        if (PtInRect(&rc, pt)) {
             MojiOnClick(hwnd, g_moji_data[j].moji_id, fRight);
             return;
         }
@@ -848,10 +845,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     // 文字ボタンの当たり判定。
     for (UINT j = 0; j < g_pMoji->size(); ++j)
     {
-        rc.left = g_moji_data[j].x;
-        rc.top = g_moji_data[j].y;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
+        GetMojiRect(hwnd, &rc, j);
         InflateRect(&rc, +3, +3);
         if (PtInRect(&rc, pt))
         {
