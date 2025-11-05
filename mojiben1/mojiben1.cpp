@@ -78,21 +78,20 @@ struct MOJI
     const char *romaji;
 };
 
-MOJI g_moji_data[NUM_MOJI] = {
-#define DEFINE_MOJI(index, moji_id, wch, bitmap_id, x, y, is_katakana, romaji) \
-    { index, moji_id, wch, bitmap_id, x, y, is_katakana, romaji },
-#include "mojidata.h"
-#undef DEFINE_MOJI
-};
-
 INT MojiIndexFromMojiID(INT moji_id)
 {
+#if 1
+    if (moji_id >= (INT)g_pMoji->size())
+        return -1;
+    return moji_id;
+#else
     for (size_t i = 0; i < _countof(g_moji_data); ++i) {
         if (g_moji_data[i].moji_id == moji_id)
             return (INT)(i % 46) + g_fKatakana * 46;
     }
     assert(0);
     return -1;
+#endif
 }
 
 void EnumData() {
@@ -424,8 +423,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
 
         for (j = 0; j < (INT)g_pMoji->size(); ++j)
         {
-            assert(g_moji_data[j].index == j);
-            if (g_moji_data[j].is_katakana != g_fKatakana)
+            if ((j < g_pMoji->size() / 2) == g_fKatakana)
                 continue;
 
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[j]);
@@ -843,7 +841,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     {
         HMENU hMenu = CreatePopupMenu();
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 3000, LoadStringDx(3000));
-        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + nMoji, LoadStringDx(1000 + g_nMoji));
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + (nMoji % 46), LoadStringDx(1000 + (nMoji % 46)));
         SetForegroundWindow(hwnd);
 
         POINT pt;
@@ -932,10 +930,12 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     // 文字ボタンの当たり判定。
     for (UINT j = 0; j < g_pMoji->size(); ++j) {
+        if (j >= g_pMoji->size() / 2)
+            continue;
         GetMojiRect(hwnd, &rc, j);
         InflateRect(&rc, +3, +3);
         if (PtInRect(&rc, pt)) {
-            MojiOnClick(hwnd, g_moji_data[j].moji_id, fRight);
+            MojiOnClick(hwnd, j + g_fKatakana * 46, fRight);
             return;
         }
         InflateRect(&rc, -3, -3);
@@ -1119,7 +1119,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         return;
     }
 
-    LPTSTR psz = LoadStringDx(2000 + g_nMoji);
+    LPTSTR psz = LoadStringDx(2000 + g_nMoji % 46);
     if (psz[0])
         ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);
 }
