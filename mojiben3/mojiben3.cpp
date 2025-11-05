@@ -211,8 +211,15 @@ void EnumData() {
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
-    }
 
+#if 0
+        DWORD size;
+        PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(1000 + i), &size);
+        std::string binary((char *)pres, size);
+        wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
+    }
 }
 
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
@@ -457,12 +464,15 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     SetForegroundWindow(g_hKakijunWnd);
 
-    MyPlaySound(MAKEINTRESOURCE(1000 + g_nMoji));
+    std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\s\\" + g_pMoji->key_at(g_nMoji) + L".mp3");
+    g_pMyLib->play_sound(mp3_path);
+
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
     DO_SLEEP(200);
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(100));
+    std::wstring stroke_path = g_pMyLib->find_data_file(g_section + L"\\Stroke.mp3");
+    g_pMyLib->play_sound(stroke_path);
 
     {
         CDC hdc(g_hKakijunWnd);
