@@ -19,12 +19,6 @@ struct STROKE {
 };
 typedef std::vector<std::vector<STROKE> > KAKIJUN;
 
-extern KAKIJUN g_hiragana_kakijun;
-extern KAKIJUN g_katakana_kakijun;
-
-VOID InitHiragana(VOID);
-VOID InitKatakana(VOID);
-
 // 書き順イメージのサイズ。
 #define KAKIJUN_SIZE 254
 // 書き順イメージの中心点。

@@ -76,6 +76,35 @@ mstr_split(T_STR_CONTAINER& container,
     container.push_back(str.substr(i));
 }
 
+template <typename T_STR_CONTAINER>
+inline typename T_STR_CONTAINER::value_type
+mstr_join(const T_STR_CONTAINER& container,
+          const typename T_STR_CONTAINER::value_type& sep)
+{
+    typename T_STR_CONTAINER::value_type result;
+    typename T_STR_CONTAINER::const_iterator it, end;
+    it = container.begin();
+    end = container.end();
+    if (it != end)
+    {
+        result = *it;
+        for (++it; it != end; ++it)
+        {
+            result += sep;
+            result += *it;
+        }
+    }
+    return result;
+}
+
+template <typename T_STR_CONTAINER>
+inline typename T_STR_CONTAINER::value_type
+mstr_join(const T_STR_CONTAINER& container,
+          const typename T_STR_CONTAINER::value_type::value_type *sep)
+{
+    return mstr_join(container, T_STR_CONTAINER::value_type(sep));
+}
+
 static std::wstring mstr_unescape(const std::wstring& str) {
     std::wstring ret;
     ret.reserve(str.size());
@@ -148,14 +177,26 @@ inline bool mstr_is_utf8(const std::string& binary) {
     return !!MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, binary.c_str(), (INT)binary.size(), NULL, 0);
 }
 
-inline std::wstring mstr_ansi_to_wide(UINT codepage, const std::string& utf8) {
+inline std::wstring mstr_ansi_to_wide(UINT codepage, const std::string& ansi) {
     std::wstring wide;
-    if (utf8.empty())
+    if (ansi.empty())
         return wide;
-    INT len = MultiByteToWideChar(codepage, 0, utf8.c_str(), (INT)utf8.size(), NULL, 0);
+    INT len = MultiByteToWideChar(codepage, 0, ansi.c_str(), (INT)ansi.size(), NULL, 0);
     if (!len)
         return wide;
     wide.resize(len);
-    MultiByteToWideChar(codepage, 0, utf8.c_str(), (INT)utf8.size(), &wide[0], len);
+    MultiByteToWideChar(codepage, 0, ansi.c_str(), (INT)ansi.size(), &wide[0], len);
     return wide;
+}
+
+inline std::string mstr_wide_to_ansi(UINT codepage, const std::wstring& wide) {
+    std::string ansi;
+    if (ansi.empty())
+        return ansi;
+    INT len = WideCharToMultiByte(codepage, 0, wide.c_str(), (INT)wide.size(), NULL, 0, NULL, NULL);
+    if (!len)
+        return ansi;
+    ansi.resize(len);
+    WideCharToMultiByte(codepage, 0, wide.c_str(), (INT)wide.size(), &ansi[0], len, NULL, NULL);
+    return ansi;
 }

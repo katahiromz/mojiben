@@ -65,6 +65,7 @@ MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 MyLibStringTable *g_pMain = NULL;
 MyLibStringTable *g_pRomaji = NULL;
+KAKIJUN g_kakijun;
 
 struct MOJI
 {
@@ -132,6 +133,77 @@ void EnumData() {
             OutputDebugStringW(text);
         }
 #endif
+
+#if 0
+        std::vector<STROKE> v = i < 46 ? g_hiragana_kakijun[i % 46] : g_katakana_kakijun[i % 46];
+        std::vector<std::string> values;
+        char buf[MAX_PATH];
+        for (size_t i = 0; i < v.size(); ++i) {
+            switch (v[i].type) {
+            case STROKE::WAIT:
+                values.push_back("W");
+                break;
+            case STROKE::LINEAR:
+                wsprintfA(buf, "L,%d", v[i].angle0);
+                values.push_back(buf);
+                break;
+            case STROKE::DOT:
+                wsprintfA(buf, "D");
+                values.push_back(buf);
+                break;
+            case STROKE::POLAR:
+                wsprintfA(buf, "P,%d,%d,%d,%d", v[i].angle0, v[i].angle1, v[i].cx, v[i].cy);
+                values.push_back(buf);
+                break;
+            }
+        }
+        std::string ansi = mstr_join(values, ";");
+        wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(ansi, file);
+#endif
+
+        {
+            std::vector<STROKE> v;
+            STROKE stroke;
+            wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+            std::string ansi;
+            g_pMyLib->load_binary(ansi, file);
+            std::vector<std::string> values;
+            mstr_split(values, ansi, ";");
+            for (size_t i = 0; i < values.size(); ++i) {
+                std::string& value = values[i];
+                mstr_trim(value, " \t\r\n");
+                std::vector<std::string> fields;
+                mstr_split(fields, value, ",");
+                switch (value[0]) {
+                case 'W':
+                    stroke.type = STROKE::WAIT;
+                    v.push_back(stroke);
+                    break;
+                case 'L':
+                    stroke.type = STROKE::LINEAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    v.push_back(stroke);
+                    break;
+                case 'D':
+                    stroke.type = STROKE::DOT;
+                    v.push_back(stroke);
+                    break;
+                case 'P':
+                    stroke.type = STROKE::POLAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    stroke.angle1 = atoi(fields[2].c_str());
+                    stroke.cx = atoi(fields[3].c_str());
+                    stroke.cy = atoi(fields[4].c_str());
+                    v.push_back(stroke);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            }
+            g_kakijun.push_back(v);
+        }
     }
 }
 
@@ -173,16 +245,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     updateSystemMenu(hwnd);
 
     g_hbmClient = NULL;
-
-    try
-    {
-        InitHiragana();
-        InitKatakana();
-    }
-    catch (std::bad_alloc)
-    {
-        return FALSE;
-    }
 
     WCHAR file[MAX_PATH];
 
@@ -390,10 +452,7 @@ HRGN MyCreateRegion(INT res)
 std::wstring GetStrokeData(std::vector<STROKE>& v) {
     INT index = MojiIndexFromMojiID(g_nMoji);
 
-    if (g_fKatakana)
-        v = g_katakana_kakijun[index];
-    else
-        v = g_hiragana_kakijun[index];
+    v = g_kakijun[(index % 46) + g_fKatakana * 46];
 
     std::wstring moji = g_pMoji->key_at(index);
     return (*g_pRomaji)[moji];
@@ -418,6 +477,8 @@ static unsigned ThreadProcWorker(void)
     INT k;
     POINT apt[5];
 
+    INT nIndex = MojiIndexFromMojiID(g_nMoji);
+
     std::vector<STROKE> v;
     std::wstring romaji = GetStrokeData(v);
 
@@ -426,14 +487,17 @@ static unsigned ThreadProcWorker(void)
     siz.cy = rc.bottom - rc.top;
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
+    INT iKakijun = ((g_fKatakana ? 200 : 100) + nIndex) * 100;
+    INT ires = 0;
     for (UINT i = 0; i < v.size(); i++)
     {
         if (v[i].type != STROKE::WAIT)
         {
-            CRgn hRgn2(MyCreateRegion(v[i].res));
+            CRgn hRgn2(MyCreateRegion(iKakijun + ires++));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }
     }
+    ires = 0;
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -457,7 +521,6 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     SetForegroundWindow(g_hKakijunWnd);
 
-    INT nIndex = MojiIndexFromMojiID(g_nMoji);
     std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\s\\" + g_pMoji->key_at(nIndex) + L".mp3");
     g_pMyLib->play_sound(mp3_path);
 
@@ -499,7 +562,7 @@ static unsigned ThreadProcWorker(void)
                 PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(iKakijun + ires++));
                 CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
                 SelectObject(hdcMem, hbmOld);
@@ -526,7 +589,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(iKakijun + ires++));
 
                 double cost1 = std::cos(v[i].angle0 * M_PI / 180);
                 double sint1 = std::sin(v[i].angle0 * M_PI / 180);
@@ -615,7 +678,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(iKakijun + ires++));
 
                 INT step = 0;
                 for (; step < KAKIJUN_SIZE / 20; ++step)
