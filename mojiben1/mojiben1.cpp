@@ -28,6 +28,7 @@
 #include "../CDebug.h"
 #include "../Common.h"
 #include "../MyLib/MyLib.h"
+#include "../mstr.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -62,6 +63,8 @@ BOOL g_bHighSpeed = FALSE;
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
+MyLibStringTable *g_pMain = NULL;
+MyLibStringTable *g_pRomaji = NULL;
 
 struct MOJI
 {
@@ -120,6 +123,15 @@ void EnumData() {
         wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
+
+#if 0
+        {
+            INT x = g_moji_data[i].x, y = g_moji_data[i].y;
+            WCHAR text[128];
+            wsprintfW(text, L"%s = (%d, %d)\n", moji.c_str(), x, y);
+            OutputDebugStringW(text);
+        }
+#endif
     }
 }
 
@@ -139,6 +151,16 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (!g_pMoji)
         return FALSE;
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
+    g_pMain = new(std::nothrow) MyLibStringTable();
+    if (!g_pMain)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMain, g_section + L"\\Main.txt");
+
+    g_pRomaji = new(std::nothrow) MyLibStringTable();
+    if (!g_pRomaji)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pRomaji, g_section + L"\\Romaji.txt");
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
@@ -224,6 +246,12 @@ void OnDestroy(HWND hwnd)
     delete g_pMoji;
     g_pMoji = NULL;
 
+    delete g_pMain;
+    g_pMain = NULL;
+
+    delete g_pRomaji;
+    g_pRomaji = NULL;
+
     delete g_pMyLib;
     g_pMyLib = NULL;
 
@@ -250,13 +278,23 @@ void GetKatakanaRect(HWND hwnd, PRECT prc)
     SetRect(prc, x, 10, x + bm.bmWidth, 10 + bm.bmHeight);
 }
 
-void GetMojiRect(HWND hwnd, PRECT prc, INT j)
-{
+void GetMojiValues(std::vector<std::wstring>& values, INT j) {
+    values.clear();
+    std::wstring moji = g_pMoji->key_at(j);
+    std::wstring str = (*g_pMain)[moji];
+    mstr_split(values, str, L",");
+    assert(values.size() == 3);
+}
+
+void GetMojiRect(HWND hwnd, PRECT prc, INT j) {
     BITMAP bm;
     GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
 
-    prc->left = g_moji_data[j].x;
-    prc->top = g_moji_data[j].y;
+    std::vector<std::wstring> values;
+    GetMojiValues(values, j);
+
+    prc->left = _wtoi(values[0].c_str());
+    prc->top = _wtoi(values[1].c_str());
     prc->right = prc->left + bm.bmWidth;
     prc->bottom = prc->top + bm.bmHeight;
 }
@@ -349,10 +387,7 @@ HRGN MyCreateRegion(INT res)
     return DeserializeRegion254((PBYTE)pvData, cbData);
 }
 
-const char *g_romaji = NULL;
-
-void GetStrokeData(std::vector<STROKE>& v)
-{
+std::wstring GetStrokeData(std::vector<STROKE>& v) {
     INT index = MojiIndexFromMojiID(g_nMoji);
 
     if (g_fKatakana)
@@ -360,16 +395,17 @@ void GetStrokeData(std::vector<STROKE>& v)
     else
         v = g_hiragana_kakijun[index];
 
-    g_romaji = g_moji_data[index].romaji;
+    std::wstring moji = g_pMoji->key_at(index);
+    return (*g_pRomaji)[moji];
 }
 
-void PreDraw(HDC hdc, RECT& rc)
+void PreDraw(HDC hdc, RECT& rc, std::wstring romaji)
 {
     HGDIOBJ hFontOld = SelectObject(hdc, g_hFont);
     SetTextColor(hdc, RGB(0, 0, 0));
     SetBkColor(hdc, RGB(255, 255, 255));
     SetBkMode(hdc, OPAQUE);
-    DrawTextA(hdc, g_romaji, lstrlenA(g_romaji), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
+    DrawTextW(hdc, romaji.c_str(), (INT)romaji.size(), &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
     SelectObject(hdc, hFontOld);
 }
 
@@ -383,7 +419,7 @@ static unsigned ThreadProcWorker(void)
     POINT apt[5];
 
     std::vector<STROKE> v;
-    GetStrokeData(v);
+    std::wstring romaji = GetStrokeData(v);
 
     GetClientRect(g_hKakijunWnd, &rc);
     siz.cx = rc.right - rc.left;
@@ -411,7 +447,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        PreDraw(hdcMem, rc);
+        PreDraw(hdcMem, rc, romaji);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
     }
@@ -486,7 +522,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-                PreDraw(hdcMem, rc);
+                PreDraw(hdcMem, rc, romaji);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -575,7 +611,7 @@ static unsigned ThreadProcWorker(void)
                 rc.right = siz.cx;
                 rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-                PreDraw(hdcMem, rc);
+                PreDraw(hdcMem, rc, romaji);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
@@ -673,7 +709,7 @@ static unsigned ThreadProcWorker(void)
         rc.right = siz.cx;
         rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        PreDraw(hdcMem, rc);
+        PreDraw(hdcMem, rc, romaji);
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
 
