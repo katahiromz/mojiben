@@ -74,6 +74,7 @@ std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
+KAKIJUN g_kakijun;
 
 void EnumData() {
     WCHAR file[MAX_PATH];
@@ -132,6 +133,50 @@ void EnumData() {
         wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(ansi, file);
 #endif
+
+        {
+            std::vector<STROKE> v;
+            STROKE stroke;
+            wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+            std::string ansi;
+            g_pMyLib->load_binary(ansi, file);
+            std::vector<std::string> values;
+            mstr_split(values, ansi, ";");
+            for (size_t i = 0; i < values.size(); ++i) {
+                std::string& value = values[i];
+                mstr_trim(value, " \t\r\n");
+                std::vector<std::string> fields;
+                mstr_split(fields, value, ",");
+                std::string binary;
+                switch (value[0]) {
+                case 'W':
+                    stroke.type = STROKE::WAIT;
+                    v.push_back(stroke);
+                    break;
+                case 'L':
+                    stroke.type = STROKE::LINEAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    v.push_back(stroke);
+                    break;
+                case 'D':
+                    stroke.type = STROKE::DOT;
+                    v.push_back(stroke);
+                    break;
+                case 'P':
+                    stroke.type = STROKE::POLAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    stroke.angle1 = atoi(fields[2].c_str());
+                    stroke.cx = atoi(fields[3].c_str());
+                    stroke.cy = atoi(fields[4].c_str());
+                    v.push_back(stroke);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            }
+            g_kakijun.push_back(v);
+        }
 
 #if 0
         {
@@ -237,8 +282,7 @@ void OnDestroy(HWND hwnd)
 
     g_kanji1_history.clear();
 
-    for (size_t i = 0; i < _countof(g_kanji1_kakijun); ++i)
-        g_kanji1_kakijun[i].clear();
+    g_kakijun.clear();
 
     delete g_pMoji;
     g_pMoji = NULL;
@@ -310,7 +354,7 @@ void OnPaint(HWND hwnd)
 
 HRGN MyCreateRegion(INT nIndex, INT iKakijun, INT i, INT ires) {
 #if 1
-    std::vector<STROKE>& v = g_kanji1_kakijun[nIndex];
+    std::vector<STROKE>& v = g_kakijun[nIndex];
     std::wstring moji = g_pMoji->key_at(nIndex);
     INT k = ires;
     assert(v[i].type != STROKE::WAIT);
@@ -330,7 +374,7 @@ HRGN MyCreateRegion(INT nIndex, INT iKakijun, INT i, INT ires) {
 
 void GetStrokeData(std::vector<STROKE>& v)
 {
-    v = g_kanji1_kakijun[g_nMoji];
+    v = g_kakijun[g_nMoji];
 }
 
 void PreDraw(HDC hdc, RECT& rc)

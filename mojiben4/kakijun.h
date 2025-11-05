@@ -15,11 +15,9 @@ struct STROKE {
     INT angle1;
     INT cx;
     INT cy;
-    INT res;
 };
-typedef std::vector<STROKE> KAKIJUN[80];
+typedef std::vector<std::vector<STROKE> > KAKIJUN;
 
-extern KAKIJUN g_kanji1_kakijun;
 extern INT g_map[80];
 
 VOID InitKanji1(VOID);
