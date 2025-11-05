@@ -84,6 +84,16 @@ void EnumData() {
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
+
+#if 0
+        if (i < 26) {
+            DWORD size;
+            PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(5000 + i % 26), &size);
+            std::string binary((char *)pres, size);
+            wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
+            g_pMyLib->save_binary(binary, file);
+        }
+#endif
     }
 }
 
@@ -416,14 +426,17 @@ static unsigned ThreadProcWorker(void)
     ShowWindow(g_hKakijunWnd, SW_SHOWNORMAL);
     SetForegroundWindow(g_hKakijunWnd);
 
-    MyPlaySound(MAKEINTRESOURCE(5000 + g_nMoji));
+    INT nIndex = g_nMoji % 26;
+    std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\s\\" + g_pMoji->key_at(nIndex) + L".mp3");
+    g_pMyLib->play_sound(mp3_path);
 
     if (!IsWindowVisible(g_hKakijunWnd))
         return 0;
 
     DO_SLEEP(200);
 
-    MyPlaySoundAsync(MAKEINTRESOURCE(400));
+    std::wstring stroke_sound = g_pMyLib->find_data_file(g_section + L"\\Stroke.mp3");
+    g_pMyLib->play_sound_async(stroke_sound);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); ++i)
@@ -436,7 +449,7 @@ static unsigned ThreadProcWorker(void)
             if (!IsWindowVisible(g_hKakijunWnd))
                 return 0;
 
-            MyPlaySoundAsync(MAKEINTRESOURCE(400));
+            g_pMyLib->play_sound_async(stroke_sound);
             break;
 
         case STROKE::DOT:
@@ -648,7 +661,8 @@ static unsigned ThreadProcWorker(void)
     }
 
     DO_SLEEP(500);
-    MyPlaySoundAsync(MAKEINTRESOURCE(5000 + g_nMoji));
+
+    g_pMyLib->play_sound(mp3_path);
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -758,7 +772,10 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         g_fLowerCase = FALSE;
-        MyPlaySoundAsync(MAKEINTRESOURCE(300));
+
+        std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\04Uppercase.mp3");
+        g_pMyLib->play_sound_async(mp3_path);
+
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;
@@ -771,7 +788,8 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         g_fLowerCase = TRUE;
-        MyPlaySoundAsync(MAKEINTRESOURCE(301));
+        std::wstring mp3_path = g_pMyLib->find_data_file(g_section + L"\\05Lowercase.mp3");
+        g_pMyLib->play_sound_async(mp3_path);
         if (g_hbmClient)
             DeleteObject(g_hbmClient);
         g_hbmClient = NULL;

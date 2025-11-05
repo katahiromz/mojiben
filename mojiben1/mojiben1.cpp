@@ -117,7 +117,7 @@ void EnumData() {
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(3000 + g_moji_data[i].moji_id), &size);
         std::string binary((char *)pres, size);
-        wsprintfW(file, L"%s\\MP3\\%s.mp3", g_section.c_str(), moji.c_str());
+        wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
     }
