@@ -12,13 +12,7 @@
     INT cy;
     INT res;
 };
-typedef std::vector<STROKE> KAKIJUN[26];
-
-extern KAKIJUN g_print_uppercase_kakijun;
-extern KAKIJUN g_print_lowercase_kakijun;
-
-VOID InitPrintUpperCase(VOID);
-VOID InitPrintLowerCase(VOID);
+typedef std::vector<std::vector<STROKE> > KAKIJUN;
 
 // 書き順イメージのサイズ。
 #define KAKIJUN_SIZE 254
