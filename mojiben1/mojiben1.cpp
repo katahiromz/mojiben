@@ -492,7 +492,6 @@ static unsigned ThreadProcWorker(void)
     POINT apt[5];
 
     INT nIndex = MojiIndexFromMojiID(g_nMoji);
-
     std::vector<STROKE> v;
     std::wstring romaji = GetStrokeData(v);
 
