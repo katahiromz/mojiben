@@ -56,8 +56,6 @@ HBITMAP g_hbmKukuNoUta;
 INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
-HFONT g_hFont;
-HFONT g_hSmallFont;
 
 std::set<INT> g_digits_history;
 
@@ -255,19 +253,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKukuNoUta = g_pMyLib->load_picture(file);
     assert(g_hbmKukuNoUta);
 
-    LOGFONT lf;
-    ZeroMemory(&lf, sizeof(lf));
-    lf.lfHeight = -90;
-    lf.lfCharSet = SHIFTJIS_CHARSET;
-    lf.lfQuality = PROOF_QUALITY;
-    lstrcpyn(lf.lfFaceName, TEXT("Tahoma"), _countof(lf.lfFaceName));
-    g_hFont = CreateFontIndirect(&lf);
-
-    lf.lfHeight = -30;
-    lf.lfWeight = FW_BOLD;
-    lstrcpyn(lf.lfFaceName, TEXT("ピザPゴシック"), _countof(lf.lfFaceName));
-    g_hSmallFont = CreateFontIndirect(&lf);
-
     updateSystemMenu(hwnd);
 
     g_hbmClient = NULL;
@@ -275,7 +260,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     INT cx = GetSystemMetrics(SM_CXBORDER);
     INT cy = GetSystemMetrics(SM_CYBORDER);
     g_hKakijunWnd = CreateWindow(g_szKakijunClassName, TEXT(""),
-        WS_POPUPWINDOW, CW_USEDEFAULT, 0, 300 + cx * 2, 300 + cy * 2,
+        WS_POPUPWINDOW, CW_USEDEFAULT, 0, 254 + cx * 2, 254 + cy * 2,
         hwnd, NULL, g_hInstance, NULL);
     if (g_hKakijunWnd == NULL)
         return FALSE;
@@ -300,8 +285,6 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmKazoekata);
 
     DeleteObject(g_hbrRed);
-    DeleteObject(g_hFont);
-    DeleteObject(g_hSmallFont);
 
     g_digits_history.clear();
 
@@ -395,42 +378,23 @@ void OnPaint(HWND hwnd)
     }
 }
 
-void DrawCaptionText(HDC hdcMem, const RECT *prc, INT nMoji)
-{
-    WCHAR szText[64];
-    lstrcpynW(szText, g_aszReadings[nMoji], _countof(szText));
-
-    LPWSTR pch = wcschr(szText, L':');
-    *pch = 0;
-
-    RECT rc = *prc;
-
-    HGDIOBJ hFontOld = SelectObject(hdcMem, g_hFont);
-    SetTextColor(hdcMem, RGB(0, 0, 0));
-    DrawText(hdcMem, szText, -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-
-    SelectObject(hdcMem, g_hSmallFont);
-    SetRect(&rc, 0, 0, 300, 300);
-    SetTextColor(hdcMem, RGB(0, 0, 0));
-    if (wcschr(pch + 1, L'\n'))
-        DrawText(hdcMem, pch + 1, -1, &rc, DT_LEFT | DT_TOP);
-    else
-        DrawText(hdcMem, pch + 1, -1, &rc, DT_SINGLELINE | DT_LEFT | DT_TOP);
-
-    lstrcpynW(szText, g_aszKanji[nMoji], _countof(szText));
-    pch = wcschr(szText, L':');
-    *pch = 0;
-
-    SetRect(&rc, 0, 0, 300, 300);
-    SetTextColor(hdcMem, RGB(0, 0, 0));
-    DrawText(hdcMem, pch + 1, -1, &rc, DT_SINGLELINE | DT_RIGHT | DT_BOTTOM);
-
-    SelectObject(hdcMem, hFontOld);
-}
-
 void PreDraw(HDC hdc, RECT& rc)
 {
-    DrawCaptionText(hdc, &rc, g_nMoji);
+    std::wstring moji = g_pMoji->key_at(g_nMoji);
+
+    // Load GIF
+    WCHAR file[MAX_PATH];
+    wsprintfW(file, L"%s\\m\\%s.gif", g_section.c_str(), moji.c_str());
+    HBITMAP hbm = g_pMyLib->load_picture(file);
+    assert(hbm);
+
+    HDC hdc2 = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hdc2, hbm);
+    BitBlt(hdc, rc.left, rc.top, 254, 254, hdc2, 0, 0, SRCCOPY);
+    SelectObject(hdc2, hbmOld);
+    DeleteDC(hdc2);
+
+    DeleteObject(hbm);
 }
 
 static unsigned ThreadProcWorker(void)
@@ -453,7 +417,6 @@ static unsigned ThreadProcWorker(void)
         hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
         PreDraw(hdcMem, rc);
         SelectObject(hdcMem, hbmOld);
     }
@@ -480,7 +443,6 @@ static unsigned ThreadProcWorker(void)
         hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
         PreDraw(hdcMem, rc);
         SelectObject(hdcMem, hbmOld);
     }
