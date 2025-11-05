@@ -80,18 +80,9 @@ struct MOJI
 
 INT MojiIndexFromMojiID(INT moji_id)
 {
-#if 1
     if (moji_id >= (INT)g_pMoji->size())
         return -1;
     return moji_id;
-#else
-    for (size_t i = 0; i < _countof(g_moji_data); ++i) {
-        if (g_moji_data[i].moji_id == moji_id)
-            return (INT)(i % 46) + g_fKatakana * 46;
-    }
-    assert(0);
-    return -1;
-#endif
 }
 
 void EnumData() {
