@@ -1122,9 +1122,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
     if (id == 3000)
     {
-        WCHAR wch = g_moji_data[index + (g_fKatakana ? 46 : 0)].wch;
-        WCHAR sz[2] = { wch, 0 };
-        CopyText(hwnd, sz);
+        std::wstring moji = g_pMoji->key_at(index);
+        CopyText(hwnd, moji.c_str());
         return;
     }
 
