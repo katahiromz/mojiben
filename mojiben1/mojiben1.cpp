@@ -41,8 +41,6 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
-#define NUM_MOJI 92
-
 HBITMAP g_hbmHiraganaON, g_hbmHiraganaOFF;
 HBITMAP g_hbmKatakanaON, g_hbmKatakanaOFF;
 std::vector<HBITMAP> g_ahbmMoji;
