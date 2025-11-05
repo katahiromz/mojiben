@@ -65,6 +65,7 @@ std::set<INT> g_digits_history;
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
+BOOL g_fJapanese = FALSE;
 
 static LPCWSTR g_aszReadings[] =
 {
@@ -795,6 +796,9 @@ INT WINAPI WinMain(
 
     // レジストリから読み込んだスタディモードを適用。
     applyStudyMode(getStudyMode());
+
+    // 日本語か？
+    g_fJapanese = (PRIMARYLANGID(WonGetThreadUILanguage()) == LANG_JAPANESE);
 
     // コモンコントロール初期化。
     InitCommonControls();
