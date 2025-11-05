@@ -15,7 +15,6 @@ struct STROKE {
     INT angle1;
     INT cx;     // width
     INT cy;     // height
-    INT res;
 };
 typedef std::vector<std::vector<STROKE> > KAKIJUN;
 
