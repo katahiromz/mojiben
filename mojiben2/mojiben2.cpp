@@ -870,7 +870,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     if (fRight)
     {
         HMENU hMenu = CreatePopupMenu();
-        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + nMoji, LoadStringDx(100 + g_nMoji));
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + (nMoji % 26), LoadStringDx(100 + (nMoji % 26)));
         SetForegroundWindow(hwnd);
 
         POINT pt;
@@ -1125,7 +1125,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
     InvalidateRect(hwnd, NULL, TRUE);
 
-    LPTSTR psz = LoadStringDx(200 + g_nMoji);
+    LPTSTR psz = LoadStringDx(200 + (g_nMoji % 26));
     if (psz[0])
         ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);
 }
