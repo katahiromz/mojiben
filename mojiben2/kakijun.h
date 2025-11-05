@@ -10,7 +10,6 @@
     INT angle1;
     INT cx;
     INT cy;
-    INT res;
 };
 typedef std::vector<std::vector<STROKE> > KAKIJUN;
 

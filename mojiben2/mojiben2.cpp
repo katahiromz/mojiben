@@ -46,8 +46,7 @@ HANDLE g_hThread;
 HBRUSH g_hbrRed;
 HPEN g_hPenBlue;
 
-std::set<INT> g_print_uppercase_history;
-std::set<INT> g_print_lowercase_history;
+std::set<INT> g_history;
 
 BOOL g_bHighSpeed = FALSE;
 
@@ -339,8 +338,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbrRed);
     DeleteObject(g_hPenBlue);
 
-    g_print_uppercase_history.clear();
-    g_print_lowercase_history.clear();
+    g_history.clear();
 
     delete g_pMoji;
     g_pMoji = NULL;
@@ -440,14 +438,14 @@ void OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[i]);
             if (g_fLowerCase)
             {
-                if (g_print_lowercase_history.find(i) != g_print_lowercase_history.end())
+                if (g_history.find(i) != g_history.end())
                     FillRect(hdcMem2, &rc, g_hbrRed);
                 else
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
             else
             {
-                if (g_print_uppercase_history.find(i) != g_print_uppercase_history.end())
+                if (g_history.find(i) != g_history.end())
                     FillRect(hdcMem2, &rc, g_hbrRed);
                 else
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -891,10 +889,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     g_hbmClient = NULL;
     InvalidateRect(hwnd, NULL, TRUE);
 
-    if (g_fLowerCase)
-        g_print_lowercase_history.insert(nMoji);
-    else
-        g_print_uppercase_history.insert(nMoji);
+    g_history.insert(nMoji);
 
     if (g_hThread)
         CloseHandle(g_hThread);
@@ -1121,10 +1116,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (id == 0)
         return;
 
-    if (g_fLowerCase)
-        g_print_lowercase_history.insert(g_nMoji);
-    else
-        g_print_uppercase_history.insert(g_nMoji);
+    g_history.insert(g_nMoji);
 
     if (g_hbmClient)
     {
