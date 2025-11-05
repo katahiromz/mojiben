@@ -879,8 +879,19 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
                                   pt.x, pt.y, 0, hwnd, NULL);
         DestroyMenu(hMenu);
-        if (nCmd)
-            PostMessage(hwnd, WM_COMMAND, nCmd, 0);
+        if (nCmd) {
+            g_history.insert(g_nMoji);
+
+            if (g_hbmClient) {
+                DeleteObject(g_hbmClient);
+                g_hbmClient = NULL;
+            }
+            InvalidateRect(hwnd, NULL, TRUE);
+
+            LPTSTR psz = LoadStringDx(200 + (g_nMoji % 26));
+            if (psz[0])
+                ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);
+        }
         return;
     }
 
@@ -1111,25 +1122,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
-void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    if (id == 0)
-        return;
-
-    g_history.insert(g_nMoji);
-
-    if (g_hbmClient)
-    {
-        DeleteObject(g_hbmClient);
-        g_hbmClient = NULL;
-    }
-    InvalidateRect(hwnd, NULL, TRUE);
-
-    LPTSTR psz = LoadStringDx(200 + (g_nMoji % 26));
-    if (psz[0])
-        ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);
-}
-
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (!fDown)
@@ -1152,7 +1144,6 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
         HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
-        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
