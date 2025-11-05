@@ -462,8 +462,8 @@ static unsigned ThreadProcWorker(void)
     siz.cx = rc.right - rc.left;
     siz.cy = rc.bottom - rc.top;
 
-    INT nIndex = g_nMoji;
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
+    INT nIndex = g_nMoji;
     INT iKakijun = (100 + nIndex) * 100;
     INT ires = 0;
     for (UINT i = 0; i < v.size(); i++) {

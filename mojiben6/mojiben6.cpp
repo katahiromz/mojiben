@@ -32,6 +32,7 @@
 #include "../Common.h"
 #include "../FuriganaCtl/FuriganaCtl/furigana_api.h"
 #include "../MyLib/MyLib.h"
+#include "../mstr.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -80,6 +81,7 @@ std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
+KAKIJUN g_kakijun;
 
 void EnumData() {
     WCHAR file[MAX_PATH];
@@ -111,6 +113,95 @@ void EnumData() {
         }
 #endif
 
+#if 0
+        std::vector<STROKE> v = g_kanji3_kakijun[i];
+        std::vector<std::string> values;
+        char buf[MAX_PATH];
+        for (size_t i = 0; i < v.size(); ++i) {
+            switch (v[i].type) {
+            case STROKE::WAIT:
+                values.push_back("W");
+                break;
+            case STROKE::LINEAR:
+                wsprintfA(buf, "L,%d", v[i].angle0);
+                values.push_back(buf);
+                break;
+            case STROKE::DOT:
+                wsprintfA(buf, "D");
+                values.push_back(buf);
+                break;
+            case STROKE::POLAR:
+                wsprintfA(buf, "P,%d,%d,%d,%d", v[i].angle0, v[i].angle1, v[i].cx, v[i].cy);
+                values.push_back(buf);
+                break;
+            }
+        }
+        std::string ansi = mstr_join(values, ";");
+        wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(ansi, file);
+#endif
+
+#if 0
+        {
+            INT iKakijun = (100 + i) * 100;
+            INT ires = 0;
+            for (size_t k = 0; k < g_kanji3_kakijun[i].size(); ++k) {
+                if (g_kanji3_kakijun[i][k].type != STROKE::WAIT) {
+                    DWORD size;
+                    PVOID pres = MyLoadRes(g_hInstance, RT_RCDATA, MAKEINTRESOURCEW(iKakijun + ires), &size);
+                    std::string binary((char *)pres, size);
+                    assert(size);
+                    wsprintfW(file, L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
+                    g_pMyLib->save_binary(binary, file);
+                    ++ires;
+                }
+            }
+        }
+#endif
+
+        {
+            std::vector<STROKE> v;
+            STROKE stroke;
+            wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+            std::string ansi;
+            g_pMyLib->load_binary(ansi, file);
+            std::vector<std::string> values;
+            mstr_split(values, ansi, ";");
+            for (size_t i = 0; i < values.size(); ++i) {
+                std::string& value = values[i];
+                mstr_trim(value, " \t\r\n");
+                std::vector<std::string> fields;
+                mstr_split(fields, value, ",");
+                std::string binary;
+                switch (value[0]) {
+                case 'W':
+                    stroke.type = STROKE::WAIT;
+                    v.push_back(stroke);
+                    break;
+                case 'L':
+                    stroke.type = STROKE::LINEAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    v.push_back(stroke);
+                    break;
+                case 'D':
+                    stroke.type = STROKE::DOT;
+                    v.push_back(stroke);
+                    break;
+                case 'P':
+                    stroke.type = STROKE::POLAR;
+                    stroke.angle0 = atoi(fields[1].c_str());
+                    stroke.angle1 = atoi(fields[2].c_str());
+                    stroke.cx = atoi(fields[3].c_str());
+                    stroke.cy = atoi(fields[4].c_str());
+                    v.push_back(stroke);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            }
+            g_kakijun.push_back(v);
+        }
     }
 }
 
@@ -130,15 +221,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (!g_pMoji)
         return FALSE;
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
-
-    try
-    {
-        InitKanji3();
-    }
-    catch (std::bad_alloc)
-    {
-        return FALSE;
-    }
 
     EnumData();
 
@@ -209,8 +291,7 @@ void OnDestroy(HWND hwnd)
 
     g_kanji3_history.clear();
 
-    for (size_t i = 0; i < _countof(g_kanji3_kakijun); ++i)
-        g_kanji3_kakijun[i].clear();
+    g_kakijun.clear();
 
     delete g_pMoji;
     g_pMoji = NULL;
@@ -337,18 +418,29 @@ void OnPaint(HWND hwnd)
     }
 }
 
-HRGN MyCreateRegion(INT res)
-{
+HRGN MyCreateRegion(INT nIndex, INT iKakijun, INT i, INT ires) {
+#if 1
+    std::vector<STROKE>& v = g_kakijun[nIndex];
+    std::wstring moji = g_pMoji->key_at(nIndex);
+    INT k = ires;
+    assert(v[i].type != STROKE::WAIT);
+    WCHAR file[MAX_PATH];
+    wsprintfW(file, L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
+    std::string binary;
+    g_pMyLib->load_binary(binary, file);
+    return DeserializeRegion254((PBYTE)binary.c_str(), (DWORD)binary.size());
+#else
     HRSRC hRsrc = ::FindResource(g_hInstance, MAKEINTRESOURCE(res), RT_RCDATA);
     DWORD cbData = ::SizeofResource(g_hInstance, hRsrc);
     HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     PVOID pvData = ::LockResource(hGlobal);
     return DeserializeRegion254((PBYTE)pvData, cbData);
+#endif
 }
 
 void GetStrokeData(std::vector<STROKE>& v)
 {
-    v = g_kanji3_kakijun[g_nMoji];
+    v = g_kakijun[g_nMoji];
 }
 
 void PreDraw(HDC hdc, RECT& rc)
@@ -373,14 +465,17 @@ static unsigned ThreadProcWorker(void)
     siz.cy = rc.bottom - rc.top;
 
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
-    for (UINT i = 0; i < v.size(); i++)
-    {
-        if (v[i].type != STROKE::WAIT)
-        {
-            CRgn hRgn2(MyCreateRegion(v[i].res));
+
+    INT nIndex = g_nMoji;
+    INT iKakijun = (100 + nIndex) * 100;
+    INT ires = 0;
+    for (UINT i = 0; i < v.size(); i++) {
+        if (v[i].type != STROKE::WAIT) {
+            CRgn hRgn2(MyCreateRegion(nIndex, iKakijun, i, ires++));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }
     }
+    ires = 0;
 
     {
         CDC hdc(g_hKakijunWnd);
@@ -445,7 +540,7 @@ static unsigned ThreadProcWorker(void)
                 PreDraw(hdcMem, rc);
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(nIndex, iKakijun, i, ires++));
                 CombineRgn(hRgn5, hRgn5, hRgn2, RGN_OR);
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
                 SelectObject(hdcMem, hbmOld);
@@ -472,7 +567,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(nIndex, iKakijun, i, ires++));
 
                 double cost1 = std::cos(v[i].angle0 * M_PI / 180);
                 double sint1 = std::sin(v[i].angle0 * M_PI / 180);
@@ -561,7 +656,7 @@ static unsigned ThreadProcWorker(void)
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
 
-                CRgn hRgn2(MyCreateRegion(v[i].res));
+                CRgn hRgn2(MyCreateRegion(nIndex, iKakijun, i, ires++));
 
                 INT step = 0;
                 for (; step < KAKIJUN_SIZE / 20; ++step)
