@@ -47,7 +47,7 @@ add_definitions(-DUNICODE -D_UNICODE)
 
 # mojiben3.exe
 add_executable(mojiben3 WIN32 mojiben3.cpp digits.cpp mojiben3_res.rc)
-target_link_libraries(mojiben3 comctl32 winmm shlwapi)
+target_link_libraries(mojiben3 comctl32 winmm shlwapi MyLib)
 if(MSVC)
     target_link_options(mojiben3 PRIVATE /MANIFEST:NO)
 endif()

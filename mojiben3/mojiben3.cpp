@@ -29,6 +29,7 @@
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
+#include "../MyLib/MyLib.h"
 
 #ifndef M_PI
     #define M_PI 3.141592653589
@@ -47,7 +48,7 @@ HINSTANCE g_hInstance;
 HWND g_hMainWnd;
 HWND g_hKakijunWnd;
 
-HBITMAP g_ahbmDigits[42];
+std::vector<HBITMAP> g_ahbmMoji;
 HBITMAP g_hbmClient;
 HBITMAP g_hbmKakijun; // Week ref
 HBITMAP g_hbmKazoekata;
@@ -60,6 +61,10 @@ HFONT g_hFont;
 HFONT g_hSmallFont;
 
 std::set<INT> g_digits_history;
+
+std::wstring g_section;
+MyLib *g_pMyLib = NULL;
+MyLibStringTable *g_pMoji = NULL;
 
 static LPCWSTR g_aszReadings[] =
 {
@@ -187,8 +192,48 @@ BOOL GetKukuNoUtaRect(HWND hwnd, LPRECT prc)
     return TRUE;
 }
 
+void EnumData() {
+    WCHAR file[MAX_PATH];
+
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->key_at(i);
+
+#if 0
+        DWORD size;
+        PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(1000 + i), &size);
+        std::string binary((char *)pres, size);
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        g_pMyLib->save_binary(binary, file);
+#endif
+
+        // Load GIF
+        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        HBITMAP hbm = g_pMyLib->load_picture(file);
+        assert(hbm);
+        g_ahbmMoji.push_back(hbm);
+    }
+
+}
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+    // メディアライブラリを作成
+    g_pMyLib = new(std::nothrow) MyLib();
+    if (!g_pMyLib)
+        return FALSE;
+
+    // セクション名を読み込む
+    g_section = LoadStringDx(500);
+    assert(g_section.size());
+
+    // 文字データを取り込む
+    g_pMoji = new(std::nothrow) MyLibStringTable();
+    if (!g_pMoji)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
+
+    EnumData();
+
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
@@ -210,14 +255,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     updateSystemMenu(hwnd);
 
-    ZeroMemory(g_ahbmDigits, sizeof(g_ahbmDigits));
-    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
-    {
-        g_ahbmDigits[j] = LoadGif(g_hInstance, 1000 + j);
-        if (g_ahbmDigits[j] == NULL)
-            return FALSE;
-    }
-
     g_hbmClient = NULL;
 
     try
@@ -238,6 +275,37 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     return TRUE;
+}
+
+void OnDestroy(HWND hwnd)
+{
+    if (g_hThread)
+    {
+        ShowWindow(g_hKakijunWnd, SW_HIDE);
+        CloseHandle(g_hThread);
+    }
+
+    for (UINT i = 0; i < g_ahbmMoji.size(); ++i)
+        DeleteObject(g_ahbmMoji[i]);
+    g_ahbmMoji.clear();
+
+    DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmKakijun);
+    DeleteObject(g_hbmKazoekata);
+
+    DeleteObject(g_hbrRed);
+    DeleteObject(g_hFont);
+    DeleteObject(g_hSmallFont);
+
+    g_digits_history.clear();
+
+    delete g_pMoji;
+    g_pMoji = NULL;
+
+    delete g_pMyLib;
+    g_pMyLib = NULL;
+
+    PostQuitMessage(0);
 }
 
 // 文字ボタンの位置。
@@ -277,7 +345,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
+        for (UINT j = 0; j < g_ahbmMoji.size(); ++j)
         {
             GetMojiRect(&rc, j);
             InflateRect(&rc, 3, 3);
@@ -288,7 +356,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
                 FillRect(hdcMem2, &rc, g_hbrRed);
 
             InflateRect(&rc, -3, -3);
-            hbmOld = SelectObject(hdcMem, g_ahbmDigits[j]);
+            hbmOld = SelectObject(hdcMem, g_ahbmMoji[j]);
             BitBlt(hdcMem2, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
@@ -479,7 +547,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     pt.y = y;
 
     // 文字ボタンの当たり判定。
-    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
+    for (UINT j = 0; j < g_ahbmMoji.size(); ++j)
     {
         GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
@@ -514,7 +582,7 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     ScreenToClient(hwnd, &pt);
 
     RECT rc;
-    for (UINT j = 0; j < _countof(g_ahbmDigits); ++j)
+    for (UINT j = 0; j < g_ahbmMoji.size(); ++j)
     {
         GetMojiRect(&rc, j);
         if (PtInRect(&rc, pt))
@@ -615,30 +683,6 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
     return 0;
-}
-
-void OnDestroy(HWND hwnd)
-{
-    if (g_hThread)
-    {
-        ShowWindow(g_hKakijunWnd, SW_HIDE);
-        CloseHandle(g_hThread);
-    }
-
-    for (UINT i = 0; i < _countof(g_ahbmDigits); ++i)
-        DeleteObject(g_ahbmDigits[i]);
-
-    DeleteObject(g_hbmClient);
-    DeleteObject(g_hbmKakijun);
-    DeleteObject(g_hbmKazoekata);
-
-    DeleteObject(g_hbrRed);
-    DeleteObject(g_hFont);
-    DeleteObject(g_hSmallFont);
-
-    g_digits_history.clear();
-
-    PostQuitMessage(0);
 }
 
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
