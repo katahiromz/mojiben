@@ -15,13 +15,8 @@ struct STROKE {
     INT angle1;
     INT cx;
     INT cy;
-    INT res;
 };
-typedef std::vector<STROKE> KAKIJUN[200];
-
-extern KAKIJUN g_kanji4_kakijun;
-
-VOID InitKanji4(VOID);
+typedef std::vector<std::vector<STROKE> > KAKIJUN;
 
 // 書き順イメージのサイズ。
 #define KAKIJUN_SIZE 254
