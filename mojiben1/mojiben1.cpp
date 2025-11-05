@@ -230,6 +230,26 @@ void OnDestroy(HWND hwnd)
     PostQuitMessage(0);
 }
 
+void GetHiraganaRect(HWND hwnd, PRECT prc)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    BITMAP bm;
+    GetObjectW(g_hbmHiraganaON, sizeof(bm), &bm);
+    INT x = rc.right / 2 - bm.bmWidth - 30;
+    SetRect(prc, x, 10, x + bm.bmWidth, 10 + bm.bmHeight);
+}
+
+void GetKatakanaRect(HWND hwnd, PRECT prc)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    BITMAP bm;
+    GetObjectW(g_hbmKatakanaON, sizeof(bm), &bm);
+    INT x = rc.right / 2 + 30;
+    SetRect(prc, x, 10, x + bm.bmWidth, 10 + bm.bmHeight);
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -252,24 +272,31 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
+        RECT rcHira, rcKata;
+        GetHiraganaRect(hwnd, &rcHira);
+        GetKatakanaRect(hwnd, &rcKata);
+
         if (g_fKatakana)
         {
             hbmOld = SelectObject(hdcMem, g_hbmHiraganaOFF);
-            BitBlt(hdcMem2, 160, 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rcHira.left, rcHira.top, rcHira.right - rcHira.left, rcHira.bottom - rcHira.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
             hbmOld = SelectObject(hdcMem, g_hbmKatakanaON);
-            BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rcKata.left, rcKata.top, rcKata.right - rcKata.left, rcKata.bottom - rcKata.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
         else
         {
             hbmOld = SelectObject(hdcMem, g_hbmHiraganaON);
-            BitBlt(hdcMem2, 160, 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rcHira.left, rcHira.top, rcHira.right - rcHira.left, rcHira.bottom - rcHira.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
             hbmOld = SelectObject(hdcMem, g_hbmKatakanaOFF);
-            BitBlt(hdcMem2, siz.cx - (160 + 200), 10, 200, 76, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rcKata.left, rcKata.top, rcKata.right - rcKata.left, rcKata.bottom - rcKata.top, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
+
+        BITMAP bm;
+        GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
 
         for (j = 0; j < (INT)g_pMoji->size(); ++j)
         {
@@ -280,8 +307,8 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[j]);
             rc.left = g_moji_data[j].x;
             rc.top = g_moji_data[j].y;
-            rc.right = rc.left + 50;
-            rc.bottom = rc.top + 50;
+            rc.right = rc.left + bm.bmWidth;
+            rc.bottom = rc.top + bm.bmHeight;
             InflateRect(&rc, +3, +3);
             if (g_fKatakana)
             {
@@ -298,7 +325,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
                     FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             }
             InflateRect(&rc, -3, -3);
-            BitBlt(hdcMem2, rc.left, rc.top, 50, 50, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rc.left, rc.top, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
     }
@@ -717,16 +744,14 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 // 「ひらがな」ボタンの当たり判定。
 BOOL HitHiraganaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
-    SetRect(prc, 160, 10, 160 + 200, 10 + 76);
+    GetHiraganaRect(hwnd, prc);
     return PtInRect(prc, pt);
 }
 
 // 「カタカナ」ボタンの当たり判定。
 BOOL HitKatakanaRect(HWND hwnd, LPRECT prc, POINT pt)
 {
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-    SetRect(prc, rc.right - (160 + 200), 10, rc.right - 160, 10 + 76);
+    GetKatakanaRect(hwnd, prc);
     return PtInRect(prc, pt);
 }
 
@@ -777,13 +802,16 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
         return;
     }
 
+    BITMAP bm;
+    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
     // 文字ボタンの当たり判定。
     for (UINT j = 0; j < g_pMoji->size(); ++j)
     {
         rc.left = g_moji_data[j].x;
         rc.top = g_moji_data[j].y;
-        rc.right = rc.left + 50;
-        rc.bottom = rc.top + 50;
+        rc.right = rc.left + bm.bmWidth;
+        rc.bottom = rc.top + bm.bmHeight;
         InflateRect(&rc, +3, +3);
         if (PtInRect(&rc, pt))
         {
