@@ -402,10 +402,8 @@ static unsigned ThreadProcWorker(void)
     CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
     INT iKakijun = (100 + nIndex) * 100;
     INT ires = 0;
-    for (UINT i = 0; i < v.size(); i++)
-    {
-        if (v[i].type != STROKE::WAIT)
-        {
+    for (UINT i = 0; i < v.size(); i++) {
+        if (v[i].type != STROKE::WAIT) {
             CRgn hRgn2(MyCreateRegion(nIndex, iKakijun, i, ires++));
             CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
         }

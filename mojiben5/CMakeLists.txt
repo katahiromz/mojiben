@@ -9,7 +9,7 @@ endif()
 add_definitions(-DUNICODE -D_UNICODE)
 
 # mojiben5.exe
-add_executable(mojiben5 WIN32 mojiben5.cpp kanji2.cpp readings.cpp mojiben5_res.rc ../Region.cpp examples.cpp)
+add_executable(mojiben5 WIN32 mojiben5.cpp readings.cpp mojiben5_res.rc ../Region.cpp examples.cpp)
 target_link_libraries(mojiben5 comctl32 winmm shlwapi MyLib)
 if(MSVC)
     target_link_options(mojiben5 PRIVATE /MANIFEST:NO)
