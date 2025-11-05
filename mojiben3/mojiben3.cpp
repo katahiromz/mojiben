@@ -245,8 +245,16 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
-    g_hbmKazoekata = LoadGif(g_hInstance, 100);
-    g_hbmKukuNoUta = LoadGif(g_hInstance, 101);
+
+    WCHAR file[MAX_PATH];
+
+    wsprintfW(file, L"%s\\00CountingUnits%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
+    g_hbmKazoekata = g_pMyLib->load_picture(file);
+    assert(g_hbmKazoekata);
+
+    wsprintfW(file, L"%s\\01MultipicationTable%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
+    g_hbmKukuNoUta = g_pMyLib->load_picture(file);
+    assert(g_hbmKukuNoUta);
 
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
