@@ -129,6 +129,7 @@ void EnumData() {
     }
 }
 
+// WM_CREATE
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     // メディアライブラリを作成
@@ -181,6 +182,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// WM_DESTROY
 void OnDestroy(HWND hwnd)
 {
     if (g_hThread)
@@ -281,6 +283,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     SelectObject(hdcMem2, hbmOld2);
 }
 
+// WM_PAINT
 void OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -454,6 +457,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 }
 
+// WM_SETCURSOR
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
 {
     if (codeHitTest != HTCLIENT)
@@ -510,20 +514,19 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     }
 }
 
+// WM_CREATE
 BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     return TRUE;
 }
 
-void Kakijun_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
-{
-}
-
-BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
+// WM_ERASEBKGND
+inline BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     return TRUE;
 }
 
+// WM_PAINT
 void Kakijun_OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -534,17 +537,17 @@ void Kakijun_OnPaint(HWND hwnd)
     }
 }
 
-void Kakijun_OnDestroy(HWND hwnd)
-{
-}
-
+// WM_RBUTTONDOWN
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     ShowWindow(hwnd, SW_HIDE);
 }
 
+// WM_KEYDOWN
 void Kakijun_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
+    if (!fDown)
+        return;
     if (vk == VK_ESCAPE)
         ShowWindow(hwnd, SW_HIDE);
 }
@@ -557,8 +560,6 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_CREATE, Kakijun_OnCreate);
         HANDLE_MSG(hwnd, WM_ERASEBKGND, Kakijun_OnEraseBkgnd);
         HANDLE_MSG(hwnd, WM_PAINT, Kakijun_OnPaint);
-        HANDLE_MSG(hwnd, WM_SHOWWINDOW, Kakijun_OnShowWindow);
-        HANDLE_MSG(hwnd, WM_DESTROY, Kakijun_OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, Kakijun_OnKey);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, Kakijun_OnRButtonDown);
     default:
@@ -567,12 +568,14 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// WM_ERASEBKGND
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     InvalidateRect(hwnd, NULL, FALSE);
     return TRUE;
 }
 
+// WM_LBUTTONDOWN
 void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     if (fDoubleClick)
@@ -581,6 +584,7 @@ void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     OnButtonDown(hwnd, x, y, FALSE);
 }
 
+// WM_RBUTTONDOWN
 void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     if (fDoubleClick)
@@ -589,6 +593,7 @@ void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     OnButtonDown(hwnd, x, y, TRUE);
 }
 
+// WM_SYSCOMMAND
 void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 {
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
@@ -620,10 +625,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
-void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-}
-
+// WM_KEYDOWN
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (!fDown)
@@ -645,7 +647,6 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
         HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
-        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);

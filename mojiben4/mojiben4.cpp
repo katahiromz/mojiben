@@ -198,6 +198,7 @@ void EnumData() {
     }
 }
 
+// WM_CREATE
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     // メディアライブラリを作成
@@ -261,6 +262,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// WM_DESTROY
 void OnDestroy(HWND hwnd)
 {
     if (g_hThread)
@@ -346,6 +348,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     SelectObject(hdcMem2, hbmOld2);
 }
 
+// WM_PAINT
 void OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -803,6 +806,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 }
 
+// WM_SETCURSOR
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
 {
     if (codeHitTest != HTCLIENT)
@@ -852,6 +856,7 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     }
 }
 
+// WM_CREATE
 BOOL Kakijun_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     // キャプションウィンドウの作成
@@ -914,6 +919,7 @@ void MoveCaptionWnd(HWND hwnd, HWND hwndCaption, INT nIndex)
     ::InvalidateRect(hwndCaption, NULL, TRUE);
 }
 
+// WM_SHOWWINDOW
 void Kakijun_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
 {
     if (fShow)
@@ -930,11 +936,13 @@ void Kakijun_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
     }
 }
 
-BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
+// WM_ERASEBKGND
+inline BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     return TRUE;
 }
 
+// WM_PAINT
 void Kakijun_OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -945,6 +953,7 @@ void Kakijun_OnPaint(HWND hwnd)
     }
 }
 
+// WM_DESTROY
 void Kakijun_OnDestroy(HWND hwnd)
 {
     DestroyWindow(g_hwndCaption1);
@@ -953,17 +962,20 @@ void Kakijun_OnDestroy(HWND hwnd)
     g_hwndCaption2 = NULL;
 }
 
+// WM_RBUTTONDOWN
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     ShowWindow(hwnd, SW_HIDE);
 }
 
+// WM_KEYDOWN
 void Kakijun_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (vk == VK_ESCAPE)
         ShowWindow(hwnd, SW_HIDE);
 }
 
+// WM_NOTIFY
 LRESULT Kakijun_OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
 {
     FURIGANA_NOTIFY *notify = (FURIGANA_NOTIFY *)pnmhdr;
@@ -996,12 +1008,14 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// WM_ERASEBKGND
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     InvalidateRect(hwnd, NULL, FALSE);
     return TRUE;
 }
 
+// WM_LBUTTONDOWN
 void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     if (fDoubleClick)
@@ -1010,6 +1024,7 @@ void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     OnButtonDown(hwnd, x, y, FALSE);
 }
 
+// WM_RBUTTONDOWN
 void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     if (fDoubleClick)
@@ -1018,6 +1033,7 @@ void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     OnButtonDown(hwnd, x, y, TRUE);
 }
 
+// WM_SYSCOMMAND
 void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 {
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
@@ -1051,6 +1067,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 
 #include "../KanjiDataDlg.h"
 
+// WM_COMMAND
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     TCHAR szText[MAX_PATH], szURL[MAX_PATH];
@@ -1133,6 +1150,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
 }
 
+// WM_KEYDOWN
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (!fDown)

@@ -255,6 +255,7 @@ void EnumData() {
     }
 }
 
+// WM_CREATE
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     // メディアライブラリを作成
@@ -316,6 +317,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// WM_DESTROY
 void OnDestroy(HWND hwnd)
 {
     if (g_hThread)
@@ -973,6 +975,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     }
 }
 
+// WM_SETCURSOR
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
 {
     if (codeHitTest != HTCLIENT)
@@ -1030,11 +1033,13 @@ VOID Kakijun_OnDraw(HWND hwnd, HDC hdc)
     }
 }
 
-BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
+// WM_ERASEBKGND
+inline BOOL Kakijun_OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     return TRUE;
 }
 
+// WM_PAINT
 void Kakijun_OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -1045,11 +1050,13 @@ void Kakijun_OnPaint(HWND hwnd)
     }
 }
 
+// WM_RBUTTONDOWN
 void Kakijun_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     ShowWindow(hwnd, SW_HIDE);
 }
 
+// WM_KEYDOWN
 void Kakijun_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (vk == VK_ESCAPE)
@@ -1071,11 +1078,13 @@ KakijunWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// WM_ERASEBKGND
 BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
 {
     return TRUE;
 }
 
+// WM_PAINT
 void OnPaint(HWND hwnd)
 {
     PAINTSTRUCT ps;
@@ -1086,16 +1095,19 @@ void OnPaint(HWND hwnd)
     }
 }
 
+// WM_LBUTTONDOWN
 void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     OnButtonDown(hwnd, x, y, FALSE);
 }
 
+// WM_RBUTTONDOWN
 void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
     OnButtonDown(hwnd, x, y, TRUE);
 }
 
+// WM_SYSCOMMAND
 void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 {
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
@@ -1127,6 +1139,7 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
+// WM_KEYDOWN
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
     if (!fDown)
