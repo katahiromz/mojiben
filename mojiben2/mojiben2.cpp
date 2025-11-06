@@ -277,6 +277,10 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     g_pMyLib->load_string_table(*g_pMain, g_section + L"\\Main.txt");
 
+    // 開始時の音を鳴らす。これにより最初の音遅れを回避する。
+    std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
+    g_pMyLib->play_sound_async(start_sound);
+
     EnumData();
 
     WCHAR file[MAX_PATH];

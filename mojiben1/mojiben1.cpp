@@ -239,6 +239,10 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     g_pMyLib->load_string_table(*g_pRomaji, g_section + L"\\Romaji.txt");
 
+    // 開始時の音を鳴らす。これにより最初の音遅れを回避する。
+    std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
+    g_pMyLib->play_sound_async(start_sound);
+
     LOGFONT lf;
     ZeroMemory(&lf, sizeof(lf));
     lf.lfHeight = -20;
@@ -251,13 +255,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     g_hbmClient = NULL;
 
-    WCHAR file[MAX_PATH];
-
     EnumData();
 
     g_hThread = NULL;
     g_hbmKakijun = NULL;
     g_hbrRed = CreateSolidBrush(RGB(255, 0, 0));
+
+    WCHAR file[MAX_PATH];
 
     wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"00ひらがなON");
     g_hbmHiraganaON = g_pMyLib->load_picture(file);
