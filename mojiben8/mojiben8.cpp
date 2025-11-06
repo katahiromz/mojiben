@@ -82,6 +82,7 @@ MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
 KAKIJUN g_kakijun;
+BOOL g_fJapanese = FALSE;
 
 void EnumData() {
     WCHAR file[MAX_PATH];
@@ -1465,6 +1466,9 @@ INT WINAPI WinMain(
 
     // レジストリから読み込んだスタディモードを適用。
     applyStudyMode(getStudyMode());
+
+    // 日本語か？
+    g_fJapanese = (PRIMARYLANGID(WonGetThreadUILanguage()) == LANG_JAPANESE);
 
     // コモンコントロール初期化。
     InitCommonControls();
