@@ -55,5 +55,6 @@ add_subdirectory(mojiben8)
 add_subdirectory(mojiben9)
 
 add_subdirectory(makebmp)
+add_subdirectory(rgn2bmp)
 
 ##############################################################################
