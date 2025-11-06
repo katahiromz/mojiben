@@ -121,9 +121,9 @@ int main(int argc, char **argv) {
     int size = 254;
     wchar_t font_name[LF_FACESIZE] = L"モトヤ教科書3等幅";
 
-    if (argc >= 3)
+    if (argc > 2)
         MultiByteToWideChar(CP_ACP, 0, argv[2], -1, font_name, ARRAYSIZE(font_name));
-    if (argc >= 4)
+    if (argc > 3)
         size = atoi(argv[3]);
 
     BITMAPINFO bi;
