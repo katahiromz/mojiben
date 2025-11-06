@@ -75,11 +75,11 @@ std::set<INT> g_kanji4_history;
 BOOL g_bHighSpeed = FALSE;
 
 extern "C" extern const wchar_t *g_aszMojiReadings[];
-extern "C" extern const wchar_t *g_aszMojiExamples[];
 
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
+MyLibStringTable *g_pExamples = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
 KAKIJUN g_kakijun;
 BOOL g_fJapanese = FALSE;
@@ -224,6 +224,12 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     g_pMyLib->load_string_table(*g_pMoji, g_section + L"\\Text.txt");
 
+    // 用例を読み込む
+    g_pExamples = new(std::nothrow) MyLibStringTable();
+    if (!g_pExamples)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pExamples, g_section + L"\\Examples.txt");
+
     // 開始時の音を鳴らす。これにより最初の音遅れを回避する。
     std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
     g_pMyLib->play_sound_async(start_sound);
@@ -303,6 +309,9 @@ void OnDestroy(HWND hwnd)
     delete g_pMoji;
     g_pMoji = NULL;
 
+    delete g_pExamples;
+    g_pExamples = NULL;
+
     delete g_pMyLib;
     g_pMyLib = NULL;
 
@@ -350,6 +359,10 @@ BOOL GetRightArrowRect(HWND hwnd, LPRECT prc)
     GetClientRect(hwnd, &rcClient);
     SetRect(prc, rcClient.right - 40, rcClient.bottom - 48, rcClient.right, rcClient.bottom - 48 + 40);
     return g_iPage + 1 < GetNumPage();
+}
+
+std::wstring GetMojiExample(INT nMoji) {
+    return g_pExamples->value_at(nMoji);
 }
 
 VOID OnDraw(HWND hwnd, HDC hdc)
@@ -1245,7 +1258,7 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             dlg.m_meaning = _tcschr(szText, TEXT(':')) + 1;
 
             // 使い方
-            dlg.m_examples = _tcschr(g_aszMojiExamples[g_nMoji], L':') + 1;
+            dlg.m_examples = GetMojiExample(g_nMoji);
 
             // 「漢字データ」ダイアログを開く
             dlg.dialog_box(g_hInstance, hwnd);
