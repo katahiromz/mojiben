@@ -73,6 +73,7 @@ std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 MyLibStringTable *g_pExamples = NULL;
+MyLibStringTable *g_pReading = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
 KAKIJUN g_kakijun;
 BOOL g_fJapanese = FALSE;
@@ -223,6 +224,12 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     g_pMyLib->load_string_table(*g_pExamples, g_section + L"\\Examples.txt");
 
+    // 読みを読み込む
+    g_pReading = new(std::nothrow) MyLibStringTable();
+    if (!g_pReading)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pReading, g_section + L"\\Reading.txt");
+
     // 開始時の音を鳴らす。これにより最初の音遅れを回避する。
     std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
     g_pMyLib->play_sound_async(start_sound);
@@ -302,6 +309,9 @@ void OnDestroy(HWND hwnd)
 
     delete g_pExamples;
     g_pExamples = NULL;
+
+    delete g_pReading;
+    g_pReading = NULL;
 
     delete g_pMyLib;
     g_pMyLib = NULL;
