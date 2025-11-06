@@ -311,18 +311,21 @@ void OnDestroy(HWND hwnd) {
 
 VOID GetMojiRect(INT j, LPRECT prc)
 {
+    RECT rcC;
+    GetClientRect(g_hMainWnd, &rcC);
+    BITMAP bm;
+    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
     INT iPage = j / (ROWS * COLUMNS);
     j %= (ROWS * COLUMNS);
     INT ix = j % COLUMNS;
     INT iy = j / COLUMNS;
-    RECT rc;
-    rc.left = ix * (50 + 10) + 5 + 25;
-    rc.top = iy * (50 + 10) + 5 + 10;
-    rc.right = rc.left + (50 + 10) - 10;
-    rc.bottom = rc.top + (50 + 10) - 10;
-    OffsetRect(&rc, iPage * (50 + 10) * COLUMNS, 0);
-    OffsetRect(&rc, (LONG)(-g_eDisplayPage * (50 + 10) * COLUMNS), 0);
-    *prc = rc;
+    prc->left = ix * (bm.bmWidth + 20) + 5 + 25;
+    prc->top = iy * (bm.bmHeight + 20) + 5 + 10;
+    prc->right = prc->left + bm.bmWidth + 10;
+    prc->bottom = prc->top + bm.bmHeight + 10;
+    OffsetRect(prc, iPage * (bm.bmWidth + 20) * COLUMNS, 0);
+    OffsetRect(prc, (LONG)(-g_eDisplayPage * (bm.bmHeight + 20) * COLUMNS), 0);
 }
 
 INT GetNumPage(VOID)
