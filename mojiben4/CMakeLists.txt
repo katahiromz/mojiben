@@ -51,7 +51,7 @@ endif()
 add_definitions(-DUNICODE -D_UNICODE)
 
 # mojiben4.exe
-add_executable(mojiben4 WIN32 mojiben4.cpp kanji1.cpp readings.cpp mojiben4_res.rc ../Region.cpp examples.cpp)
+add_executable(mojiben4 WIN32 mojiben4.cpp kanji1.cpp readings.cpp mojiben4_res.rc ../Region.cpp)
 target_link_libraries(mojiben4 comctl32 winmm shlwapi MyLib)
 if(MSVC)
     target_link_options(mojiben4 PRIVATE /MANIFEST:NO)
