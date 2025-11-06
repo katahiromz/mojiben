@@ -375,6 +375,10 @@ std::wstring GetMojiExample(INT nMoji) {
     return g_pExamples->value_at(nMoji);
 }
 
+std::wstring GetMojiReading(INT nMoji) {
+    return g_pReading->value_at(nMoji);
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
