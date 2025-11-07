@@ -26,7 +26,7 @@
 #include <map>
 #include <set>
 
-#include "kakijun.h"
+#include "../kakijun.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
@@ -46,6 +46,9 @@
 
 static const TCHAR g_szClassName[] = TEXT("Moji No Benkyou (4)");
 static const TCHAR g_szKakijunClassName[] = TEXT("Moji No Benkyou (4) Kakijun");
+
+extern INT g_map[80];
+VOID InitMap(VOID);
 
 HINSTANCE g_hInstance;
 HWND g_hMainWnd;
@@ -239,14 +242,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
     g_pMyLib->play_sound_async(start_sound);
 
-    try
-    {
-        InitKanji1();
-    }
-    catch (std::bad_alloc)
-    {
-        return FALSE;
-    }
+    InitMap();
 
     EnumData();
 

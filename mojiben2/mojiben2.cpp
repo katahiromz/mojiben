@@ -22,7 +22,7 @@
 #include <map>
 #include <set>
 
-#include "kakijun.h"
+#include "../kakijun.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"

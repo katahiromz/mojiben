@@ -23,7 +23,7 @@
 #include <set>
 #include <cassert>
 
-#include "kakijun.h"
+#include "../kakijun.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"

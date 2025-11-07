@@ -8,7 +8,7 @@
 #include <cmath>
 #include <process.h>
 #include <assert.h>
-#include "kakijun.h"
+#include "../kakijun.h"
 #include "../read_all.h"
 #include "../CGdiObj.h"
 #include "../mstr.h"

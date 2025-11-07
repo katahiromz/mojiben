@@ -1,6 +1,8 @@
-﻿// Moji No Benkyo (1)
-// Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+﻿// Moji No Benkyo
+// Copyright (C) 2019-2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
+
+#include <vector>
 
 // stroke info
 struct STROKE {
