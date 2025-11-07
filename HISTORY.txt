@@ -20,7 +20,7 @@
 - Ver.3.8: 「確かめる」の送り仮名を修正。つかいかたの例を書いた「漢字データ」を追加。Yahoo! JAPAN検索を追加。
 - Ver.3.9: 「すうじとかず」のUI/UXを改善。データを外部化。音の遅れを最小化。いくつかのユーティリティツールを追加。
 
-# Change log of "Moji No Benkyou"
+# Changelog of "Moji No Benkyou"
 
 - Ver.2.6: Added Japanese font (Ume Gothic). Fixed “ha (wa)”. Displayed error message when screen is too small. Improved localization.
 - Ver.2.7: Fixed “tsu (tz)”. Updated URLs and installer. Replaced “Ume Gothic” font with “Piza P Gothic”. Made Japanese font optional. Supported ReactOS.
