@@ -815,25 +815,107 @@ unsigned __stdcall ThreadProc(void *)
     return 0;
 }
 
+#include "../KanjiDataDlg.h"
+
+void OnKanjiData(HWND hwnd) {
+    KanjiDataDlg dlg;
+
+    // 漢字
+    dlg.m_text = g_pMoji->key_at(g_nMoji);
+
+    // 読み
+    dlg.m_reading = g_pReading->value_at(g_nMoji);
+
+    // 意味。
+    WCHAR szText[256];
+    LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
+    dlg.m_meaning = _tcschr(szText, TEXT(':')) + 1;
+
+    // 使い方
+    dlg.m_examples = GetMojiExample(g_nMoji);
+
+    // 「漢字データ」ダイアログを開く
+    dlg.dialog_box(g_hInstance, hwnd);
+}
+
+void OnMojiRightClick(HWND hwnd) {
+    MyLibStringTable menu;
+    g_pMyLib->load_string_table(menu, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+
+    std::wstring moji = g_pMoji->key_at(g_nMoji);
+    WCHAR hira[32], kata[32], upper[32], lower[32], hex[32];
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_HIRAGANA, moji.c_str(), -1, hira, _countof(hira));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_KATAKANA, moji.c_str(), -1, kata, _countof(kata));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_UPPERCASE, moji.c_str(), -1, upper, _countof(upper));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_LOWERCASE, moji.c_str(), -1, lower, _countof(lower));
+    wsprintfW(hex, L"%04x", moji[0]);
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        mstr_replace(menu.m_pairs[i].m_key, L"<String>", moji.c_str());
+        mstr_replace(menu.m_pairs[i].m_key, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Lowercase>", lower);
+        mstr_replace(menu.m_pairs[i].m_key, L"<hex>", hex);
+        mstr_replace(menu.m_pairs[i].m_value, L"<String>", moji.c_str());
+        mstr_replace(menu.m_pairs[i].m_value, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Lowercase>", lower);
+        mstr_replace(menu.m_pairs[i].m_value, L"<hex>", hex);
+    }
+
+    HMENU hMenu = CreatePopupMenu();
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        if (menu.key_at(i) == L"---") {
+            AppendMenu(hMenu, MF_ENABLED | MF_SEPARATOR, 0, NULL);
+            continue;
+        }
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+    }
+
+    SetForegroundWindow(hwnd);
+
+    POINT pt;
+    GetCursorPos(&pt);
+
+    INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, NULL);
+    DestroyMenu(hMenu);
+
+    if (nCmd) {
+        INT iSelected = nCmd - 100;
+        g_kanji4_history.insert(g_nMoji);
+
+        if (g_hbmClient) {
+            DeleteObject(g_hbmClient);
+            g_hbmClient = NULL;
+        }
+        InvalidateRect(hwnd, NULL, TRUE);
+
+        if (menu.value_at(iSelected) == L"OnCopyMoji") {
+            CopyText(hwnd, moji.c_str());
+            return;
+        }
+        if (menu.value_at(iSelected) == L"OnKanjiData") {
+            OnKanjiData(hwnd);
+            return;
+        }
+
+        ShellExecute(hwnd, NULL, menu.value_at(iSelected).c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
+}
+
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
-    RECT rc, rc2;
     g_nMoji = nMoji;
 
-    if (fRight)
-    {
-        SetForegroundWindow(hwnd);
-        HMENU hMenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(100));
-        HMENU hSubMenu = GetSubMenu(hMenu, 0);
-        POINT pt;
-        GetCursorPos(&pt);
-        INT nCmd = TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
-                                  pt.x, pt.y, 0, hwnd, NULL);
-        DestroyMenu(hMenu);
-        if (nCmd)
-            PostMessage(hwnd, WM_COMMAND, nCmd, 0);
+    if (fRight) {
+        OnMojiRightClick(hwnd);
         return;
     }
+
+    RECT rc, rc2;
 
     GetWindowRect(hwnd, &rc);
     GetWindowRect(g_hKakijunWnd, &rc2);
@@ -1197,90 +1279,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
 }
 
-#include "../KanjiDataDlg.h"
-
-// WM_COMMAND
-void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    TCHAR szText[MAX_PATH], szURL[MAX_PATH];
-    tstring str;
-
-    g_kanji4_history.insert(g_nMoji);
-    if (g_hbmClient)
-    {
-        DeleteObject(g_hbmClient);
-        g_hbmClient = NULL;
-    }
-    InvalidateRect(hwnd, NULL, TRUE);
-
-    switch (id)
-    {
-    case 1000:
-        {
-            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPWSTR pch = _tcschr(szText, TEXT(':'));
-            *pch = 0;
-            str = szText;
-            wsprintf(szURL, LoadStringDx(1000), str.c_str());
-            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
-        }
-        break;
-    case 1001:
-        {
-            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPWSTR pch = _tcschr(szText, TEXT(':'));
-            *pch = 0;
-            wsprintf(szURL, LoadStringDx(1001), szText[0]);
-            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
-        }
-        break;
-    case 1002:
-    case 1003:
-    case 1004:
-    case 1007:
-        {
-            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPTSTR pch = _tcschr(szText, TEXT(':'));
-            *pch = 0;
-            wsprintf(szURL, LoadStringDx(id), szText);
-            ShellExecute(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
-        }
-        break;
-    case 1006:
-        {
-            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPTSTR pch = _tcschr(szText, TEXT(':'));
-            *pch = 0;
-            CopyText(hwnd, szText);
-        }
-        break;
-    case 1010: // 漢字データ
-        {
-            KanjiDataDlg dlg;
-
-            // 漢字
-            lstrcpyn(szText, g_aszMojiReadings[g_nMoji], _countof(szText));
-            LPTSTR pch = _tcschr(szText, TEXT(':'));
-            *pch = 0;
-            dlg.m_text = szText;
-
-            // 読み
-            dlg.m_reading = _tcschr(g_aszMojiReadings[g_nMoji], L':') + 1;
-
-            // 意味。
-            LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
-            dlg.m_meaning = _tcschr(szText, TEXT(':')) + 1;
-
-            // 使い方
-            dlg.m_examples = GetMojiExample(g_nMoji);
-
-            // 「漢字データ」ダイアログを開く
-            dlg.dialog_box(g_hInstance, hwnd);
-        }
-        break;
-    }
-}
-
 // WM_TIMER
 void OnTimer(HWND hwnd, UINT id)
 {
@@ -1471,7 +1469,6 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_RBUTTONUP, OnRButtonUp);
         HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
         HANDLE_MSG(hwnd, WM_CANCELMODE, OnCancelMode);
-        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
