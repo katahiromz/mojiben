@@ -276,7 +276,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03カタカナOFF");
     g_hbmKatakanaOFF = g_pMyLib->load_picture(file);
 
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     g_fKatakana = FALSE;

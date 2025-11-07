@@ -256,7 +256,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmClient = NULL;
 
     WCHAR file[MAX_PATH];
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     LOGFONT lf;

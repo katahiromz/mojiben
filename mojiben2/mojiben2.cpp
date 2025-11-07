@@ -296,7 +296,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmUppercaseOFF = g_pMyLib->load_picture(file);
     wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03LowercaseOFF");
     g_hbmLowercaseOFF = g_pMyLib->load_picture(file);
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     g_hThread = NULL;

@@ -261,7 +261,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     wsprintfW(file, L"%s\\Right.gif", g_section.c_str());
     g_hbmRight = g_pMyLib->load_picture(file);
 
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     updateSystemMenu(hwnd);

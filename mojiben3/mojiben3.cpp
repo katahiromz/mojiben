@@ -168,7 +168,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmKukuNoUta = g_pMyLib->load_picture(file);
     assert(g_hbmKukuNoUta);
 
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     updateSystemMenu(hwnd);
