@@ -1,0 +1,12 @@
+もじのコピー = OnCopyMoji
+---
+かんじ データ = OnKanjiData
+---
+Google けんさく = https://www.google.com/search?as_q=<String>&lr=lang_ja&safe=active
+Google けんさく (じゅくご) = https://www.google.com/search?as_q=「<String>」を含む熟語&lr=lang_ja&safe=active
+Yahoo! JAPAN けんさく = https://search.yahoo.co.jp/search?p=<String>
+---
+Jisho.org でしらべる = https://jisho.org/search/%23kanji%20<String>
+---
+「じてん オンライン」でしらべる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
+「もじなび」でしらべる = https://mojinavi.com/d/u<hex>
