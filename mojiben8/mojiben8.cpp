@@ -1417,9 +1417,7 @@ LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
     {
     case FCN_LOADCONTEXTMENU:
         if (HMENU hMenu = CreateRightClickMenu(hwnd, menu, text, g_section + (g_fJapanese ? L"\\ContextMenu_ja.txt" : L"\\ContextMenu_en.txt"))) {
-            HMENU hParentMenu = CreatePopupMenu();
-            AppendMenuW(hParentMenu, MF_POPUP, (UINT_PTR)hMenu, L"(Popup)");
-            return (LRESULT)hParentMenu;
+            return (LRESULT)hMenu;
         }
         break;
     case FCN_CONTEXTMENUACTION:
