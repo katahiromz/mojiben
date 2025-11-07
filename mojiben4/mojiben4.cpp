@@ -339,6 +339,21 @@ std::wstring GetMojiMeaning(INT nMoji) {
     return g_pMeaning->value_at(nMoji);
 }
 
+// 文字ボタンの位置。
+BOOL GetMojiRect(LPRECT prc, INT nMoji) {
+    BITMAP bm;
+    GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
+    int ix = nMoji % 10, iy = nMoji / 10;
+    prc->left = ix * (bm.bmWidth + 20) + 35;
+    prc->top = iy * (bm.bmHeight + 20) + 20;
+    if (iy >= 4)
+        prc->top += 15;
+    prc->right = prc->left + bm.bmWidth;
+    prc->bottom = prc->top + bm.bmHeight;
+    return TRUE;
+}
+
 VOID OnDraw(HWND hwnd, HDC hdc)
 {
     HGDIOBJ hbmOld, hbmOld2;
@@ -361,23 +376,19 @@ VOID OnDraw(HWND hwnd, HDC hdc)
         FillRect(hdcMem2, &rc, hbr);
         DeleteObject(hbr);
 
-        for (j = 0; j < (INT)g_ahbmMoji.size(); ++j)
-        {
-            int ix = j % 10;
-            int iy = j / 10;
+        BITMAP bm;
+        GetObjectW(g_ahbmMoji[0], sizeof(bm), &bm);
+
+        for (j = 0; j < (INT)g_ahbmMoji.size(); ++j) {
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[g_map[j]]);
-            rc.left = ix * (50 + 10) + 5 + 25;
-            rc.top = iy * (50 + 10) + 5 + 10;
-            if (iy >= 4)
-                rc.top += 15;
-            rc.right = rc.left + (50 + 10) - 10;
-            rc.bottom = rc.top + (50 + 10) - 10;
+            GetMojiRect(&rc, j);
+            InflateRect(&rc, +5, +5);
             if (g_kanji1_history.find(j) != g_kanji1_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
                 FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
             InflateRect(&rc, -5, -5);
-            BitBlt(hdcMem2, rc.left, rc.top, 40, 40, hdcMem, 0, 0, SRCCOPY);
+            BitBlt(hdcMem2, rc.left, rc.top, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);
         }
         SelectObject(hdcMem2, hbmOld2);
@@ -920,18 +931,9 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
 
     pt.x = x;
     pt.y = y;
-    for (j = 0; j < 80; ++j)
-    {
-        int ix = j % 10;
-        int iy = j / 10;
-        rc.left = ix * (50 + 10) + 5 + 25;
-        rc.top = iy * (50 + 10) + 5 + 10;
-        if (iy >= 4)
-            rc.top += 15;
-        rc.right = rc.left + (50 + 10) - 10;
-        rc.bottom = rc.top + (50 + 10) - 10;
-        if (PtInRect(&rc, pt))
-        {
+    for (j = 0; j < (INT)g_pMoji->size(); ++j) {
+        GetMojiRect(&rc, j);
+        if (PtInRect(&rc, pt)) {
             MojiOnClick(hwnd, j, fRight);
             return;
         }
@@ -949,18 +951,9 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     ScreenToClient(hwnd, &pt);
 
     RECT rc;
-    for (INT j = 0; j < 80; ++j)
-    {
-        INT ix = j % 10;
-        INT iy = j / 10;
-        rc.left = ix * (50 + 10) + 5 + 25;
-        rc.top = iy * (50 + 10) + 5 + 10;
-        if (iy >= 4)
-            rc.top += 15;
-        rc.right = rc.left + (50 + 10) - 10;
-        rc.bottom = rc.top + (50 + 10) - 10;
-        if (PtInRect(&rc, pt))
-        {
+    for (UINT j = 0; j < g_pMoji->size(); ++j) {
+        GetMojiRect(&rc, j);
+        if (PtInRect(&rc, pt)) {
             SetCursor(LoadCursor(NULL, IDC_HAND));
             return TRUE;
         }
