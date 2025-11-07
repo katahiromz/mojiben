@@ -17,6 +17,7 @@ HWND g_hMainWnd = NULL;
 HBITMAP g_hbmKakijun = NULL; // week ref
 HBRUSH g_hbrRed = NULL;
 BOOL g_bPlaying = FALSE;
+INT g_iFrame = -1;
 
 std::vector<STROKE> g_kkj;
 std::vector<std::wstring> g_rgn_files;
@@ -602,11 +603,33 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     case IDCANCEL:
         EndDialog(hwnd, id);
         break;
-    case psh1:
+    case psh1: // Play
+        g_iFrame = -1;
         DoPlay(hwnd);
         break;
-    case psh2:
+    case psh2: // Stop
+        g_iFrame = -1;
         g_bPlaying = FALSE;
+        break;
+    case psh3: // >
+        g_bPlaying = FALSE;
+        Sleep(200);
+        if (g_iFrame == -1)
+            g_iFrame = 0;
+        else if (g_iFrame + 1 < (INT)g_rgn_files.size())
+            ++g_iFrame;
+        g_hbmKakijun = NULL;
+        InvalidateRect(hwnd, NULL, TRUE);
+        break;
+    case psh4: // <
+        g_bPlaying = FALSE;
+        Sleep(200);
+        if (g_iFrame == -1)
+            g_iFrame = 0;
+        else if (g_iFrame > 0)
+            --g_iFrame;
+        g_hbmKakijun = NULL;
+        InvalidateRect(hwnd, NULL, TRUE);
         break;
     }
 }
@@ -617,14 +640,29 @@ void OnDraw(HWND hwnd, HDC hdc) {
 
     FillRect(hdc, &rc, (HBRUSH)GetStockObject(GRAY_BRUSH));
 
-    if (g_hbmKakijun) {
+    if (g_iFrame == -1 && g_hbmKakijun) {
         HDC hdcMem = CreateCompatibleDC(hdc);
         HGDIOBJ hbmOld = SelectObject(hdcMem, g_hbmKakijun);
         BitBlt(hdc, 0, 0, 254, 254, hdcMem, 0, 0, SRCCOPY);
         SelectObject(hdcMem, hbmOld);
         DeleteDC(hdcMem);
+
+        SetDlgItemTextW(hwnd, stc1, NULL);
+    } else if (g_iFrame != -1) {
+        SetRect(&rc, 0, 0, 254, 254);
+        FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
+        if (0 <= g_iFrame && g_iFrame < (INT)g_rgn_files.size()) {
+            HRGN hRgn = MyCreateRegion(g_kkj, g_rgn_files[g_iFrame]);
+            FillRgn(hdc, hRgn, g_hbrRed);
+            DeleteObject(hRgn);
+            SetDlgItemInt(hwnd, stc1, g_iFrame, FALSE);
+        } else {
+            SetDlgItemTextW(hwnd, stc1, NULL);
+        }
     } else {
         DrawTextW(hdc, L"Drop a KKJ file", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
+        SetDlgItemTextW(hwnd, stc1, NULL);
     }
 }
 
