@@ -1,0 +1,2 @@
+﻿Copy character = OnCopyMoji
+Words starting with "<Hiragana>" = https://しりとり.net/「<Hiragana>」からはじまる言葉/
