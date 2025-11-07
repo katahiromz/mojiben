@@ -51,6 +51,10 @@ std::wstring MyLibStringTable::operator[](int key) {
     return (*this)[str];
 }
 
+int MyLibStringTable::get_int(const std::wstring& key) {
+    return (int)wcstol((*this)[key].c_str(), NULL, 10);
+}
+
 void MyLibStringTable::set_text(std::wstring& text) {
     mstr_replace(text, L"\r\n", L"\n");
     mstr_trim_right(text, L" \t\r\n　");

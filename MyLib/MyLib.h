@@ -14,6 +14,7 @@ public:
     void set_text(std::wstring& text);
     std::wstring operator[](const std::wstring& key);
     std::wstring operator[](int key);
+    int get_int(const std::wstring& key);
 
     std::vector<MyLibStringPair> m_pairs;
     size_t size() const { return m_pairs.size(); }
