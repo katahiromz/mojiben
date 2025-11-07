@@ -799,6 +799,17 @@ HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji,
             continue;
         }
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+
+        std::wstring value = menu.value_at(i);
+        if (value == L"OnSelectAll") {
+            ;
+        } else if (value == L"OnCopyMoji" || value == L"OnCopyMojiWithFurigana") {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        } else {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        }
     }
 
     return hMenu;

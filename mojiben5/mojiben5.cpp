@@ -834,11 +834,9 @@ void OnKanjiData(HWND hwnd) {
     dlg.dialog_box(g_hInstance, hwnd);
 }
 
-void OnMojiRightClick(HWND hwnd) {
-    MyLibStringTable menu;
-    g_pMyLib->load_string_table(menu, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji, std::wstring filename) {
+    g_pMyLib->load_string_table(menu, filename);
 
-    std::wstring moji = g_pMoji->key_at(g_nMoji);
     WCHAR hira[32], kata[32], upper[32], lower[32], hex[32];
     LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_HIRAGANA, moji.c_str(), -1, hira, _countof(hira));
     LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_KATAKANA, moji.c_str(), -1, kata, _countof(kata));
@@ -869,7 +867,26 @@ void OnMojiRightClick(HWND hwnd) {
             continue;
         }
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+
+        std::wstring value = menu.value_at(i);
+        if (value == L"OnSelectAll") {
+            ;
+        } else if (value == L"OnCopyMoji" || value == L"OnCopyMojiWithFurigana") {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        } else {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        }
     }
+
+    return hMenu;
+}
+
+void OnMojiRightClick(HWND hwnd) {
+    MyLibStringTable menu;
+    std::wstring moji = g_pMoji->key_at(g_nMoji);
+    HMENU hMenu = CreateRightClickMenu(hwnd, menu, moji, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
 
     SetForegroundWindow(hwnd);
 
@@ -1382,69 +1399,49 @@ void OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
 // WM_NOTIFY
 LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
 {
-    HMENU hMenu;
     FURIGANA_NOTIFY *notify = (FURIGANA_NOTIFY *)pnmhdr;
     if (idFrom != edt3 && idFrom != edt4)
         return FALSE;
 
+    WCHAR text[512];
+    ::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text);
+
+    MyLibStringTable menu;
+
     switch (pnmhdr->code)
     {
     case FCN_LOADCONTEXTMENU:
-        hMenu = ::LoadMenuW(g_hInstance, MAKEINTRESOURCEW(101));
-        if (hMenu)
-        {
-            WCHAR text[512];
-            if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
-                BOOL bNoText = (text[0] == 0);
-                ::EnableMenuItem(hMenu, 2000, bNoText ? MF_GRAYED : MF_ENABLED);
-                ::EnableMenuItem(hMenu, 2001, bNoText ? MF_GRAYED : MF_ENABLED);
-                ::EnableMenuItem(hMenu, 2003, bNoText ? MF_GRAYED : MF_ENABLED);
-                ::EnableMenuItem(hMenu, 2004, bNoText ? MF_GRAYED : MF_ENABLED);
-                ::EnableMenuItem(hMenu, 2005, bNoText ? MF_GRAYED : MF_ENABLED);
-            }
+        if (HMENU hMenu = CreateRightClickMenu(hwnd, menu, text, g_section + (g_fJapanese ? L"\\ContextMenu_ja.txt" : L"\\ContextMenu_en.txt"))) {
+            HMENU hParentMenu = CreatePopupMenu();
+            AppendMenuW(hParentMenu, MF_POPUP, (UINT_PTR)hMenu, L"(Popup)");
+            return (LRESULT)hParentMenu;
         }
-        return (LRESULT)hMenu;
+        break;
     case FCN_CONTEXTMENUACTION:
-        switch (notify->action_id) {
-        case 2000: // コピー
-            PostMessageW(pnmhdr->hwndFrom, WM_COPY, 0, 0);
-            break;
-        case 2001: // コピー (フリガナ付き)
-            PostMessageW(pnmhdr->hwndFrom, WM_COPY, 1, 0);
-            break;
-        case 2002: // すべて選択
-            PostMessageW(pnmhdr->hwndFrom, FC_SETSEL, 0, -1);
-            break;
-        case 2003: // Google検索
-        case 2004: // Jisho.org
-        case 2005: // Yahoo! JAPAN search
-            {
-                WCHAR text[512];
-                if (::SendMessageW(pnmhdr->hwndFrom, FC_GETSELTEXT, _countof(text), (LPARAM)text)) {
-                    WCHAR szURL[512];
-                    switch (notify->action_id) {
-                    case 2003:
-                        wsprintfW(szURL, LoadStringDx(1005), text);
-                        break;
-                    case 2004:
-                        wsprintfW(szURL, LoadStringDx(1006), text);
-                        break;
-                    case 2005:
-                        wsprintfW(szURL, LoadStringDx(1007), text);
-                        break;
-                    default:
-                        assert(0);
-                        break;
-                    }
-                    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
-                }
+        if (HMENU hMenu = CreateRightClickMenu(hwnd, menu, text, g_section + (g_fJapanese ? L"\\ContextMenu_ja.txt" : L"\\ContextMenu_en.txt"))) {
+            INT i = notify->action_id - 100;
+            DestroyMenu(hMenu);
+            std::wstring value = menu.value_at(i);
+            if (value == L"OnCopyMoji") {
+                PostMessageW(pnmhdr->hwndFrom, WM_COPY, 0, 0);
+                return TRUE;
             }
-            break;
+            if (value == L"OnCopyMojiWithFurigana") {
+                PostMessageW(pnmhdr->hwndFrom, WM_COPY, 1, 0);
+                return TRUE;
+            }
+            if (value == L"OnSelectAll") {
+                PostMessageW(pnmhdr->hwndFrom, FC_SETSEL, 0, -1);
+                return TRUE;
+            }
+            ShellExecuteW(hwnd, NULL, value.c_str(), NULL, NULL, SW_SHOWNORMAL);
+            return TRUE;
         }
-        return TRUE;
+        break;
     default:
         break;
     }
+
     return FALSE;
 }
 
