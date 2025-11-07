@@ -1,0 +1,9 @@
+﻿Copy = OnCopyMoji
+Copy with furigana = OnCopyMojiWithFurigana
+---
+Google search = https://www.google.com/search?as_q=<String>&lr=lang_en&safe=active
+Yahoo! JAPAN search = https://search.yahoo.co.jp/search?p=<String>
+---
+Look up Jisho.org = https://jisho.org/search/<String>
+---
+Select all = OnSelectAll
