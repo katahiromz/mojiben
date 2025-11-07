@@ -861,8 +861,75 @@ unsigned __stdcall ThreadProc(void *)
     return 0;
 }
 
+void OnMojiRightClick(HWND hwnd) {
+    MyLibStringTable menu;
+    g_pMyLib->load_string_table(menu, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+
+    std::wstring moji = g_pMoji->key_at(g_nMoji);
+    WCHAR hira[64], kata[64], upper[64], lower[64];
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_HIRAGANA, moji.c_str(), -1, hira, _countof(hira));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_KATAKANA, moji.c_str(), -1, kata, _countof(kata));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_UPPERCASE, moji.c_str(), -1, upper, _countof(upper));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_LOWERCASE, moji.c_str(), -1, lower, _countof(lower));
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        mstr_replace(menu.m_pairs[i].m_key, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Lowercase>", lower);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Lowercase>", lower);
+    }
+
+    HMENU hMenu = CreatePopupMenu();
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        if (menu.key_at(i) == L"---") {
+            AppendMenu(hMenu, MF_ENABLED | MF_SEPARATOR, 0, NULL);
+            continue;
+        }
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+    }
+
+    SetForegroundWindow(hwnd);
+
+    POINT pt;
+    GetCursorPos(&pt);
+
+    INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, NULL);
+    DestroyMenu(hMenu);
+
+    if (nCmd) {
+        INT iSelected = nCmd - 100;
+        g_history.insert(g_nMoji);
+
+        if (g_hbmClient) {
+            DeleteObject(g_hbmClient);
+            g_hbmClient = NULL;
+        }
+        InvalidateRect(hwnd, NULL, TRUE);
+
+        if (menu.value_at(iSelected) == L"OnCopyMoji") {
+            CopyText(hwnd, moji.c_str());
+            return;
+        }
+
+        ShellExecute(hwnd, NULL, menu.value_at(iSelected).c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
+}
+
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
+    g_nMoji = nMoji;
+
+    if (fRight)
+    {
+        OnMojiRightClick(hwnd);
+        return;
+    }
+
     RECT rc, rc2;
 
     GetWindowRect(hwnd, &rc);
@@ -873,35 +940,6 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         rc2.right - rc2.left,
         rc2.bottom - rc2.top,
         TRUE);
-    g_nMoji = nMoji;
-
-    if (fRight)
-    {
-        HMENU hMenu = CreatePopupMenu();
-        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + (nMoji % 26), LoadStringDx(100 + (nMoji % 26)));
-        SetForegroundWindow(hwnd);
-
-        POINT pt;
-        GetCursorPos(&pt);
-
-        INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
-                                  pt.x, pt.y, 0, hwnd, NULL);
-        DestroyMenu(hMenu);
-        if (nCmd) {
-            g_history.insert(g_nMoji);
-
-            if (g_hbmClient) {
-                DeleteObject(g_hbmClient);
-                g_hbmClient = NULL;
-            }
-            InvalidateRect(hwnd, NULL, TRUE);
-
-            LPTSTR psz = LoadStringDx(200 + (g_nMoji % 26));
-            if (psz[0])
-                ShellExecute(hwnd, NULL, psz, NULL, NULL, SW_SHOWNORMAL);
-        }
-        return;
-    }
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
