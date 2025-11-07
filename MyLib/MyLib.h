@@ -18,8 +18,8 @@ public:
     std::vector<MyLibStringPair> m_pairs;
     size_t size() const { return m_pairs.size(); }
     void clear() { m_pairs.clear(); }
-    std::wstring& key_at(size_t i) { return m_pairs[i].m_key; }
-    std::wstring& value_at(size_t i) { return m_pairs[i].m_value; }
+    std::wstring key_at(size_t i);
+    std::wstring value_at(size_t i);
 };
 
 class MyLib {

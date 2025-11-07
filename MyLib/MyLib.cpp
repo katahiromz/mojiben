@@ -25,6 +25,18 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////
 
+std::wstring MyLibStringTable::key_at(size_t i) {
+    if (i >= size())
+        return L"";
+    return m_pairs[i].m_key;
+}
+
+std::wstring MyLibStringTable::value_at(size_t i) {
+    if (i >= size())
+        return L"";
+    return m_pairs[i].m_value;
+}
+
 std::wstring MyLibStringTable::operator[](const std::wstring& key) {
     for (size_t i = 0; i < m_pairs.size(); ++i) {
         if (m_pairs[i].m_key == key)
