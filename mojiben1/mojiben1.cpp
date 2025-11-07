@@ -43,6 +43,7 @@ HWND g_hKakijunWnd;
 
 HBITMAP g_hbmHiraganaON, g_hbmHiraganaOFF;
 HBITMAP g_hbmKatakanaON, g_hbmKatakanaOFF;
+HBITMAP g_hbmBack;
 std::vector<HBITMAP> g_ahbmMoji;
 HBITMAP g_hbmClient;
 BOOL g_fKatakana;
@@ -275,6 +276,9 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03カタカナOFF");
     g_hbmKatakanaOFF = g_pMyLib->load_picture(file);
 
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    g_hbmBack = g_pMyLib->load_picture(file);
+
     g_fKatakana = FALSE;
 
     INT cx = GetSystemMetrics(SM_CXBORDER);
@@ -313,6 +317,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbmHiraganaOFF);
     DeleteObject(g_hbmKatakanaON);
     DeleteObject(g_hbmKatakanaOFF);
+    DeleteObject(g_hbmBack);
 
     g_history.clear();
 
@@ -389,10 +394,27 @@ VOID OnDraw(HWND hwnd, HDC hdc)
     if (g_hbmClient == NULL)
     {
         g_hbmClient = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+
+        // Draw background
         hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
-        hbr = CreateSolidBrush(RGB(255, 255, 192));
-        FillRect(hdcMem2, &rc, hbr);
-        DeleteObject(hbr);
+        if (g_hbmBack) {
+            BITMAP bm;
+            GetObjectW(g_hbmBack, sizeof(bm), &bm);
+
+            HDC hdcMem3 = CreateCompatibleDC(NULL);
+            HGDIOBJ hbmOld = SelectObject(hdcMem3, g_hbmBack);
+            for (INT y = 0; y < siz.cy + bm.bmHeight; y += bm.bmHeight) {
+                for (INT x = 0; x < siz.cx + bm.bmWidth; x += bm.bmWidth) {
+                    BitBlt(hdcMem2, x, y, bm.bmWidth, bm.bmHeight, hdcMem3, 0, 0, SRCCOPY);
+                }
+            }
+            SelectObject(hdcMem3, hbmOld);
+            DeleteDC(hdcMem3);
+        } else {
+            hbr = CreateSolidBrush(RGB(255, 255, 192));
+            FillRect(hdcMem2, &rc, hbr);
+            DeleteObject(hbr);
+        }
 
         RECT rcHira, rcKata;
         GetHiraganaRect(hwnd, &rcHira);

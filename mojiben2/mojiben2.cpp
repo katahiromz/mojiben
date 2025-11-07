@@ -55,6 +55,7 @@ std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 MyLibStringTable *g_pMain = NULL;
+HBITMAP g_hbmBack;
 std::vector<HBITMAP> g_ahbmMoji;
 KAKIJUN g_kakijun;
 BOOL g_fJapanese = FALSE;
@@ -295,6 +296,8 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmUppercaseOFF = g_pMyLib->load_picture(file);
     wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03LowercaseOFF");
     g_hbmLowercaseOFF = g_pMyLib->load_picture(file);
+    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"Back");
+    g_hbmBack = g_pMyLib->load_picture(file);
 
     g_hThread = NULL;
     g_hbmKakijun = NULL;
@@ -341,6 +344,7 @@ void OnDestroy(HWND hwnd)
     g_ahbmMoji.clear();
 
     DeleteObject(g_hbmClient);
+    DeleteObject(g_hbmBack);
 
     DeleteObject(g_hbmKakijun);
     DeleteObject(g_hbrRed);
@@ -401,10 +405,27 @@ void OnDraw(HWND hwnd, HDC hdc)
     if (g_hbmClient == NULL)
     {
         g_hbmClient = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
+
+        // Draw background
         hbmOld2 = SelectObject(hdcMem2, g_hbmClient);
-        hbr = CreateSolidBrush(RGB(255, 255, 192));
-        FillRect(hdcMem2, &rc, hbr);
-        DeleteObject(hbr);
+        if (g_hbmBack) {
+            BITMAP bm;
+            GetObjectW(g_hbmBack, sizeof(bm), &bm);
+
+            HDC hdcMem3 = CreateCompatibleDC(NULL);
+            HGDIOBJ hbmOld = SelectObject(hdcMem3, g_hbmBack);
+            for (INT y = 0; y < siz.cy + bm.bmHeight; y += bm.bmHeight) {
+                for (INT x = 0; x < siz.cx + bm.bmWidth; x += bm.bmWidth) {
+                    BitBlt(hdcMem2, x, y, bm.bmWidth, bm.bmHeight, hdcMem3, 0, 0, SRCCOPY);
+                }
+            }
+            SelectObject(hdcMem3, hbmOld);
+            DeleteDC(hdcMem3);
+        } else {
+            hbr = CreateSolidBrush(RGB(255, 255, 192));
+            FillRect(hdcMem2, &rc, hbr);
+            DeleteObject(hbr);
+        }
 
         RECT rcU, rcL;
         GetUppercaseRect(hwnd, &rcU);
