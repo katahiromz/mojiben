@@ -79,6 +79,7 @@ MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
 MyLibStringTable *g_pExamples = NULL;
 MyLibStringTable *g_pReading = NULL;
+MyLibStringTable *g_pMeaning = NULL;
 std::vector<HBITMAP> g_ahbmMoji;
 KAKIJUN g_kakijun;
 BOOL g_fJapanese = FALSE;
@@ -235,6 +236,12 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
     g_pMyLib->load_string_table(*g_pReading, g_section + L"\\Reading.txt");
 
+    // 意味を読み込む
+    g_pMeaning = new(std::nothrow) MyLibStringTable();
+    if (!g_pMeaning)
+        return FALSE;
+    g_pMyLib->load_string_table(*g_pMeaning, g_section + (g_fJapanese ? L"\\Meaning_ja.txt" : L"\\Meaning_en.txt"));
+
     // 開始時の音を鳴らす。これにより最初の音遅れを回避する。
     std::wstring start_sound = g_pMyLib->find_data_file(g_section + L"\\Start.mp3");
     g_pMyLib->play_sound_async(start_sound);
@@ -320,6 +327,9 @@ void OnDestroy(HWND hwnd)
     delete g_pReading;
     g_pReading = NULL;
 
+    delete g_pMeaning;
+    g_pMeaning = NULL;
+
     delete g_pMyLib;
     g_pMyLib = NULL;
 
@@ -375,6 +385,10 @@ std::wstring GetMojiExample(INT nMoji) {
 
 std::wstring GetMojiReading(INT nMoji) {
     return g_pReading->value_at(nMoji);
+}
+
+std::wstring GetMojiMeaning(INT nMoji) {
+    return g_pMeaning->value_at(nMoji);
 }
 
 VOID OnDraw(HWND hwnd, HDC hdc)
@@ -824,9 +838,7 @@ void OnKanjiData(HWND hwnd) {
     dlg.m_reading = g_pReading->value_at(g_nMoji);
 
     // 意味。
-    WCHAR szText[256];
-    LoadString(g_hInstance, 2000 + g_nMoji, szText, _countof(szText));
-    dlg.m_meaning = _tcschr(szText, TEXT(':')) + 1;
+    dlg.m_meaning = GetMojiReading(g_nMoji);
 
     // 使い方
     dlg.m_examples = GetMojiExample(g_nMoji);
@@ -944,11 +956,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     SetWindowText(g_hwndCaption1, GetMojiReading(g_nMoji).c_str());
 
     // 意味。
-    WCHAR szMeaning[128];
-    LoadString(g_hInstance, 2000 + g_nMoji, szMeaning, _countof(szMeaning));
-    LPCWSTR psz = szMeaning;
-    LPCWSTR pch = _tcschr(psz, TEXT(':'));
-    SetWindowText(g_hwndCaption2, (pch + 1));
+    SetWindowText(g_hwndCaption2, GetMojiMeaning(g_nMoji).c_str());
 
     g_kanji5_history.insert(nMoji);
 
