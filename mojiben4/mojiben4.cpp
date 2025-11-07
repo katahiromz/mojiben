@@ -67,8 +67,6 @@ std::set<INT> g_kanji1_history;
 
 BOOL g_bHighSpeed = FALSE;
 
-extern "C" extern const wchar_t *g_aszMojiReadings[];
-
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
 MyLibStringTable *g_pMoji = NULL;
@@ -874,15 +872,13 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         TRUE);
 
     // 読み。
-    LPCTSTR psz = g_aszMojiReadings[g_nMoji];
-    LPCTSTR pch = _tcschr(psz, TEXT(':'));
-    SetWindowText(g_hwndCaption1, (pch + 1));
+    SetWindowText(g_hwndCaption1, GetMojiReading(g_nMoji).c_str());
 
     // 意味。
     WCHAR szMeaning[128];
     LoadString(g_hInstance, 2000 + g_nMoji, szMeaning, _countof(szMeaning));
-    psz = szMeaning;
-    pch = _tcschr(psz, TEXT(':'));
+    LPCWSTR psz = szMeaning;
+    LPCWSTR pch = _tcschr(psz, TEXT(':'));
     SetWindowText(g_hwndCaption2, (pch + 1));
 
     g_kanji1_history.insert(nMoji);
