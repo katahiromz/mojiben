@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "read_all.h"
+#include "../read_all.h"
 
 void version() {
     puts("0.0");

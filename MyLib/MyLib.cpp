@@ -10,7 +10,7 @@
 #include <tchar.h>
 #include <assert.h>
 #include "MyLib.h"
-#include "read_all.h"
+#include "../read_all.h"
 #include "../mstr.h"
 
 class AutoPriority {

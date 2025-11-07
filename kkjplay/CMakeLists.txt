@@ -1,3 +1,3 @@
-add_executable(kkjplay WIN32 kkjplay.cpp read_all.cpp kkjplay_res.rc)
+add_executable(kkjplay WIN32 kkjplay.cpp ../read_all.cpp kkjplay_res.rc)
 target_compile_definitions(kkjplay PRIVATE UNICODE _UNICODE)
 target_link_libraries(kkjplay PRIVATE comctl32 shell32 shlwapi)
