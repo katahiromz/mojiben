@@ -654,7 +654,7 @@ void OnDraw(HWND hwnd, HDC hdc) {
 
         if (0 <= g_iFrame && g_iFrame < (INT)g_rgn_files.size()) {
             HRGN hRgn = MyCreateRegion(g_kkj, g_rgn_files[g_iFrame]);
-            FillRgn(hdc, hRgn, g_hbrRed);
+            FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
             DeleteObject(hRgn);
             SetDlgItemInt(hwnd, stc1, g_iFrame, FALSE);
         } else {
