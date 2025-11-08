@@ -5,6 +5,7 @@
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shellapi.h>
+#include <mmsystem.h>
 #include <shlwapi.h>
 #include <cmath>
 #include <process.h>
@@ -14,6 +15,7 @@
 #include "../CGdiObj.h"
 #include "../mstr.h"
 
+HINSTANCE g_hInstance = NULL;
 HWND g_hMainWnd = NULL;
 HBITMAP g_hbmKakijun = NULL; // week ref
 HBRUSH g_hbrRed = NULL;
@@ -386,6 +388,7 @@ static unsigned ThreadProcWorker(void) {
         return 0;
 
     Sleep(200);
+    PlaySoundW(MAKEINTRESOURCEW(1), g_hInstance, SND_ASYNC | SND_NODEFAULT | SND_RESOURCE);
 
     CRgn hRgn5(::CreateRectRgn(0, 0, 0, 0));
     for (UINT i = 0; i < v.size(); ++i)
@@ -398,6 +401,7 @@ static unsigned ThreadProcWorker(void) {
             if (!g_bPlaying)
                 return 0;
 
+            PlaySoundW(MAKEINTRESOURCEW(1), g_hInstance, SND_ASYNC | SND_NODEFAULT | SND_RESOURCE);
             break;
 
         case STROKE::DOT:
@@ -823,6 +827,7 @@ DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 INT Kakijun_Main(HINSTANCE hInstance, INT argc, wchar_t **wargv, INT nCmdShow) {
+    g_hInstance = hInstance;
     InitCommonControls();
     DialogBoxParamW(hInstance, MAKEINTRESOURCEW(1), NULL, DialogProc, 
                     (LPARAM)((argc >= 2) ? wargv[1] : NULL));
