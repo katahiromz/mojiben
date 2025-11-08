@@ -350,9 +350,8 @@ static unsigned ThreadProcWorker(void) {
     INT k;
     POINT apt[5];
 
-    GetClientRect(g_hMainWnd, &rc);
-    siz.cx = rc.right - rc.left;
-    siz.cy = rc.bottom - rc.top;
+    SetRect(&rc, 0, 0, 254, 254);
+    siz.cx = siz.cy = 254;
 
     std::vector<STROKE>& v = g_kkj;
 
@@ -374,17 +373,13 @@ static unsigned ThreadProcWorker(void) {
         hbm2 = CreateCompatibleBitmap(hdc, siz.cx, siz.cy);
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = 0;
-        rc.top = 0;
-        rc.right = siz.cx;
-        rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
     }
 
     g_hbmKakijun = hbm1;
-    InvalidateRect(g_hMainWnd, NULL, FALSE);
+    InvalidateRect(g_hMainWnd, &rc, FALSE);
     SetForegroundWindow(g_hMainWnd);
 
     if (!g_bPlaying)
@@ -413,9 +408,6 @@ static unsigned ThreadProcWorker(void) {
                 g_hbmKakijun = hbm1;
 
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = rc.top = 0;
-                rc.right = siz.cx;
-                rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
@@ -424,7 +416,7 @@ static unsigned ThreadProcWorker(void) {
                 FillRgn(hdcMem, hRgn5, g_hbrRed);
                 SelectObject(hdcMem, hbmOld);
 
-                InvalidateRect(g_hMainWnd, NULL, TRUE);
+                InvalidateRect(g_hMainWnd, &rc, TRUE);
                 Sleep(50);
             }
             break;
@@ -437,9 +429,6 @@ static unsigned ThreadProcWorker(void) {
                 g_hbmKakijun = hbm1;
 
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = rc.top = 0;
-                rc.right = siz.cx;
-                rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
@@ -507,7 +496,7 @@ static unsigned ThreadProcWorker(void) {
 
                     SelectObject(hdcMem, hbmOld);
 
-                    InvalidateRect(g_hMainWnd, NULL, FALSE);
+                    InvalidateRect(g_hMainWnd, &rc, FALSE);
                     if (n == NULLREGION)
                         break;
 
@@ -525,9 +514,6 @@ static unsigned ThreadProcWorker(void) {
                 g_hbmKakijun = hbm1;
 
                 hbmOld = SelectObject(hdcMem, hbm1);
-                rc.left = rc.top = 0;
-                rc.right = siz.cx;
-                rc.bottom = siz.cy;
                 FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
                 FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
                 SelectObject(hdcMem, hbmOld);
@@ -591,7 +577,7 @@ static unsigned ThreadProcWorker(void) {
 
                     SelectObject(hdcMem, hbmOld);
 
-                    InvalidateRect(g_hMainWnd, NULL, TRUE);
+                    InvalidateRect(g_hMainWnd, &rc, TRUE);
 
                     if (n == NULLREGION)
                     {
@@ -620,14 +606,11 @@ static unsigned ThreadProcWorker(void) {
         g_hbmKakijun = hbm1;
 
         hbmOld = SelectObject(hdcMem, hbm1);
-        rc.left = rc.top = 0;
-        rc.right = siz.cx;
-        rc.bottom = siz.cy;
         FillRect(hdcMem, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
         FillRgn(hdcMem, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
         SelectObject(hdcMem, hbmOld);
 
-        InvalidateRect(g_hMainWnd, NULL, FALSE);
+        InvalidateRect(g_hMainWnd, &rc, FALSE);
     }
 
     Sleep(500);
@@ -640,7 +623,8 @@ unsigned __stdcall ThreadProc(void *) {
     ThreadProcWorker();
     g_bPlaying = FALSE;
     g_iFrame = -1;
-    InvalidateRect(g_hMainWnd, NULL, TRUE);
+    RECT rc = { 0, 0, 254, 254 };
+    InvalidateRect(g_hMainWnd, &rc, TRUE);
     return 0;
 }
 
