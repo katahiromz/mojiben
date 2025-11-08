@@ -1,0 +1,100 @@
+﻿(Japanese, UTF-8)
+
+# 「もじのべんきょう」のビルド方法
+
+## 必要なもの
+
+- Visual Studio (2008以降)
+- CMake
+- Inno Setup (5.6.1以降)
+
+## ビルドコマンド
+
+### 1. CMake
+
+```
+cmake -G
+```
+を実行すると、ジェネレーターのリストが表示されるので適当なジェネレーターを選ぶ（たとえば `Visual Studio 9 2008`）。
+
+```
+cmake -G "Visual Studio 9 2008" .
+```
+
+### 2. ソリューションを開く
+
+- 使用するVisual Studio (VS) を開く。
+- 生成された「mojiben.sln」をVSにドロップする。
+
+### 3. VSでビルドする
+
+- VSで「Debug」か「Release」を選ぶ。
+- 「ビルド」メニューから「ソリューションのビルド」を選ぶ。
+
+### 4. デジタル署名
+
+- 親フォルダにデジタル署名する`do_sign.bat`バッチファイルを用意する。
+- `do_sign_all.bat`を実行する。
+
+### 5. ポータブル版を作成する。
+
+- `deploy.bat`と`compress.sh`を実行する。
+
+### 6. インストーラ作成
+
+Inno Setupで`installer.iss`を開き、「Build」メニュー→「Compile」を選ぶ。
+
+### 7. インストーラにデジタル署名
+
+- 再度`do_sign_all.bat`を実行する。
+
+---
+(English)
+
+# How to Build "Moji No Benkyou"
+
+## Required Items
+
+- Visual Studio (2008 or later)
+- CMake
+- Inno Setup (5.6.1 or later)
+
+## Build Command
+
+### 1. CMake
+
+```
+cmake -G
+```
+Running this will display a list of generators, so select the appropriate one (for example `Visual Studio 9 2008`).
+
+```
+cmake -G "Visual Studio 9 2008" .
+```
+
+### 2. Open the Solution
+
+- Open the Visual Studio (VS) you want to use.
+- Drop the generated "mojiben.sln" into VS.
+
+### 3. Build with VS
+
+- Select "Debug" or "Release" in VS.
+- Select "Build Solution" from the "Build" menu.
+
+### 4. Digital Signature
+
+- Prepare the `do_sign.bat` batch file for digital signing in the parent folder.
+- Run `do_sign_all.bat`.
+
+### 5. Create portable version
+
+- Execute `deploy.bat` and `compress.sh`.
+
+### 6. Create the Installer
+
+Open `installer.iss` in Inno Setup and select "Build" -> "Compile".
+
+### 7. Digitally Sign the Installer
+
+- Run `do_sign_all.bat` again.
