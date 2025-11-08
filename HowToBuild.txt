@@ -6,7 +6,7 @@
 
 - Visual Studio (2008以降)
 - CMake
-- Inno Setup (5.6.1以降)
+- Inno Setup (5.6.1 (u) 以降)
 
 ## ビルドコマンド
 
@@ -57,7 +57,7 @@ Inno Setupで`installer.iss`を開き、「Build」メニュー→「Compile」�
 
 - Visual Studio (2008 or later)
 - CMake
-- Inno Setup (5.6.1 or later)
+- Inno Setup (5.6.1 (u) or later)
 
 ## Build Command
 
