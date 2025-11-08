@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#include <commdlg.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <cmath>
@@ -21,6 +22,94 @@ INT g_iFrame = -1;
 
 std::vector<STROKE> g_kkj;
 std::vector<std::wstring> g_rgn_files;
+
+typedef struct tagBITMAPINFOEX
+{
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD          bmiColors[256];
+} BITMAPINFOEX, FAR * LPBITMAPINFOEX;
+
+BOOL SaveBitmapToFile(LPCTSTR pszFileName, HBITMAP hbm)
+{
+    BOOL f;
+    DWORD dwError = NO_ERROR;
+    BITMAPFILEHEADER bf;
+    BITMAPINFOEX bi;
+    BITMAPINFOHEADER *pbmih;
+    DWORD cb;
+    DWORD cColors, cbColors;
+    HDC hDC;
+    HANDLE hFile;
+    LPVOID pBits;
+    BITMAP bm;
+
+    if (!GetObject(hbm, sizeof(BITMAP), &bm))
+        return FALSE;
+
+    pbmih = &bi.bmiHeader;
+    ZeroMemory(pbmih, sizeof(BITMAPINFOHEADER));
+    pbmih->biSize             = sizeof(BITMAPINFOHEADER);
+    pbmih->biWidth            = bm.bmWidth;
+    pbmih->biHeight           = bm.bmHeight;
+    pbmih->biPlanes           = 1;
+    pbmih->biBitCount         = bm.bmBitsPixel;
+    pbmih->biCompression      = BI_RGB;
+    pbmih->biSizeImage        = bm.bmWidthBytes * bm.bmHeight;
+
+    if (bm.bmBitsPixel < 16)
+        cColors = 1 << bm.bmBitsPixel;
+    else
+        cColors = 0;
+    cbColors = cColors * sizeof(RGBQUAD);
+
+    bf.bfType = 0x4d42;
+    bf.bfReserved1 = 0;
+    bf.bfReserved2 = 0;
+    cb = sizeof(BITMAPFILEHEADER) + pbmih->biSize + cbColors;
+    bf.bfOffBits = cb;
+    bf.bfSize = cb + pbmih->biSizeImage;
+
+    pBits = HeapAlloc(GetProcessHeap(), 0, pbmih->biSizeImage);
+    if (pBits == NULL)
+        return FALSE;
+
+    f = FALSE;
+    hDC = GetDC(NULL);
+    if (hDC != NULL)
+    {
+        if (GetDIBits(hDC, hbm, 0, bm.bmHeight, pBits, (BITMAPINFO*)&bi,
+            DIB_RGB_COLORS))
+        {
+            hFile = CreateFile(pszFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL,
+                               CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL |
+                               FILE_FLAG_WRITE_THROUGH, NULL);
+            if (hFile != INVALID_HANDLE_VALUE)
+            {
+                f = WriteFile(hFile, &bf, sizeof(BITMAPFILEHEADER), &cb, NULL) &&
+                    WriteFile(hFile, &bi, sizeof(BITMAPINFOHEADER), &cb, NULL) &&
+                    WriteFile(hFile, bi.bmiColors, cbColors, &cb, NULL) &&
+                    WriteFile(hFile, pBits, pbmih->biSizeImage, &cb, NULL);
+                if (!f)
+                    dwError = GetLastError();
+                CloseHandle(hFile);
+
+                if (!f)
+                    DeleteFile(pszFileName);
+            }
+            else
+                dwError = GetLastError();
+        }
+        else
+            dwError = GetLastError();
+        ReleaseDC(NULL, hDC);
+    }
+    else
+        dwError = GetLastError();
+
+    HeapFree(GetProcessHeap(), 0, pBits);
+    SetLastError(dwError);
+    return f;
+}
 
 #define PRINTF
 
@@ -202,6 +291,55 @@ HRGN MyCreateRegion(std::vector<STROKE>& v, std::wstring file) {
     std::string binary;
     read_all(binary, file.c_str());
     return DeserializeRegion254((PBYTE)binary.c_str(), (DWORD)binary.size());
+}
+
+void OnDraw(HWND hwnd, HDC hdc, RECT& rc) {
+    FillRect(hdc, &rc, (HBRUSH)GetStockObject(GRAY_BRUSH));
+
+    if (g_iFrame == -1 && g_hbmKakijun) {
+        HDC hdcMem = CreateCompatibleDC(hdc);
+        HGDIOBJ hbmOld = SelectObject(hdcMem, g_hbmKakijun);
+        BitBlt(hdc, 0, 0, 254, 254, hdcMem, 0, 0, SRCCOPY);
+        SelectObject(hdcMem, hbmOld);
+        DeleteDC(hdcMem);
+
+        SetDlgItemTextW(hwnd, stc1, NULL);
+    } else if (g_iFrame != -1) {
+        SetRect(&rc, 0, 0, 254, 254);
+        FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
+        if (0 <= g_iFrame && g_iFrame < (INT)g_rgn_files.size()) {
+            HRGN hRgn = MyCreateRegion(g_kkj, g_rgn_files[g_iFrame]);
+            FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+            DeleteObject(hRgn);
+            SetDlgItemInt(hwnd, stc1, g_iFrame, FALSE);
+        } else {
+            SetDlgItemTextW(hwnd, stc1, NULL);
+        }
+    } else if (g_kkj.size()) {
+        SetRect(&rc, 0, 0, 254, 254);
+        FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+
+        std::vector<STROKE>& v = g_kkj;
+        CRgn hRgn(::CreateRectRgn(0, 0, 0, 0));
+        INT ires = 0;
+        for (UINT i = 0; i < v.size(); i++)
+        {
+            if (v[i].type != STROKE::WAIT) {
+                CRgn hRgn2(MyCreateRegion(v, g_rgn_files[ires++]));
+                CombineRgn(hRgn, hRgn, hRgn2, RGN_OR);
+            }
+        }
+        ires = 0;
+
+        FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        SetDlgItemTextW(hwnd, stc1, NULL);
+    } else {
+        SetRect(&rc, 0, 0, 254, 254);
+        FillRect(hdc, &rc, (HBRUSH)GetStockObject(LTGRAY_BRUSH));
+        DrawTextW(hdc, L"Drop a KKJ file", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
+        SetDlgItemTextW(hwnd, stc1, NULL);
+    }
 }
 
 static unsigned ThreadProcWorker(void) {
@@ -501,6 +639,8 @@ static unsigned ThreadProcWorker(void) {
 unsigned __stdcall ThreadProc(void *) {
     ThreadProcWorker();
     g_bPlaying = FALSE;
+    g_iFrame = -1;
+    InvalidateRect(g_hMainWnd, NULL, TRUE);
     return 0;
 }
 
@@ -571,6 +711,7 @@ BOOL DoLoadKKJ(LPCWSTR filename) {
     PathRemoveExtensionW(path);
 
     WCHAR path2[MAX_PATH];
+    g_rgn_files.clear();
     for (INT i = 0; i < 100; ++i) {
         wsprintfW(path2, L"%s-%02d.rgn", path, i);
 
@@ -580,6 +721,8 @@ BOOL DoLoadKKJ(LPCWSTR filename) {
         g_rgn_files.push_back(path2);
     }
 
+    g_iFrame = -1;
+    InvalidateRect(g_hMainWnd, NULL, TRUE);
     return TRUE;
 }
 
@@ -590,9 +733,7 @@ BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
     DragAcceptFiles(hwnd, TRUE);
 
     if (lParam) {
-        if (DoLoadKKJ((LPWSTR)lParam)) {
-            DoPlay(hwnd);
-        }
+        DoLoadKKJ((LPWSTR)lParam);
     }
     return TRUE;
 }
@@ -610,6 +751,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     case psh2: // Stop
         g_iFrame = -1;
         g_bPlaying = FALSE;
+        g_hbmKakijun = NULL;
+        InvalidateRect(hwnd, NULL, TRUE);
         break;
     case psh3: // >
         g_bPlaying = FALSE;
@@ -631,46 +774,41 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
         g_hbmKakijun = NULL;
         InvalidateRect(hwnd, NULL, TRUE);
         break;
-    }
-}
+    case psh5:
+        {
+            WCHAR file[MAX_PATH] = L"";
+            OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W };
+            ofn.hwndOwner = hwnd;
+            ofn.lpstrFilter = L"Bitmap Image (*.bmp)\0*.bmp\0";
+            ofn.lpstrFile = file;
+            ofn.nMaxFile = _countof(file);
+            ofn.lpstrTitle = L"Save as BMP";
+            ofn.Flags = OFN_EXPLORER | OFN_DONTADDTORECENT | OFN_ENABLESIZING | OFN_OVERWRITEPROMPT;
+            ofn.lpstrDefExt = L"bmp";
+            if (GetSaveFileNameW(&ofn)) {
+                HDC hdcMem = CreateCompatibleDC(NULL);
+                HBITMAP hbm = CreateCompatibleBitmap(hdcMem, 254, 254);
+                HGDIOBJ hbmOld = SelectObject(hdcMem, hbm);
+                RECT rc = { 0, 0, 254, 254 };
+                OnDraw(hwnd, hdcMem, rc);
+                SelectObject(hdcMem, hbmOld);
 
-void OnDraw(HWND hwnd, HDC hdc) {
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-
-    FillRect(hdc, &rc, (HBRUSH)GetStockObject(GRAY_BRUSH));
-
-    if (g_iFrame == -1 && g_hbmKakijun) {
-        HDC hdcMem = CreateCompatibleDC(hdc);
-        HGDIOBJ hbmOld = SelectObject(hdcMem, g_hbmKakijun);
-        BitBlt(hdc, 0, 0, 254, 254, hdcMem, 0, 0, SRCCOPY);
-        SelectObject(hdcMem, hbmOld);
-        DeleteDC(hdcMem);
-
-        SetDlgItemTextW(hwnd, stc1, NULL);
-    } else if (g_iFrame != -1) {
-        SetRect(&rc, 0, 0, 254, 254);
-        FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
-
-        if (0 <= g_iFrame && g_iFrame < (INT)g_rgn_files.size()) {
-            HRGN hRgn = MyCreateRegion(g_kkj, g_rgn_files[g_iFrame]);
-            FillRgn(hdc, hRgn, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            DeleteObject(hRgn);
-            SetDlgItemInt(hwnd, stc1, g_iFrame, FALSE);
-        } else {
-            SetDlgItemTextW(hwnd, stc1, NULL);
+                SaveBitmapToFile(file, hbm);
+                DeleteObject(hbm);
+                DeleteDC(hdcMem);
+            }
         }
-    } else {
-        DrawTextW(hdc, L"Drop a KKJ file", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
-        SetDlgItemTextW(hwnd, stc1, NULL);
     }
 }
 
 void OnPaint(HWND hwnd)
 {
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+
     PAINTSTRUCT ps;
     if (HDC hdc = BeginPaint(hwnd, &ps)) {
-        OnDraw(hwnd, hdc);
+        OnDraw(hwnd, hdc, rc);
         EndPaint(hwnd, &ps);
     }
 }
@@ -685,8 +823,7 @@ void OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     WCHAR file[MAX_PATH];
     DragQueryFileW(hdrop, 0, file, _countof(file));
-    if (DoLoadKKJ(file))
-        DoPlay(hwnd);
+    DoLoadKKJ(file);
 }
 
 INT_PTR CALLBACK
