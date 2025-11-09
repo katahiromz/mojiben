@@ -13,7 +13,14 @@ void version() {
 }
 
 void usage() {
-    _putws(L"使用例: kanjigrade <漢字>");
+    _putws(
+        L"使用例: kanjigrade [オプション <漢字>\n"
+        L"\n"
+        L"オプション:\n"
+        L" -v, --verbose    詳細表示。\n"
+        L" --help           このメッセージを表示。\n"
+        L" --version        バージョン表示。"
+    );
 }
 
 // 補助関数
@@ -45,7 +52,7 @@ inline bool is_char_kanji(wchar_t ch) {
     return ((0x3400 <= ch && ch <= 0x9FFF) || (0xF900 <= ch && ch <= 0xFAFF) || ch == 0x3005 || ch == 0x3007);
 }
 
-int kanjigrade(std::wstring& str) {
+int kanjigrade(std::wstring& str, bool verbose) {
     // 文字列の前後の空白を取り除く
     mstr_trim(str, L" \t\r\n　");
 
@@ -61,22 +68,38 @@ int kanjigrade(std::wstring& str) {
     for (size_t ich = 0; ich < str.size(); ++ich) {
         wchar_t wch = str[ich];
         if (is_char_kana(wch)) {
-            // カナを習うのは、小学一年生から
+            static bool check = false;
+            if (!check) {
+                check = true;
+                if (verbose) _putws(L"カナを習うのは、小学一年生から。");
+            }
             if (grade < 1) grade = 1;
             continue;
         }
         if (is_char_alpha(wch)) {
-            // 英語を習うのは、小学三年生から
+            static bool check = false;
+            if (!check) {
+                check = true;
+                if (verbose) _putws(L"英語を習うのは、小学三年生から。");
+            }
             if (grade < 3) grade = 3;
             continue;
         }
         if (is_char_digit(wch)) {
-            // 数字を習うのは、小学一年生から
+            static bool check = false;
+            if (!check) {
+                check = true;
+                if (verbose) _putws(L"数字を習うのは、小学一年生から。");
+            }
             if (grade < 1) grade = 1;
             continue;
         }
         if (wch == L'々') {
-            // '々'を習うのは、小学三年生から
+            static bool check = false;
+            if (!check) {
+                check = true;
+                if (verbose) _putws(L"'々'を習うのは、小学三年生から。");
+            }
             if (grade < 3) grade = 3;
             continue;
         }
@@ -85,29 +108,36 @@ int kanjigrade(std::wstring& str) {
         }
         // 漢字の学年を検査する
         if (kanji_grade_1.find(wch) != kanji_grade_1.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学一年生の漢字です。\n", wch);
             if (grade < 1) grade = 1;
             continue;
         }
         if (kanji_grade_2.find(wch) != kanji_grade_2.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学二年生の漢字です。\n", wch);
             if (grade < 2) grade = 2;
             continue;
         }
         if (kanji_grade_3.find(wch) != kanji_grade_3.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学三年生の漢字です。\n", wch);
             if (grade < 3) grade = 3;
             continue;
         }
         if (kanji_grade_4.find(wch) != kanji_grade_4.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学四年生の漢字です。\n", wch);
             if (grade < 4) grade = 4;
             continue;
         }
         if (kanji_grade_5.find(wch) != kanji_grade_5.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学五年生の漢字です。\n", wch);
             if (grade < 5) grade = 5;
             continue;
         }
         if (kanji_grade_6.find(wch) != kanji_grade_6.npos) {
+            if (verbose) wprintf(L"「%lc」 は小学六年生の漢字です。\n", wch);
             if (grade < 6) grade = 6;
             continue;
         }
+        if (verbose) wprintf(L"「%lc」 は中学生以上の漢字です。\n", wch);
         if (grade < 7) grade = 7; // 中学生以上
     }
 
@@ -125,7 +155,7 @@ int kanjigrade(std::wstring& str) {
     }
 
     // 結果を出力
-    _putws(result);
+    wprintf(L"\nResult: %ls\n", result);
     fflush(stdout);
     return grade;
 }
@@ -135,24 +165,29 @@ int _wmain(int argc, wchar_t **wargv) {
 
     if (argc <= 1) {
         usage();
-        return 1;
+        return 999;
     }
 
     std::wstring str;
+    bool verbose = false;
     for (int iarg = 1; iarg < argc; ++iarg) {
         std::wstring arg = wargv[iarg];
         if (arg == L"--help") {
             usage();
-            return 1;
+            return 999;
         }
         if (arg == L"--version") {
             version();
-            return 1;
+            return 999;
+        }
+        if (arg == L"--verbose" || arg == L"-v") {
+            verbose = true;
+            continue;
         }
         str += arg;
     }
 
-    return kanjigrade(str);
+    return kanjigrade(str, verbose);
 }
 
 int main(void) {
