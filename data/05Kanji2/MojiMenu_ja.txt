@@ -1,4 +1,4 @@
-もじのコピー = OnCopyMoji
+文字のコピー = OnCopyMoji
 ---
 かんじ データ = OnKanjiData
 ---
@@ -9,4 +9,4 @@ Yahoo! JAPAN けんさく = https://search.yahoo.co.jp/search?p=<String>
 Jisho.org でしらべる = https://jisho.org/search/%23kanji%20<String>
 ---
 「じてん オンライン」でしらべる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
-「もじなび」でしらべる = https://mojinavi.com/d/u<hex>
+「モジナビ」でしらべる = https://mojinavi.com/d/u<hex>
