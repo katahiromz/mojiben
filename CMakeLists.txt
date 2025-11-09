@@ -58,5 +58,6 @@ add_subdirectory(makebmp)
 add_subdirectory(rgn2bmp)
 add_subdirectory(bmp2rgn)
 add_subdirectory(kkjplay)
+add_subdirectory(kanjigrade)
 
 ##############################################################################

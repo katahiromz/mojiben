@@ -50,6 +50,7 @@ Source: "build\Release\makebmp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\rgn2bmp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\bmp2rgn.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\kkjplay.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\kanjigrade.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
