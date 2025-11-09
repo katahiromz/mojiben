@@ -98,7 +98,7 @@ int kanjigrade(std::wstring& str, bool verbose) {
             static bool check = false;
             if (!check) {
                 check = true;
-                if (verbose) _putws(L"'々'を習うのは、小学三年生から。");
+                if (verbose) _putws(L"「々」を習うのは、小学三年生から。");
             }
             if (grade < 3) grade = 3;
             continue;
