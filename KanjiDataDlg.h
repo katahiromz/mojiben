@@ -42,8 +42,7 @@ public:
         SendDlgItemMessageW(hwnd, edt3, WM_SETFONT, (WPARAM)m_hNormalFont, TRUE);
         SendDlgItemMessageW(hwnd, edt4, WM_SETFONT, (WPARAM)m_hNormalFont, TRUE);
 
-        SetFocus(GetDlgItem(hwnd, IDOK));
-        return FALSE;
+        return TRUE;
     }
 
     void OnDestroy(HWND hwnd)
