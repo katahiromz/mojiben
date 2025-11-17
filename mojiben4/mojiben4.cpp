@@ -409,7 +409,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[g_map[j]]);
             GetMojiRect(&rc, j);
             InflateRect(&rc, +5, +5);
-            if (g_history.find(j) != g_history.end())
+            if (g_history.find(g_map[j]) != g_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
                 FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -877,8 +877,8 @@ void OnMojiRightClick(HWND hwnd) {
 
     if (nCmd) {
         INT iSelected = nCmd - 100;
-        g_history.insert(g_nMoji2);
-        remember_moji(g_pMoji->key_at(g_nMoji2));
+        g_history.insert(g_nMoji);
+        remember_moji(g_pMoji->key_at(g_nMoji));
 
         if (g_hbmClient) {
             DeleteObject(g_hbmClient);
@@ -934,8 +934,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     // 意味。
     SetWindowText(g_hwndCaption2, GetMojiMeaning(g_nMoji).c_str());
 
-    g_history.insert(nMoji);
-    remember_moji(g_pMoji->key_at(nMoji));
+    g_history.insert(g_nMoji);
+    remember_moji(g_pMoji->key_at(g_nMoji));
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
