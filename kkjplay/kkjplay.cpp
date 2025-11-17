@@ -701,7 +701,7 @@ BOOL DoLoadKKJ(LPCWSTR filename) {
     WCHAR path2[MAX_PATH];
     g_rgn_files.clear();
     for (INT i = 0; i < 100; ++i) {
-        wsprintfW(path2, L"%s-%02d.rgn", path, i);
+        wnsprintfW(path2, _countof(path2), L"%s-%02d.rgn", path, i);
 
         if (!PathFileExistsW(path2))
             break;

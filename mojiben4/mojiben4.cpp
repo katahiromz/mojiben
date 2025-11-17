@@ -91,12 +91,12 @@ void EnumData() {
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(100 + i), &size);
         std::string binary((char *)pres, size);
-        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
 
         // Load GIF
-        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
@@ -106,7 +106,7 @@ void EnumData() {
             DWORD size;
             PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(1000 + i), &size);
             std::string binary((char *)pres, size);
-            wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
             g_pMyLib->save_binary(binary, file);
         }
 #endif
@@ -121,28 +121,28 @@ void EnumData() {
                 values.push_back("W");
                 break;
             case STROKE::LINEAR:
-                wsprintfA(buf, "L,%d", v[i].angle0);
+                wnsprintfA(buf, _countof(buf), "L,%d", v[i].angle0);
                 values.push_back(buf);
                 break;
             case STROKE::DOT:
-                wsprintfA(buf, "D");
+                wnsprintfA(buf, _countof(buf), "D");
                 values.push_back(buf);
                 break;
             case STROKE::POLAR:
-                wsprintfA(buf, "P,%d,%d,%d,%d", v[i].angle0, v[i].angle1, v[i].cx, v[i].cy);
+                wnsprintfA(buf, _countof(buf), "P,%d,%d,%d,%d", v[i].angle0, v[i].angle1, v[i].cx, v[i].cy);
                 values.push_back(buf);
                 break;
             }
         }
         std::string ansi = mstr_join(values, ";");
-        wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(ansi, file);
 #endif
 
         {
             std::vector<STROKE> v;
             STROKE stroke;
-            wsprintfW(file, L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\kkj\\%s.kkj", g_section.c_str(), moji.c_str());
             std::string ansi;
             g_pMyLib->load_binary(ansi, file);
             std::vector<std::string> values;
@@ -193,7 +193,7 @@ void EnumData() {
                     PVOID pres = MyLoadRes(g_hInstance, RT_RCDATA, MAKEINTRESOURCEW(iKakijun + ires), &size);
                     std::string binary((char *)pres, size);
                     assert(size);
-                    wsprintfW(file, L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
+                    wnsprintfW(file, _countof(file), L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
                     g_pMyLib->save_binary(binary, file);
                     ++ires;
                 }
@@ -256,7 +256,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     g_hbmClient = NULL;
 
     WCHAR file[MAX_PATH];
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     LOGFONT lf;
@@ -436,7 +436,7 @@ HRGN MyCreateRegion(INT nIndex, INT iKakijun, INT i, INT ires) {
     INT k = ires;
     assert(v[i].type != STROKE::WAIT);
     WCHAR file[MAX_PATH];
-    wsprintfW(file, L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
+    wnsprintfW(file, _countof(file), L"%s\\kkj\\%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
     std::string binary;
     g_pMyLib->load_binary(binary, file);
     return DeserializeRegion254((PBYTE)binary.c_str(), (DWORD)binary.size());
@@ -814,7 +814,7 @@ HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji,
     LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_KATAKANA, moji.c_str(), -1, kata, _countof(kata));
     LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_UPPERCASE, moji.c_str(), -1, upper, _countof(upper));
     LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_LOWERCASE, moji.c_str(), -1, lower, _countof(lower));
-    wsprintfW(hex, L"%04x", moji[0]);
+    wnsprintfW(hex, _countof(hex), L"%04x", moji[0]);
 
     for (size_t i = 0; i < menu.size(); ++i) {
         mstr_replace(menu.m_pairs[i].m_key, L"<String>", moji.c_str());

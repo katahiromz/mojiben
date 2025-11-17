@@ -361,7 +361,7 @@ MyPlaySound(LPCTSTR pszName)
         fwrite(pvData, cbData, 1, fout);
         fclose(fout);
 
-        wsprintf(szCommand, TEXT("open \"%s\" type mpegvideo alias myaudio"), szFile);
+        wnsprintf(szCommand, _countof(szCommand), TEXT("open \"%s\" type mpegvideo alias myaudio"), szFile);
     }
 
     mciSendString(szCommand, NULL, 0, 0);

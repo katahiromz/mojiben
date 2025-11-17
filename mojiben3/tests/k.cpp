@@ -175,7 +175,7 @@ int main(void)
 
     for (i = 0; g_aszReadings[i]; ++i)
     {
-        wsprintfA(sz2, "digit%03d.bmp", i);
+        wnsprintfA(sz2, _countof(sz2), "digit%03d.bmp", i);
         hbmOld = SelectObject(hdc, hbm);
         RECT rc = { 0, 0, WIDTH, HEIGHT };
         FillRect(hdc, &rc, GetStockBrush(WHITE_BRUSH));

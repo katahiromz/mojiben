@@ -115,17 +115,17 @@ void EnumData() {
             pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(2000 + i % 26), &size);
         std::string binary((char *)pres, size);
         if (i < 26)
-            wsprintfW(file, L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
         else
-            wsprintfW(file, L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
 
         // Load GIF
         if (i < 26)
-            wsprintfW(file, L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\i\\U-%s.gif", g_section.c_str(), moji.c_str());
         else
-            wsprintfW(file, L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\i\\L-%s.gif", g_section.c_str(), moji.c_str());
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
@@ -135,7 +135,7 @@ void EnumData() {
             DWORD size;
             PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(5000 + i % 26), &size);
             std::string binary((char *)pres, size);
-            wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
             g_pMyLib->save_binary(binary, file);
         }
 #endif
@@ -145,7 +145,7 @@ void EnumData() {
             RECT rc;
             GetMojiRect(g_hMainWnd, &rc, i % 26);
             WCHAR text[128];
-            wsprintfW(text, L"%s = (%d, %d)\n", moji.c_str(), rc.left, rc.top);
+            wnsprintfW(text, _countof(text), L"%s = (%d, %d)\n", moji.c_str(), rc.left, rc.top);
             OutputDebugStringW(text);
         }
 #endif
@@ -166,24 +166,24 @@ void EnumData() {
                 values.push_back("W");
                 break;
             case STROKE::LINEAR:
-                wsprintfA(buf, "L,%d", v[k].angle0);
+                wnsprintfA(buf, _countof(buf), "L,%d", v[k].angle0);
                 values.push_back(buf);
                 break;
             case STROKE::DOT:
-                wsprintfA(buf, "D");
+                wnsprintfA(buf, _countof(buf), "D");
                 values.push_back(buf);
                 break;
             case STROKE::POLAR:
-                wsprintfA(buf, "P,%d,%d,%d,%d", v[k].angle0, v[k].angle1, v[k].cx, v[k].cy);
+                wnsprintfA(buf, _countof(buf), "P,%d,%d,%d,%d", v[k].angle0, v[k].angle1, v[k].cx, v[k].cy);
                 values.push_back(buf);
                 break;
             }
         }
         std::string ansi = mstr_join(values, ";");
         if (i < 26)
-            wsprintfW(file, L"%s\\kkj\\U-%s.kkj", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\kkj\\U-%s.kkj", g_section.c_str(), moji.c_str());
         else
-            wsprintfW(file, L"%s\\kkj\\L-%s.kkj", g_section.c_str(), moji.c_str());
+            wnsprintfW(file, _countof(file), L"%s\\kkj\\L-%s.kkj", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(ansi, file);
 #endif
 
@@ -191,9 +191,9 @@ void EnumData() {
             std::vector<STROKE> v;
             STROKE stroke;
             if (i < 26)
-                wsprintfW(file, L"%s\\kkj\\U-%s.kkj", g_section.c_str(), moji.c_str());
+                wnsprintfW(file, _countof(file), L"%s\\kkj\\U-%s.kkj", g_section.c_str(), moji.c_str());
             else
-                wsprintfW(file, L"%s\\kkj\\L-%s.kkj", g_section.c_str(), moji.c_str());
+                wnsprintfW(file, _countof(file), L"%s\\kkj\\L-%s.kkj", g_section.c_str(), moji.c_str());
             std::string ansi;
             g_pMyLib->load_binary(ansi, file);
             std::vector<std::string> values;
@@ -245,9 +245,9 @@ void EnumData() {
                     std::string binary((char *)pres, size);
                     assert(size);
                     if (i >= 26)
-                        wsprintfW(file, L"%s\\kkj\\L-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
+                        wnsprintfW(file, _countof(file), L"%s\\kkj\\L-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
                     else
-                        wsprintfW(file, L"%s\\kkj\\U-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
+                        wnsprintfW(file, _countof(file), L"%s\\kkj\\U-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)ires);
                     g_pMyLib->save_binary(binary, file);
                     ++ires;
                 }
@@ -288,15 +288,15 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     WCHAR file[MAX_PATH];
 
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"00UppercaseON");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"00UppercaseON");
     g_hbmUppercaseON = g_pMyLib->load_picture(file);
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"01LowercaseON");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"01LowercaseON");
     g_hbmLowercaseON = g_pMyLib->load_picture(file);
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"02UppercaseOFF");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"02UppercaseOFF");
     g_hbmUppercaseOFF = g_pMyLib->load_picture(file);
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"03LowercaseOFF");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"03LowercaseOFF");
     g_hbmLowercaseOFF = g_pMyLib->load_picture(file);
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     g_hThread = NULL;
@@ -518,9 +518,9 @@ HRGN MyCreateRegion(INT nIndex, INT iKakijun, INT i, INT ires)
     assert(v[i].type != STROKE::WAIT);
     WCHAR file[MAX_PATH];
     if (nIndex < 26)
-        wsprintfW(file, L"%s\\kkj\\U-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
+        wnsprintfW(file, _countof(file), L"%s\\kkj\\U-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
     else
-        wsprintfW(file, L"%s\\kkj\\L-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
+        wnsprintfW(file, _countof(file), L"%s\\kkj\\L-%s-%02d.rgn", g_section.c_str(), moji.c_str(), (int)k);
     std::string binary;
     g_pMyLib->load_binary(binary, file);
     return DeserializeRegion254((PBYTE)binary.c_str(), (DWORD)binary.size());

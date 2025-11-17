@@ -110,12 +110,12 @@ void EnumData() {
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"GIF", MAKEINTRESOURCEW(1000 + i), &size);
         std::string binary((char *)pres, size);
-        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
 
         // Load GIF
-        wsprintfW(file, L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\i\\%s.gif", g_section.c_str(), moji.c_str());
         HBITMAP hbm = g_pMyLib->load_picture(file);
         assert(hbm);
         g_ahbmMoji.push_back(hbm);
@@ -124,7 +124,7 @@ void EnumData() {
         DWORD size;
         PVOID pres = MyLoadRes(g_hInstance, L"MP3", MAKEINTRESOURCEW(1000 + i), &size);
         std::string binary((char *)pres, size);
-        wsprintfW(file, L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
+        wnsprintfW(file, _countof(file), L"%s\\s\\%s.mp3", g_section.c_str(), moji.c_str());
         g_pMyLib->save_binary(binary, file);
 #endif
     }
@@ -160,15 +160,15 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     WCHAR file[MAX_PATH];
 
-    wsprintfW(file, L"%s\\00CountingUnits%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
+    wnsprintfW(file, _countof(file), L"%s\\00CountingUnits%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
     g_hbmKazoekata = g_pMyLib->load_picture(file);
     assert(g_hbmKazoekata);
 
-    wsprintfW(file, L"%s\\01MultipicationTable%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
+    wnsprintfW(file, _countof(file), L"%s\\01MultipicationTable%s.gif", g_section.c_str(), g_fJapanese ? L"_ja" : L"_en");
     g_hbmKukuNoUta = g_pMyLib->load_picture(file);
     assert(g_hbmKukuNoUta);
 
-    wsprintfW(file, L"%s\\%s.gif", g_section.c_str(), L"bg");
+    wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
     updateSystemMenu(hwnd);
@@ -322,7 +322,7 @@ void PreDraw(HDC hdc, RECT& rc)
 
     // Load GIF
     WCHAR file[MAX_PATH];
-    wsprintfW(file, L"%s\\m\\%s.gif", g_section.c_str(), moji.c_str());
+    wnsprintfW(file, _countof(file), L"%s\\m\\%s.gif", g_section.c_str(), moji.c_str());
     HBITMAP hbm = g_pMyLib->load_picture(file);
     assert(hbm);
 
