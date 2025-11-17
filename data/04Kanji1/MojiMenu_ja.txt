@@ -3,8 +3,9 @@
 かんじ データ = OnKanjiData
 ---
 Google けんさく = https://www.google.com/search?as_q=<String>&lr=lang_ja&safe=active
-Google けんさく (じゅくご) = https://www.google.com/search?as_q=「<String>」を含む熟語&lr=lang_ja&safe=active
 Yahoo! JAPAN けんさく = https://search.yahoo.co.jp/search?p=<String>
+---
+Google ほんやく (えいご) = https://translate.google.com/?hl=ja&sl=ja&tl=en&text=<String>&op=translate
 ---
 Jisho.org でしらべる = https://jisho.org/search/%23kanji%20<String>
 ---

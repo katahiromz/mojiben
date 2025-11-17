@@ -2,9 +2,10 @@ Copy character = OnCopyMoji
 ---
 Kanji data = OnKanjiData
 ---
-Google search = https://www.google.com/search?as_q=<String>+Japanese-to-English&lr=lang_en&safe=active
-Google search (Ideoms) = https://www.google.com/search?as_q=idioms+with+%22<String>%22+Japanese&lr=lang_en&safe=active
+Google search = https://www.google.com/search?as_q=<String>&lr=lang_en&safe=active
 Yahoo! JAPAN search = https://search.yahoo.co.jp/search?p=<String>
+---
+Google Translate (English) = https://translate.google.com/?hl=en&sl=ja&tl=en&text=<String>&op=translate
 ---
 Look up Jisho.org = https://jisho.org/search/%23kanji%20<String>
 ---
