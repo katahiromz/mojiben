@@ -320,7 +320,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     for (size_t i = 0; i < g_pMoji->size(); ++i) {
         std::wstring moji = g_pMoji->key_at(i);
-        if (recall_moji(moji)) {
+        if (recall_moji((i >= 26 ? L"L-" : L"U-") + moji)) {
             g_history.insert(i);
         }
     }
@@ -458,13 +458,9 @@ void OnDraw(HWND hwnd, HDC hdc)
         }
 
         for (UINT i = 0; i < g_ahbmMoji.size(); i++) {
-            if (!g_fLowerCase) {
-                if (i >= 26)
-                    continue;
-            } else {
-                if (i < 26)
-                    continue;
-            }
+            BOOL bLower = (i >= 26);
+            if (bLower != g_fLowerCase)
+                continue;
 
             GetMojiRect(hwnd, &rc, i % 26);
 
@@ -472,20 +468,10 @@ void OnDraw(HWND hwnd, HDC hdc)
             OffsetRect(&rc, +1, +1);
 
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[i]);
-            if (g_fLowerCase)
-            {
-                if (g_history.find(i) != g_history.end())
-                    FillRect(hdcMem2, &rc, g_hbrRed);
-                else
-                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            }
+            if (g_history.find(i) != g_history.end())
+                FillRect(hdcMem2, &rc, g_hbrRed);
             else
-            {
-                if (g_history.find(i) != g_history.end())
-                    FillRect(hdcMem2, &rc, g_hbrRed);
-                else
-                    FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-            }
+                FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
             OffsetRect(&rc, -1, -1);
             InflateRect(&rc, -2, -2);
@@ -932,7 +918,7 @@ void OnMojiRightClick(HWND hwnd) {
     if (nCmd) {
         INT iSelected = nCmd - 100;
         g_history.insert(g_nMoji);
-        remember_moji(g_pMoji->key_at(g_nMoji));
+        remember_moji((g_fLowerCase ? L"L-" : L"U-") + g_pMoji->key_at(g_nMoji));
 
         if (g_hbmClient) {
             DeleteObject(g_hbmClient);
@@ -947,7 +933,7 @@ void OnMojiRightClick(HWND hwnd) {
 
         if (menu.value_at(iSelected) == L"OnResetAll") {
             for (size_t i = 0; i < g_pMoji->size(); ++i) {
-                forget_moji(g_pMoji->key_at(i));
+                forget_moji(((i >= 26) ? L"L-" : L"U-") + g_pMoji->key_at(i));
             }
             g_history.clear();
             return;
@@ -984,7 +970,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     InvalidateRect(hwnd, NULL, TRUE);
 
     g_history.insert(nMoji);
-    remember_moji(g_pMoji->key_at(nMoji));
+    remember_moji((g_fLowerCase ? L"L-" : L"U-") + g_pMoji->key_at(nMoji));
 
     if (g_hThread)
         CloseHandle(g_hThread);
