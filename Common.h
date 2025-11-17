@@ -496,3 +496,42 @@ static inline LPVOID MyLoadRes(HINSTANCE hInst, LPCWSTR type, LPCWSTR name, DWOR
     HGLOBAL hGlobal = ::LoadResource(g_hInstance, hRsrc);
     return ::LockResource(hGlobal);
 }
+
+static inline bool remember_moji(const std::wstring& str) {
+    HKEY hKey;
+    LSTATUS error;
+    error = RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Katayama Hirofumi MZ\\Moji No Benkyou",
+                            0, NULL, 0, KEY_WRITE, NULL, &hKey, NULL);
+    if (error)
+        return false;
+
+    error = RegSetValueExW(hKey, str.c_str(), 0, REG_SZ, (PBYTE)L"", 0);
+    RegCloseKey(hKey);
+    return error == NO_ERROR;
+}
+
+static inline bool recall_moji(const std::wstring& str) {
+    HKEY hKey;
+    LSTATUS error;
+    error = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Katayama Hirofumi MZ\\Moji No Benkyou",
+                          0, KEY_READ, &hKey);
+    if (error)
+        return false;
+
+    error = RegQueryValueExW(hKey, str.c_str(), NULL, NULL, NULL, NULL);
+    RegCloseKey(hKey);
+    return error == NO_ERROR;
+}
+
+static inline bool forget_moji(const std::wstring& str) {
+    HKEY hKey;
+    LSTATUS error;
+    error = RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Katayama Hirofumi MZ\\Moji No Benkyou",
+                            0, NULL, 0, KEY_WRITE, NULL, &hKey, NULL);
+    if (error)
+        return false;
+
+    error = RegDeleteValueW(hKey, str.c_str());
+    RegCloseKey(hKey);
+    return error == NO_ERROR;
+}

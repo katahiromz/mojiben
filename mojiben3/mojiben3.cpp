@@ -26,6 +26,7 @@
 #include <map>
 #include <set>
 
+#include "../mstr.h"
 #include "../CGdiObj.h"
 #include "../CDebug.h"
 #include "../Common.h"
@@ -59,7 +60,7 @@ INT g_nMoji;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 
-std::set<INT> g_digits_history;
+std::set<INT> g_history;
 
 std::wstring g_section;
 MyLib *g_pMyLib = NULL;
@@ -183,6 +184,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (g_hKakijunWnd == NULL)
         return FALSE;
 
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->key_at(i);
+        if (recall_moji(moji)) {
+            g_history.insert(i);
+        }
+    }
+
     return TRUE;
 }
 
@@ -206,7 +214,7 @@ void OnDestroy(HWND hwnd)
 
     DeleteObject(g_hbrRed);
 
-    g_digits_history.clear();
+    g_history.clear();
 
     delete g_pMoji;
     g_pMoji = NULL;
@@ -276,7 +284,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             GetMojiRect(&rc, j);
             InflateRect(&rc, 3, 3);
 
-            if (g_digits_history.find(j) == g_digits_history.end())
+            if (g_history.find(j) == g_history.end())
                 FillRect(hdcMem2, &rc, GetStockBrush(BLACK_BRUSH));
             else
                 FillRect(hdcMem2, &rc, g_hbrRed);
@@ -403,13 +411,102 @@ unsigned __stdcall ThreadProc(void *)
     return 0;
 }
 
+HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji, std::wstring filename) {
+    g_pMyLib->load_string_table(menu, filename);
+
+    WCHAR hira[32], kata[32], upper[32], lower[32], hex[32];
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_HIRAGANA, moji.c_str(), -1, hira, _countof(hira));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_KATAKANA, moji.c_str(), -1, kata, _countof(kata));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_UPPERCASE, moji.c_str(), -1, upper, _countof(upper));
+    LCMapStringW(MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT), LCMAP_LOWERCASE, moji.c_str(), -1, lower, _countof(lower));
+    wnsprintfW(hex, _countof(hex), L"%04x", moji[0]);
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        mstr_replace(menu.m_pairs[i].m_key, L"<String>", moji.c_str());
+        mstr_replace(menu.m_pairs[i].m_key, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_key, L"<Lowercase>", lower);
+        mstr_replace(menu.m_pairs[i].m_key, L"<hex>", hex);
+        mstr_replace(menu.m_pairs[i].m_value, L"<String>", moji.c_str());
+        mstr_replace(menu.m_pairs[i].m_value, L"<Hiragana>", hira);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Katakana>", kata);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Uppercase>", upper);
+        mstr_replace(menu.m_pairs[i].m_value, L"<Lowercase>", lower);
+        mstr_replace(menu.m_pairs[i].m_value, L"<hex>", hex);
+    }
+
+    HMENU hMenu = CreatePopupMenu();
+
+    for (size_t i = 0; i < menu.size(); ++i) {
+        if (menu.key_at(i) == L"---") {
+            AppendMenu(hMenu, MF_ENABLED | MF_SEPARATOR, 0, NULL);
+            continue;
+        }
+        AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+
+        std::wstring value = menu.value_at(i);
+        if (value == L"OnSelectAll") {
+            ;
+        } else if (value == L"OnCopyMoji" || value == L"OnCopyMojiWithFurigana") {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        } else {
+            if (moji.empty())
+                EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+        }
+    }
+
+    return hMenu;
+}
+
+void OnMojiRightClick(HWND hwnd) {
+    MyLibStringTable menu;
+    std::wstring moji = g_pMoji->key_at(g_nMoji);
+    HMENU hMenu = CreateRightClickMenu(hwnd, menu, moji, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+
+    SetForegroundWindow(hwnd);
+
+    POINT pt;
+    GetCursorPos(&pt);
+
+    INT nCmd = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, NULL);
+    DestroyMenu(hMenu);
+
+    if (nCmd) {
+        INT iSelected = nCmd - 100;
+        g_history.insert(g_nMoji);
+        remember_moji(g_pMoji->key_at(g_nMoji));
+
+        if (g_hbmClient) {
+            DeleteObject(g_hbmClient);
+            g_hbmClient = NULL;
+        }
+        InvalidateRect(hwnd, NULL, TRUE);
+
+        if (menu.value_at(iSelected) == L"OnCopyMoji") {
+            CopyText(hwnd, moji.c_str());
+            return;
+        }
+        if (menu.value_at(iSelected) == L"OnResetAll") {
+            for (size_t i = 0; i < g_pMoji->size(); ++i) {
+                forget_moji(g_pMoji->key_at(i));
+            }
+            g_history.clear();
+            return;
+        }
+
+        ShellExecute(hwnd, NULL, menu.value_at(iSelected).c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
+}
+
 VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 {
     RECT rc, rc2;
     g_nMoji = nMoji;
 
-    if (fRight)
-    {
+    if (fRight) {
+        OnMojiRightClick(hwnd);
         return;
     }
 
@@ -422,7 +519,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
         rc2.bottom - rc2.top,
         TRUE);
 
-    g_digits_history.insert(nMoji);
+    g_history.insert(nMoji);
+    remember_moji(g_pMoji->key_at(nMoji));
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);
