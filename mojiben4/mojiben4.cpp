@@ -66,7 +66,7 @@ INT g_nMoji2;
 HANDLE g_hThread;
 HBRUSH g_hbrRed;
 
-std::set<INT> g_kanji1_history;
+std::set<INT> g_history;
 
 BOOL g_bHighSpeed = FALSE;
 
@@ -279,6 +279,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (g_hKakijunWnd == NULL)
         return FALSE;
 
+    for (size_t i = 0; i < g_pMoji->size(); ++i) {
+        std::wstring moji = g_pMoji->key_at(i);
+        if (recall_moji(moji)) {
+            g_history.insert(i);
+        }
+    }
+
     return TRUE;
 }
 
@@ -307,7 +314,7 @@ void OnDestroy(HWND hwnd)
     DeleteObject(g_hbrRed);
     DeleteObject(g_hbmBack);
 
-    g_kanji1_history.clear();
+    g_history.clear();
 
     g_kakijun.clear();
 
@@ -402,7 +409,7 @@ VOID OnDraw(HWND hwnd, HDC hdc)
             hbmOld = SelectObject(hdcMem, g_ahbmMoji[g_map[j]]);
             GetMojiRect(&rc, j);
             InflateRect(&rc, +5, +5);
-            if (g_kanji1_history.find(j) != g_kanji1_history.end())
+            if (g_history.find(j) != g_history.end())
                 FillRect(hdcMem2, &rc, g_hbrRed);
             else
                 FillRect(hdcMem2, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
@@ -870,7 +877,8 @@ void OnMojiRightClick(HWND hwnd) {
 
     if (nCmd) {
         INT iSelected = nCmd - 100;
-        g_kanji1_history.insert(g_nMoji2);
+        g_history.insert(g_nMoji2);
+        remember_moji(g_pMoji->key_at(g_nMoji2));
 
         if (g_hbmClient) {
             DeleteObject(g_hbmClient);
@@ -884,6 +892,13 @@ void OnMojiRightClick(HWND hwnd) {
         }
         if (menu.value_at(iSelected) == L"OnKanjiData") {
             OnKanjiData(hwnd);
+            return;
+        }
+        if (menu.value_at(iSelected) == L"OnResetAll") {
+            for (size_t i = 0; i < g_pMoji->size(); ++i) {
+                forget_moji(g_pMoji->key_at(i));
+            }
+            g_history.clear();
             return;
         }
 
@@ -919,7 +934,8 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
     // 意味。
     SetWindowText(g_hwndCaption2, GetMojiMeaning(g_nMoji).c_str());
 
-    g_kanji1_history.insert(nMoji);
+    g_history.insert(nMoji);
+    remember_moji(g_pMoji->key_at(nMoji));
 
     if (g_hbmClient)
         DeleteObject(g_hbmClient);

@@ -10,3 +10,5 @@ Look up Jisho.org = https://jisho.org/search/%23kanji%20<String>
 ---
 Look up JITEN ONLINE = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 Look up Moji Navi = https://mojinavi.com/d/u<hex>
+---
+Reset all = OnResetAll

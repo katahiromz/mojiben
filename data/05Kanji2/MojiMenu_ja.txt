@@ -10,3 +10,5 @@ Jisho.org でしらべる = https://jisho.org/search/%23kanji%20<String>
 ---
 「じてん オンライン」でしらべる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 「モジナビ」でしらべる = https://mojinavi.com/d/u<hex>
+---
+すべて リセット = OnResetAll

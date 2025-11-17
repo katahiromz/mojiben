@@ -10,3 +10,5 @@ Jisho.org で調べる = https://jisho.org/search/%23kanji%20<String>
 ---
 「辞典オンライン」で調べる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 「モジナビ」で調べる = https://mojinavi.com/d/u<hex>
+---
+すべて リセット = OnResetAll
