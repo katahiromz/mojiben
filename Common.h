@@ -41,43 +41,6 @@ static inline void DoSleep(DWORD dwMilliseconds)
 STUDY_MODE getStudyMode(VOID);
 STUDY_MODE getStudyModeDefault(VOID);
 
-static inline void updateSystemMenu(HWND hwnd)
-{
-    GetSystemMenu(hwnd, TRUE);
-    HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
-
-    HMENU hChildMenu = CreatePopupMenu();
-    InsertMenu(hChildMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_STUDY_USING_JAPANESE, L"Study using Japanese");
-    InsertMenu(hChildMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_STUDY_USING_ENGLISH, L"Study using English");
-
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hChildMenu, TEXT("Study mode"));
-
-    STUDY_MODE studyMode = getStudyMode();
-    BOOL bRetry = FALSE;
-
-retry:
-    switch (studyMode)
-    {
-    case STUDY_MODE_USING_ENGLISH:
-        ::CheckMenuRadioItem(hSysMenu, SYSCOMMAND_STUDY_USING_JAPANESE, SYSCOMMAND_STUDY_USING_ENGLISH,
-                             SYSCOMMAND_STUDY_USING_ENGLISH, MF_BYCOMMAND);
-        break;
-    case STUDY_MODE_USING_JAPANESE:
-        ::CheckMenuRadioItem(hSysMenu, SYSCOMMAND_STUDY_USING_JAPANESE, SYSCOMMAND_STUDY_USING_ENGLISH,
-                             SYSCOMMAND_STUDY_USING_JAPANESE, MF_BYCOMMAND);
-        break;
-    case STUDY_MODE_DEFAULT:
-    default:
-        studyMode = getStudyModeDefault();
-        if (!bRetry)
-        {
-            bRetry = TRUE;
-            goto retry;
-        }
-    }
-}
-
 typedef LANGID (WINAPI *FN_GetThreadUILanguage)(VOID);
 typedef LANGID (WINAPI *FN_SetThreadUILanguage)(LANGID);
 
@@ -157,6 +120,15 @@ getStudyMode(VOID)
     default:
         return STUDY_MODE_DEFAULT;
     }
+}
+
+static inline STUDY_MODE
+getStudyModeReal(VOID)
+{
+    STUDY_MODE mode = getStudyMode();
+    if (mode == STUDY_MODE_DEFAULT)
+        mode = getStudyModeDefault();
+    return mode;
 }
 
 static inline BOOL

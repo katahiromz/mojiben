@@ -1,4 +1,7 @@
-﻿High-speed mode = OnHighSpeed
+﻿Study using English = OnStudyUsingEnglish
+Study using Japanese = OnStudyUsingJapanese
+---
+High-speed mode = OnHighSpeed
 ---
 Reset all = OnResetAll
 ---

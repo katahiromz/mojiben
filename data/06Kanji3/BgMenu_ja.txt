@@ -1,4 +1,7 @@
-﻿こうそく モード = OnHighSpeed
+﻿えいご で 勉強 = OnStudyUsingEnglish
+日本語 で 勉強 = OnStudyUsingJapanese
+---
+こうそく モード = OnHighSpeed
 ---
 すべて リセット = OnResetAll
 ---

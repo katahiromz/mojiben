@@ -172,8 +172,6 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     wnsprintfW(file, _countof(file), L"%s\\%s.gif", g_section.c_str(), L"bg");
     g_hbmBack = g_pMyLib->load_picture(file);
 
-    updateSystemMenu(hwnd);
-
     g_hbmClient = NULL;
 
     INT cx = GetSystemMetrics(SM_CXBORDER);
@@ -446,20 +444,31 @@ HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji,
             continue;
         }
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
-        if (menu.value_at(i) == L"OnHighSpeed") {
+
+        std::wstring value = menu.value_at(i);
+        if (value == L"OnHighSpeed") {
             CheckMenuItem(hMenu, 100 + i, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
             continue;
         }
-
-        std::wstring value = menu.value_at(i);
+        if (value == L"OnStudyUsingEnglish") {
+            CheckMenuItem(hMenu, 100 + i, ((getStudyModeReal() == STUDY_MODE_USING_ENGLISH) ? MF_CHECKED : MF_UNCHECKED));
+            continue;
+        }
+        if (value == L"OnStudyUsingJapanese") {
+            CheckMenuItem(hMenu, 100 + i, ((getStudyModeReal() == STUDY_MODE_USING_JAPANESE) ? MF_CHECKED : MF_UNCHECKED));
+            continue;
+        }
         if (value == L"OnSelectAll") {
-            ;
-        } else if (value == L"OnCopyMoji" || value == L"OnCopyMojiWithFurigana") {
+            continue;
+        }
+        if (value == L"OnCopyMoji" || value == L"OnCopyMojiWithFurigana") {
             if (moji.empty())
                 EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+            continue;
         } else {
             if (moji.empty())
                 EnableMenuItem(hMenu, 100 + i, MF_GRAYED);
+            continue;
         }
     }
 
@@ -511,6 +520,14 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
         }
         if (menu.value_at(iSelected) == L"OnAbout") {
             DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
+            return;
+        }
+        if (menu.value_at(iSelected) == L"OnStudyUsingEnglish") {
+            rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
+            return;
+        }
+        if (menu.value_at(iSelected) == L"OnStudyUsingJapanese") {
+            rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
             return;
         }
 
@@ -741,24 +758,6 @@ void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     OnButtonDown(hwnd, x, y, TRUE);
 }
 
-// WM_SYSCOMMAND
-void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
-{
-    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
-    {
-        rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
-        return;
-    }
-
-    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_JAPANESE)
-    {
-        rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
-        return;
-    }
-
-    FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefWindowProc);
-}
-
 // WM_KEYDOWN
 void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
@@ -781,7 +780,6 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
         HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
         HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
-        HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
         HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
         HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);

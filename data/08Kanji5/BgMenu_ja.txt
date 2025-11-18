@@ -1,4 +1,7 @@
-﻿高速 モード = OnHighSpeed
+﻿英語 で 勉強 = OnStudyUsingEnglish
+日本語 で 勉強 = OnStudyUsingJapanese
+---
+高速 モード = OnHighSpeed
 ---
 すべて リセット = OnResetAll
 ---
