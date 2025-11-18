@@ -10,7 +10,6 @@
 #endif
 
 #define SYSCOMMAND_ABOUT 0x3330
-#define SYSCOMMAND_HIGH_SPEEED 0x3340
 #define SYSCOMMAND_STUDY_USING_JAPANESE 0x3350
 #define SYSCOMMAND_STUDY_USING_ENGLISH 0x3360
 
@@ -53,13 +52,9 @@ static inline void updateSystemMenu(HWND hwnd)
     InsertMenu(hChildMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_STUDY_USING_ENGLISH, L"Study using English");
 
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_HIGH_SPEEED, TEXT("High-speed mode"));
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hChildMenu, TEXT("Study mode"));
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_ABOUT, LoadStringDx(2));
-
-    ::CheckMenuItem(hSysMenu, SYSCOMMAND_HIGH_SPEEED, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
 
     STUDY_MODE studyMode = getStudyMode();
     BOOL bRetry = FALSE;

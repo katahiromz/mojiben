@@ -191,6 +191,8 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         }
     }
 
+    g_bHighSpeed = recall_moji(L"g_bHighSpeed");
+
     return TRUE;
 }
 
@@ -444,6 +446,10 @@ HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji,
             continue;
         }
         AppendMenu(hMenu, MF_ENABLED | MF_STRING, 100 + i, menu.key_at(i).c_str());
+        if (menu.value_at(i) == L"OnHighSpeed") {
+            CheckMenuItem(hMenu, 100 + i, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
+            continue;
+        }
 
         std::wstring value = menu.value_at(i);
         if (value == L"OnSelectAll") {
@@ -475,8 +481,6 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
 
     if (nCmd) {
         INT iSelected = nCmd - 100;
-        g_history.insert(g_nMoji);
-        remember_moji(g_pMoji->key_at(g_nMoji));
 
         if (g_hbmClient) {
             DeleteObject(g_hbmClient);
@@ -486,6 +490,8 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
 
         if (menu.value_at(iSelected) == L"OnCopyMoji") {
             CopyText(hwnd, moji.c_str());
+            g_history.insert(g_nMoji);
+            remember_moji(g_pMoji->key_at(g_nMoji));
             return;
         }
         if (menu.value_at(iSelected) == L"OnResetAll") {
@@ -495,6 +501,17 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
             g_history.clear();
             return;
         }
+        if (menu.value_at(iSelected) == L"OnHighSpeed") {
+            g_bHighSpeed = !g_bHighSpeed;
+            if (g_bHighSpeed)
+                remember_moji(L"g_bHighSpeed");
+            else
+                forget_moji(L"g_bHighSpeed");
+            return;
+        }
+
+        g_history.insert(g_nMoji);
+        remember_moji(g_pMoji->key_at(g_nMoji));
 
         ShellExecute(hwnd, NULL, menu.value_at(iSelected).c_str(), NULL, NULL, SW_SHOWNORMAL);
     }
@@ -726,14 +743,6 @@ void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
     {
         DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
-        return;
-    }
-
-    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_HIGH_SPEEED)
-    {
-        g_bHighSpeed = !g_bHighSpeed;
-        HMENU hSysMenu = ::GetSystemMenu(hwnd, FALSE);
-        ::CheckMenuItem(hSysMenu, SYSCOMMAND_HIGH_SPEEED, (g_bHighSpeed ? MF_CHECKED : MF_UNCHECKED));
         return;
     }
 

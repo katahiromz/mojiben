@@ -1,1 +1,3 @@
-﻿すべて リセット = OnResetAll
+﻿こうそく モード = OnHighSpeed
+---
+すべて リセット = OnResetAll

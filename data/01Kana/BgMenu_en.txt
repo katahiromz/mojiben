@@ -1,1 +1,3 @@
-﻿Reset all = OnResetAll
+﻿High-speed mode = OnHighSpeed
+---
+Reset all = OnResetAll
