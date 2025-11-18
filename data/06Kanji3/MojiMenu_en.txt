@@ -8,6 +8,7 @@ Yahoo! JAPAN search = https://search.yahoo.co.jp/search?p=<String>
 Google Translate (English) = https://translate.google.com/?hl=en&sl=ja&tl=en&text=<String>&op=translate
 ---
 Look up Jisho.org = https://jisho.org/search/%23kanji%20<String>
+Look up Wiktionary = https://en.wiktionary.org/wiki/<String>
 ---
 Look up JITEN ONLINE = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 Look up Moji Navi = https://mojinavi.com/d/u<hex>

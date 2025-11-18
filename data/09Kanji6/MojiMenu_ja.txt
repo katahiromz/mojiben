@@ -8,6 +8,7 @@ Yahoo! JAPAN けんさく = https://search.yahoo.co.jp/search?p=<String>
 Google ほんやく (えいご) = https://translate.google.com/?hl=ja&sl=ja&tl=en&text=<String>&op=translate
 ---
 Jisho.org で調べる = https://jisho.org/search/%23kanji%20<String>
+Wiktionary で調べる = https://ja.wiktionary.org/wiki/<String>
 ---
 「辞典オンライン」で調べる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 「モジナビ」で調べる = https://mojinavi.com/d/u<hex>
