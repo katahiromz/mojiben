@@ -917,6 +917,10 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
                 forget_moji(L"g_bHighSpeed");
             return;
         }
+        if (menu.value_at(iSelected) == L"OnAbout") {
+            DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
+            return;
+        }
 
         g_history.insert(g_nMoji);
         remember_moji(g_pMoji->key_at(g_nMoji));
@@ -1220,12 +1224,6 @@ void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 // WM_SYSCOMMAND
 void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
 {
-    if (GET_SC_WPARAM(cmd) == SYSCOMMAND_ABOUT)
-    {
-        DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
-        return;
-    }
-
     if (GET_SC_WPARAM(cmd) == SYSCOMMAND_STUDY_USING_ENGLISH)
     {
         rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);

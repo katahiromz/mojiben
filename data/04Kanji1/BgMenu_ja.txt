@@ -1,3 +1,5 @@
 ﻿こうそく モード = OnHighSpeed
 ---
 すべて リセット = OnResetAll
+---
+バージョン じょうほう = OnAbout

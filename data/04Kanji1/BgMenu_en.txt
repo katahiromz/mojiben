@@ -1,3 +1,5 @@
 ﻿High-speed mode = OnHighSpeed
 ---
 Reset all = OnResetAll
+---
+About this app = OnAbout

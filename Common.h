@@ -9,7 +9,6 @@
     #define GET_SC_WPARAM(wParam) ((INT)wParam & 0xFFF0)
 #endif
 
-#define SYSCOMMAND_ABOUT 0x3330
 #define SYSCOMMAND_STUDY_USING_JAPANESE 0x3350
 #define SYSCOMMAND_STUDY_USING_ENGLISH 0x3360
 
@@ -53,8 +52,6 @@ static inline void updateSystemMenu(HWND hwnd)
 
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
     InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hChildMenu, TEXT("Study mode"));
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-    InsertMenu(hSysMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING, SYSCOMMAND_ABOUT, LoadStringDx(2));
 
     STUDY_MODE studyMode = getStudyMode();
     BOOL bRetry = FALSE;
