@@ -973,6 +973,11 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
             return;
         }
     }
+
+    if (fRight) {
+        OnMojiRightClick(hwnd, g_section + (g_fJapanese ? L"\\BgMenu_ja.txt" : L"\\BgMenu_en.txt"));
+        return;
+    }
 }
 
 // WM_SETCURSOR

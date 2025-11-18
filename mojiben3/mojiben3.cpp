@@ -567,6 +567,7 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         ShellExecute(hwnd, NULL, LoadStringDx(1000), NULL, NULL, SW_SHOWNORMAL);
+        return;
     }
 
     // 「九九の歌」ボタンの当たり判定。
@@ -574,6 +575,12 @@ VOID OnButtonDown(HWND hwnd, INT x, INT y, BOOL fRight)
     if (PtInRect(&rc, pt))
     {
         ShellExecute(hwnd, NULL, LoadStringDx(1001), NULL, NULL, SW_SHOWNORMAL);
+        return;
+    }
+
+    if (fRight) {
+        OnMojiRightClick(hwnd, g_section + (g_fJapanese ? L"\\BgMenu_ja.txt" : L"\\BgMenu_en.txt"));
+        return;
     }
 }
 
