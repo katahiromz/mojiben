@@ -862,10 +862,10 @@ HMENU CreateRightClickMenu(HWND hwnd, MyLibStringTable& menu, std::wstring moji,
     return hMenu;
 }
 
-void OnMojiRightClick(HWND hwnd) {
+void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
     MyLibStringTable menu;
     std::wstring moji = g_pMoji->key_at(g_nMoji);
-    HMENU hMenu = CreateRightClickMenu(hwnd, menu, moji, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+    HMENU hMenu = CreateRightClickMenu(hwnd, menu, moji, menu_file);
 
     SetForegroundWindow(hwnd);
 
@@ -913,7 +913,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     if (fRight)
     {
-        OnMojiRightClick(hwnd);
+        OnMojiRightClick(hwnd, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
         return;
     }
 

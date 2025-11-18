@@ -846,9 +846,9 @@ unsigned __stdcall ThreadProc(void *)
     return 0;
 }
 
-void OnMojiRightClick(HWND hwnd) {
+void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
     MyLibStringTable menu;
-    g_pMyLib->load_string_table(menu, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
+    g_pMyLib->load_string_table(menu, menu_file);
 
     std::wstring moji = g_pMoji->key_at(g_nMoji);
     WCHAR hira[64], kata[64], upper[64], lower[64];
@@ -919,7 +919,7 @@ VOID MojiOnClick(HWND hwnd, INT nMoji, BOOL fRight)
 
     if (fRight)
     {
-        OnMojiRightClick(hwnd);
+        OnMojiRightClick(hwnd, g_section + (g_fJapanese ? L"\\MojiMenu_ja.txt" : L"\\MojiMenu_en.txt"));
         return;
     }
 
