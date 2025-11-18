@@ -156,7 +156,7 @@ rememberStudyMode(HWND hwnd, STUDY_MODE mode)
     RegCloseKey(hKey);
 
     if (!error)
-        MessageBox(hwnd, TEXT("This mode change will take effect after restarting the app."), TEXT("Moji No Benkyou"), MB_ICONINFORMATION);
+        MessageBox(hwnd, TEXT("This mode change will take effect after restarting the app.\n\nこの モード へんこう は、アプリ の さいきどう の あと に ゆうこう に なります。"), TEXT("Moji No Benkyou"), MB_ICONINFORMATION);
 
     return !error;
 }
