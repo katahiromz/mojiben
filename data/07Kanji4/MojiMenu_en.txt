@@ -13,4 +13,5 @@ Look up Wiktionary = https://en.wiktionary.org/wiki/<String>
 Look up JITEN ONLINE = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 Look up Moji Navi = https://mojinavi.com/d/u<hex>
 ---
+Reset = OnReset
 Reset all = OnResetAll

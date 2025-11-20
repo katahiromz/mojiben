@@ -13,4 +13,5 @@ Wiktionary でしらべる = https://ja.wiktionary.org/wiki/<String>
 「じてん オンライン」でしらべる = https://jitenon.jp/search/data.php?getdata=<String>&search=contain
 「モジナビ」でしらべる = https://mojinavi.com/d/u<hex>
 ---
+リセット = OnReset
 すべて リセット = OnResetAll

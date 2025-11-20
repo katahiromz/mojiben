@@ -1,4 +1,5 @@
 ﻿もじのコピー = OnCopyMoji
 '<Uppercase>'で始まる英単語 = https://learnersdictionary.com/3000-words/alpha/<Lowercase>
 ---
+リセット = OnReset
 すべて リセット = OnResetAll

@@ -962,26 +962,32 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
         }
         InvalidateRect(hwnd, NULL, TRUE);
 
-        if (menu.value_at(iSelected) == L"OnCopyMoji") {
+        std::wstring value = menu.value_at(iSelected);
+        if (value == L"OnCopyMoji") {
             CopyText(hwnd, moji.c_str());
             g_history.insert(g_nMoji);
             remember_moji(g_pMoji->key_at(g_nMoji));
             return;
         }
-        if (menu.value_at(iSelected) == L"OnKanjiData") {
+        if (value == L"OnKanjiData") {
             OnKanjiData(hwnd);
             g_history.insert(g_nMoji);
             remember_moji(g_pMoji->key_at(g_nMoji));
             return;
         }
-        if (menu.value_at(iSelected) == L"OnResetAll") {
+        if (value == L"OnReset") {
+            g_history.erase(g_nMoji);
+            forget_moji(g_pMoji->key_at(g_nMoji));
+            return;
+        }
+        if (value == L"OnResetAll") {
             for (size_t i = 0; i < g_pMoji->size(); ++i) {
                 forget_moji(g_pMoji->key_at(i));
             }
             g_history.clear();
             return;
         }
-        if (menu.value_at(iSelected) == L"OnHighSpeed") {
+        if (value == L"OnHighSpeed") {
             g_bHighSpeed = !g_bHighSpeed;
             if (g_bHighSpeed)
                 remember_moji(L"g_bHighSpeed");
@@ -989,15 +995,15 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
                 forget_moji(L"g_bHighSpeed");
             return;
         }
-        if (menu.value_at(iSelected) == L"OnAbout") {
+        if (value == L"OnAbout") {
             DialogBox(g_hInstance, MAKEINTRESOURCE(1), hwnd, AboutDialogProc);
             return;
         }
-        if (menu.value_at(iSelected) == L"OnStudyUsingEnglish") {
+        if (value == L"OnStudyUsingEnglish") {
             rememberStudyMode(hwnd, STUDY_MODE_USING_ENGLISH);
             return;
         }
-        if (menu.value_at(iSelected) == L"OnStudyUsingJapanese") {
+        if (value == L"OnStudyUsingJapanese") {
             rememberStudyMode(hwnd, STUDY_MODE_USING_JAPANESE);
             return;
         }
@@ -1005,7 +1011,7 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
         g_history.insert(g_nMoji);
         remember_moji(g_pMoji->key_at(g_nMoji));
 
-        ShellExecute(hwnd, NULL, menu.value_at(iSelected).c_str(), NULL, NULL, SW_SHOWNORMAL);
+        ShellExecute(hwnd, NULL, value.c_str(), NULL, NULL, SW_SHOWNORMAL);
     }
 }
 

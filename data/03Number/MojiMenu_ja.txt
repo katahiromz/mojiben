@@ -1,1 +1,2 @@
-﻿すべて リセット = OnResetAll
+﻿リセット = OnReset
+すべて リセット = OnResetAll

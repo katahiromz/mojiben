@@ -1,1 +1,2 @@
-﻿Reset all = OnResetAll
+﻿Reset = OnReset
+Reset all = OnResetAll

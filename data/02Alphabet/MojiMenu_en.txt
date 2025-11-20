@@ -1,4 +1,5 @@
 ﻿Copy character = OnCopyMoji
 Words starting with '<Uppercase>' = https://learnersdictionary.com/3000-words/alpha/<Lowercase>
 ---
+Reset = OnReset
 Reset all = OnResetAll

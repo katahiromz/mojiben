@@ -1,4 +1,5 @@
 ﻿もじのコピー = OnCopyMoji
 「<Hiragana>」からはじまることば = https://しりとり.net/「<Hiragana>」からはじまる言葉/
 ---
+リセット = OnReset
 すべて リセット = OnResetAll
