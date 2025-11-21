@@ -971,9 +971,9 @@ void OnMojiRightClick(HWND hwnd, const std::wstring& menu_file) {
             return;
         }
         if (value == L"OnKanjiData") {
-            OnKanjiData(hwnd);
             g_history.insert(g_nMoji);
             remember_moji(g_pMoji->key_at(g_nMoji));
+            OnKanjiData(hwnd);
             return;
         }
         if (value == L"OnReset") {
