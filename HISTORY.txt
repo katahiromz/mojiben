@@ -18,7 +18,7 @@
 - Ver.3.6: 小6の漢字を追加。漢字の書き順ウィンドウのサイズを300×300から254×254に縮小。漢字の日本語の説明を修正。
 - Ver.3.7: 漢字の書き順のリージョンデータをリマスタリング。カナとアルファベットの書き順ウィンドウを254x254に縮小。フリガナを実装。
 - Ver.3.8: 「確かめる」の送り仮名を修正。つかいかたの例を書いた「漢字データ」を追加。Yahoo! JAPAN検索を追加。
-- Ver.3.9: 「すうじとかず」のUI/UXを改善。データを外部化し、カスタマイズ可能にした。音の遅れを最小化。いくつかのユーティリティツールを追加。「従」の読みを修正。外部監査を導入。日本語のUI/UXを学年に応じて変更するようにした。クリックした文字を覚えて「リセット」と「すべて リセット」を追加。「Google ほんやく」と「Wiktionary」を追加。システムメニュー項目をコンテキスト メニューに移動。「殺」の音声を自主規制。
+- Ver.3.9: 「すうじとかず」のUI/UXを改善。データを外部化し、カスタマイズ可能にした。音の遅れを最小化。いくつかのユーティリティツールを追加。「従」の読みを修正。外部監査を導入。日本語のUI/UXを学年に応じて変更するようにした。クリックした文字を覚えて「リセット」と「すべて リセット」を追加。「Google ほんやく」と「Wiktionary」を追加。システムメニュー項目をコンテキスト メニューに移動。「殺」の音声を自主規制。用例を増強。
 
 # Changelog of "Moji No Benkyou"
 
@@ -35,4 +35,4 @@
 - Ver.3.6: Added kanji for sixth grade. Reduced the size of the kanji stroke order window from 300×300 to 254×254. Fixed the Japanese explanations for kanji.
 - Ver.3.7: Remastered regional data for kanji stroke order. The kana and alphabet stroke order window has been reduced to 254x254. Furigana is implemented.
 - Ver.3.8: Corrected the trailing kana of "確かめる". Added "Kanji data" with "Usage examples". Added "Yahoo! JAPAN" search.
-- Ver.3.9: Improved "Digits and numbers" UI/UX. The data got externalized and customizable. Minimized sound delay. Added some utility tools. Fixed reading of "従". External audits introduced. The Japanese UI/UX has been changed depending on the grade level. Remembered clicked characters and added "Reset" and "Reset all". Added "Google translate" and "Wiktionary". Moved system menu items to context menu. Self-censorship of the sound of "殺".
+- Ver.3.9: Improved "Digits and numbers" UI/UX. The data got externalized and customizable. Minimized sound delay. Added some utility tools. Fixed reading of "従". External audits introduced. The Japanese UI/UX has been changed depending on the grade level. Remembered clicked characters and added "Reset" and "Reset all". Added "Google translate" and "Wiktionary". Moved system menu items to context menu. Self-censorship of the sound of "殺". More examples added.
