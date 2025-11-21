@@ -868,7 +868,7 @@ void OnKanjiData(HWND hwnd) {
     dlg.m_reading = g_pReading->value_at(g_nMoji);
 
     // 意味。
-    dlg.m_meaning = GetMojiReading(g_nMoji);
+    dlg.m_meaning = GetMojiMeaning(g_nMoji);
 
     // 使い方
     dlg.m_examples = GetMojiExample(g_nMoji);
