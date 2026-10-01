@@ -1,4 +1,4 @@
-set VERSION=3.9
+set VERSION=4.0
 set README=README.txt
 set READMEJA=README_ja.txt
 set LICENSE=LICENSE.txt
